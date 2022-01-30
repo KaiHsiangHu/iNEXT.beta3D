@@ -1,0 +1,293 @@
+---
+title: "A Quick Introduction to iNEXT.beta"
+author: "Y. S. Kao, Z. C. Szu Tu, and Anne Chao"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    vignette: >
+      %\VignetteIndexEntry{A Quick Introduction to iNEXT.beta}
+      %\VignetteEngine{knitr::rmarkdown}
+      %\VignetteEncoding{UTF-8}
+---
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+
+
+
+# data_abu <- readRDS("C:/Users/stat-pc/Desktop/iNEXT_beta_version/Abu_list.rds")
+# data_inc <- readRDS("C:/Users/stat-pc/Desktop/iNEXT_beta_version/Inc_list.rds")
+# tree <- read.newick("C:/Users/stat-pc/Desktop/New iNEXT Beta Shiny/DATA/Sika deer/fs_kt_tree.txt")
+# disM <- read.csv("C:/Users/stat-pc/Desktop/New iNEXT Beta Shiny/DATA/Sika deer/Deer_disM.csv",header = T,row.names = 1) %>% as.matrix
+# 
+# ###
+# Abu_td_out = readRDS("C:/Users/stat-pc/Desktop/iNEXT_beta_version/Abu_td.rds")
+# Abu_pd_out = readRDS("C:/Users/stat-pc/Desktop/iNEXT_beta_version/Abu_pd.rds")
+# Abu_fd_out = readRDS("C:/Users/stat-pc/Desktop/iNEXT_beta_version/Abu_fd.rds")
+# 
+# Inc_td_out = readRDS("C:/Users/stat-pc/Desktop/iNEXT_beta_version/Inc_td.rds")
+# Inc_pd_out = readRDS("C:/Users/stat-pc/Desktop/iNEXT_beta_version/Inc_pd.rds")
+# Inc_fd_out = readRDS("C:/Users/stat-pc/Desktop/iNEXT_beta_version/Inc_fd.rds")
+
+```
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+**`iNEXT-beta`** (iNterpolation and EXTrapolation for beta diversity) is an R package 
+aiming to calculating beta diversity for multiple assemblages.
+Here we provide a quick introduction demonstrating how to run iNEXT-beta, and showing four types of turnover transformation. 
+
+Here are two functions we provide in this package : 
+
+- **iNEXT_beta** : Calculating gamma, alpha, beta diversity and dissimilarity-turnover for taxonomic, phylogenetic and functional diversity at specified sample coverage.
+
+- **ggiNEXT_beta** : Visualizing the output of iNEXT_beta.
+
+
+
+## MAIN FUNCTION: iNEXT_beta()
+
+We first describe the main function `iNEXT_beta()` with default arguments: 
+
+```{r eval=FALSE}
+iNEXT.beta(x, coverage_expected, data_type=c('abundance', 'incidence_raw'), 
+           q = c(0, 1, 2), level=c('taxonomic', 'phylogenetic', 'functional'), 
+           nboot = 20, conf = 0.95, phy_tree=NULL, reftime = NULL,
+           distance_matrix=NULL, tau_type = c('single', 'AUC'), tau=NULL)
+
+```
+
+The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes gamma, alpha and beta diversity estimates of order q at specified sample coverage and measure of diversity. 
+  
+<table style="width:100%;">
+<colgroup>
+<col width="20%">
+<col width="80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>x</code></td>
+<td align="left">a <code>data.frame</code> / <code>matrix</code> / <code>list</code> of species abundances/incidence raw data (see data format/information below).</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>coverage_expected</code></td>
+<td align="left">a sequence specifying the targeted sample coverage(between 0 and 1), eg. seq(0.5,0.9,0.05). Calculating asymptotic diversity if C = 1.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>data_type</code></td>
+<td align="left">data type of input data: individual-based abundance data (data_type = "abundance"), or species by sampling-units incidence matrix (data_type = "incidence_raw").</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>q</code></td>
+<td align="left">a number or vector specifying the diversity order(s) of Hill numbers.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>level</code></td>
+<td align="left">character indicating the type of diversity, only accept **‘taxonomic’**, **’phylogenetic’** or **‘functional’**.Note that users have to specify the <code>tau_type</code> when computing functional diversity.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>nboot</code></td>
+<td align="left">an integer specifying the number of replications for bootstrapping.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>conf</code></td>
+<td align="left">a positive number < 1 specifying the level of confidence interval, default is 0.95.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>phy_tree</code></td>
+<td align="left">a <code>phylo</code> object describing the phylogenetic tree in **Newick** format for all observed species in the pooled assemblage. Only required when level = **'phylogenetic'**.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>reftime</code></td>
+<td align="left">a positive value specifying the reference times for diversity computation. If NULL, then reftime is set to be the tree depth of the phylogenetic tree, which is spanned by all the observed species in the pooled assemblage. Default is NULL. Only required when level = **'phylogenetic'**.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>distance_matrix</code></td>
+<td align="left">a pair wise distance matrix for all pairs of observed species in the pooled assemblage. Only required when level = **'functional'**.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>tau_type</code></td>
+<td align="left">character indicating the type for functional diversity, only accept **'single'** or **'AUC'**. tau_type = **‘single’** for calculating functional diversity given a specified threshold (by specifying parameter <code>tau</code>) ; tau_type = **‘AUC’** for integrating functional diversity at threshold from 0 to 1.</td>
+
+
+</tr>
+<tr class="even">
+<td align="center"><code>tau</code></td>
+<td align="left">a positive number between 0 and 1 specifying threshold for functional diversity.</td>
+
+
+</tbody>
+</table>
+
+
+This function returns an `"iNEXT_beta"` object which can be further used to make plots 
+using the function `ggiNEXT_beta()` to be described below. 
+
+## DATA FORMAT/INFORMATION
+Two types of data are supported:
+
+1. Individual‐based abundance data (`data_type="abundance"`):
+Input data for each assemblage include samples species abundances in an empirical sample of n individuals (“reference sample”). When there are N assemblages, input data consist of an S by N abundance matrix ; For M regions consisting N assemblages, input data should be M lists of S by N abundance matrix.
+
+2. Sampling‐unit‐based incidence data (`data_type="incidence_raw"` ):
+Input data for a reference sample consist of a species‐by‐sampling‐unit matrix;
+The number of sampling units for each assemblages in a region should be the same.
+For M regions consisting N assemblages, input data should be M list of N list of species‐by‐sampling‐unit matrix.
+
+## Rarefaction/Extrapolation Via Examples
+
+Two data sets ( Plant under different treatments for abundance and incidence data ) are included in iNEXT_beta package. The plant data consist of abundance and incidence data under two different treatments (“Exclosure” and “Control”) from 2015 to 2020. For these data, the following commands display how to compute taxonomic, phylogenetic and functional dissimilarities at specified sample coverage for abundance and incidence data respectively.
+
+```{r eval=FALSE}
+data(data_abu)
+data(data_inc)
+data(tree)
+data(disM)
+
+# Taxonomic
+Abu_td_out = iNEXT_beta(x= data_abu, coverage_expected = seq(0.7,1,0.05),
+                        data_type = "abundance",
+                        level='taxonomic', nboot=20)
+Inc_td_out = iNEXT_beta(x= data_inc, coverage_expected = seq(0.8,1,0.05),
+                        data_type = "incidence_raw",
+                        level='taxonomic', nboot=20)
+# Phylogenetic
+Abu_pd_out = iNEXT_beta(x= data_abu, coverage_expected = seq(0.7,1,0.05),
+                        data_type = "abundance",
+                        level='phylogenetic', phy_tree=tree, nboot=20)
+Inc_pd_out = iNEXT_beta(x= data_inc, coverage_expected = seq(0.8,1,0.05),
+                        data_type = "incidence_raw",
+                        level='phylogenetic', phy_tree = tree, nboot=20)
+# Functional - single threshold
+Abu_fd_out = iNEXT_beta(x= data_abu,coverage_expected = seq(0.7,1,0.05),
+                        data_type = "abundance",
+                        level='functional', distance_matrix = disM,
+                        tau_type='single', tau=0.5, nboot=20)
+Inc_fd_out = iNEXT_beta(x= data_inc,coverage_expected = seq(0.8,1,0.05),
+                        data_type = "incidence_raw",
+                        level='functional', distance_matrix = disM,
+                        tau_type='single', tau=0.5, nboot=20)
+# Functional - area under curve
+Abu_fd_out = iNEXT_beta(x= data_abu,coverage_expected = seq(0.7,1,0.05),
+                        data_type = "abundance",
+                        level='functional', distance_matrix = disM,
+                        tau_type='AUC', nboot=20)
+Inc_fd_out = iNEXT_beta(x= data_inc,coverage_expected = seq(0.8,1,0.05),
+                        data_type = "incidence_raw",
+                        level='functional', distance_matrix = disM,
+                        tau_type='AUC', nboot=20)
+
+```
+
+The `iNEXT_beta()` function returns the `"iNEXT_beta"` object including seven data frames for each regions : 
+
+- gamma 
+- alpha 
+- beta
+- C ( Sorensen-type non-overlap )
+- U ( Jaccard-type non-overlap )
+- V ( Sorensen-type turnover )
+- S ( Jaccard-type turnover )
+
+```{r eval=FALSE}
+head(Inc_td_out$`2015 vs. 2020 Exclosure`$gamma)
+```
+
+```
+  Estimate Order       Method Coverage_expected Coverage_real     Size      LCL      UCL                  Region
+1 22.44478     0 Interpolated              0.80     0.7999993 3.188764 20.98240 23.90715 2015 vs. 2020 Exclosure
+2 20.09673     1 Interpolated              0.80     0.7999993 3.188764 19.08284 21.11062 2015 vs. 2020 Exclosure
+3 18.23929     2 Interpolated              0.80     0.7999993 3.188764 17.49593 18.98265 2015 vs. 2020 Exclosure
+4 24.78115     0 Interpolated              0.85     0.8499996 4.109989 22.16489 27.39740 2015 vs. 2020 Exclosure
+5 21.58071     1 Interpolated              0.85     0.8499996 4.109989 19.91455 23.24687 2015 vs. 2020 Exclosure
+6 19.22455     2 Interpolated              0.85     0.8499996 4.109989 18.08024 20.36886 2015 vs. 2020 Exclosure
+
+```
+
+<p>
+
+
+
+## GRAPHIC DISPLAYS: FUNCTION ggiNEXT_beta()
+
+The function `ggiNEXT_beta()`, which extends `ggplot2` to the `"iNEXT_beta"` object with default arguments, is described as follows: 
+```{r eval=FALSE}
+ggiNEXT_beta(output, type=c('B','D'), measurement=c('T','P','F_tau','F_AUC'),
+             main=NULL)  
+```
+
+<table style="width:100%;">
+<colgroup>
+<col width="20%">
+<col width="80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>output</code></td>
+<td align="left">the output of <code>iNEXT_beta</code>.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>type</code></td>
+<td align="left">character indicating the type of plotting. type = **‘B’** for plotting the gamma, alpha, and beta diversity ; type = **‘D’** for plotting 4 turnover dissimilarities.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>measurement</code></td>
+<td align="left">character indicating the label of y-axis.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>main</code></td>
+<td align="left">The title of the plot./td>
+
+
+
+</tbody>
+</table>
+
+
+
+Users can visualize the output of beta diversity or four-class dissimilarities 
+by setting the parameter <code>**type**</code> :
+
+```{r, fig.align='center', fig.height=8, fig.width=8}
+ggiNEXT_beta(Abu_td_out, type='B', measurement = 'T')
+```
+
+```{r,fig.align='center' , fig.height=8, fig.width=8}
+ggiNEXT_beta(Inc_fd_out, type='D', measurement = 'F_AUC')
+```
+
+
+
+
+
+
