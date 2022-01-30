@@ -1,0 +1,26 @@
+Package: iNEXT.Beta3D
+Type: Package
+Title: Interpolation and Extrapolation for three dimensions of Beta diversity
+Version: 1.0.1
+Author: Anne Chao, KaiHsiang Hu, Y.S. Kao and Z.C. Szu-tu
+Maintainer: K. S. Hu <river19951224@gmail.com>
+Description: iNEXT.Beta3D provides computing beta diversity for multiple assemblages.
+Depends: R (>= 4.0)
+Imports: tidyverse,
+         magrittr,
+         tidyr,
+         ggplot2,
+         abind,
+         ape,
+         ade4,
+         phytools,
+         phyclust,
+         tidytree,
+         colorRamps,
+         future.apply,
+         iNEXT.3D
+Remotes: AnneChao/iNEXT.3D
+Encoding: UTF-8
+BugReports: https://github.com/KaiHsiangHu/iNEXT.Beta3D/issues
+LazyData: true
+RoxygenNote: 7.1.1
