@@ -22,33 +22,34 @@ iNEXTBeta3D(
 )
 }
 \arguments{
-\item{data}{a \code{matrix}, \code{data.frame} (species by assemblages), or \code{list} of species abundance/incidence raw data.\cr}
+\item{data}{(a) For \code{datatype = "abundance"}, data can be input as a matrix/data.frame (a region with species by assemblages), or a list (multiple regions) of several matrices/data.frames (species by assemblages).\cr
+(b) For \code{datatype = "incidence_raw"}, data can be input as a list of several lists (regions)  contained matrices/data.frames (species by sampling units).}
 
 \item{diversity}{selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.}
 
-\item{q}{a numerical vector specifying the diversity orders.}
+\item{q}{a numerical vector specifying the diversity orders. Default is c(0, 1, 2).}
 
-\item{datatype}{data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}).}
+\item{datatype}{data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being 0 (non-detection) or 1 (detection).}
 
-\item{level}{a sequence specifying the particular sample coverages (between 0 and 1). Calculating asymptotic diversity if \code{C}=1. \cr}
+\item{level}{A numerical vector specifying the particular sample coverages (between 0 and 1). Calculating asymptotic diversity if \code{level = 1}. \cr}
 
-\item{nboot}{an integer specifying the number of replications for bootstrapping.}
+\item{nboot}{a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Enter 0 to skip the bootstrap procedures. Default is 20.}
 
-\item{conf}{a positive number < 1 specifying the level of confidence interval, default is 0.95.}
+\item{conf}{a positive number < 1 specifying the level of confidence interval. Default is 0.95.}
 
-\item{PDtree}{a phylo object describing the phylogenetic tree in Newick format for all observed species in the pooled assemblage. It is necessary when \code{diversity = 'PD'}.}
+\item{PDtree}{(required only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
 
-\item{PDreftime}{Select a reference time point for \code{diversity = 'PD'}. Default is set to be the tree depth of the phylogenetic tree, which is spanned by all the observed species in the pooled assemblage. Only required when \code{diversity = 'PD'}.}
+\item{PDreftime}{(required only when \code{diversity = "PD"}), a vector of numerical values specifying reference times for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).}
 
-\item{PDtype}{Select phylogenetic diversity type: \code{PDtype = "PD"} for Chao et al. (2010) phylogenetic diversity and \code{PDtype = "meanPD"} for mean phylogenetic diversity (phylogenetic Hill number). Only required when \code{diversity = 'PD'}. Default is \code{"meanPD"}.}
+\item{PDtype}{(required only when \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{"meanPD"}, where \code{meanPD = PD/tree depth}.}
 
-\item{FDdistM}{a pair wise distance matrix for all pairs of observed species in the pooled assemblage. It is necessary when diversity = 'FD'.}
+\item{FDdistM}{(required only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage.}
 
-\item{FDtype}{a binary selection for FD. \code{FDtype = "tau_value"} computes diversity under a certain threshold value. \code{FDtype = "AUC"} computes an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.}
+\item{FDtype}{(required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under specified threshold values, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.}
 
-\item{FDtau}{a value between 0 and 1 specifying tau. If \code{NULL}, \code{threshold = } dmean. Default is \code{NULL}. Only required when \code{diversity = 'FD'} and \code{FDtype = "tau_value"}.}
+\item{FDtau}{(required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical vector between 0 and 1 specifying tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
 
-\item{FDcut_number}{a numeric number to split zero to one into several equal-spaced length. Only required when \code{diversity = "FD"} and \code{FDtype = "AUC"}. Default is 30.}
+\item{FDcut_number}{(required only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to split zero to one into several equal-spaced length. Default is 30.}
 }
 \value{
 A list of seven lists with three-diversity and four-dissimilarity.
