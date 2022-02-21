@@ -31,6 +31,7 @@
 #' @import future.apply
 #' @import ade4
 #' @import tidyr
+#' @import tibble
 #' 
 #' @return A list of seven lists with three-diversity and four-dissimilarity.
 #' 
@@ -144,9 +145,9 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     if (datatype == "abundance") 
       if (length(data_list) > 1) {
-        pool.data = data_list[[1]] %>% rownames_to_column()
+        pool.data = data_list[[1]] %>% data.frame %>% rownames_to_column()
         for (i in 2:length(data_list)) 
-          pool.data = full_join(pool.data, data_list[[i]] %>% rownames_to_column(), 'rowname')
+          pool.data = full_join(pool.data, data_list[[i]] %>% data.frame %>% rownames_to_column(), 'rowname')
         pool.data[is.na(pool.data)] = 0
         pool.data = pool.data %>% column_to_rownames() %>% rowSums
       } else pool.data = do.call(cbind, data_list) %>% rowSums
