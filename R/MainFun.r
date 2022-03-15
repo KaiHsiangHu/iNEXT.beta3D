@@ -131,7 +131,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   tmp = qnorm(1 - (1 - conf)/2)
   
   trunc = ifelse(is.null(level), T, F)
-  if ( is.null(level) & base == 'coverage' ) level = seq(0.5, 1, 0.05) else if ( base == 'size' ) {
+  if ( is.null(level) & base == 'coverage' ) level = seq(0.5, 1, 0.025) else if ( base == 'size' ) {
     if ( is.null(level) ) {
       
       if (datatype == "abundance") {
