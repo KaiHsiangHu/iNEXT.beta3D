@@ -130,7 +130,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   if (is.null(conf)) conf = 0.95
   tmp = qnorm(1 - (1 - conf)/2)
   
-  trunc = ifelse(is.null(level), T, F)
+  # trunc = ifelse(is.null(level), T, F)
+  trunc = T
   if ( is.null(level) & base == 'coverage' ) level = seq(0.5, 1, 0.05) else if ( base == 'size' ) {
     if ( is.null(level) ) {
       
@@ -227,7 +228,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       ref_alpha_max = iNEXT.3D:::Coverage(data_alpha, 'abundance', n*2)
       ref_gamma_max = iNEXT.3D:::Coverage(data_gamma, 'abundance', n*2)
       
-      level = c(level, ref_gamma, ref_alpha, ref_alpha_max,ref_gamma_max) %>% sort %>% unique
+      level = c(level, ref_gamma, ref_alpha, ref_alpha_max, ref_gamma_max) %>% sort %>% unique
       # level = level[level<1]
       
       m_gamma = sapply(level, function(i) coverage_to_size(data_gamma, i, datatype='abundance'))
@@ -258,7 +259,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       ref_alpha_max = iNEXT.3D:::Coverage(data_alpha_freq, 'incidence_freq', n*2)
       ref_gamma_max = iNEXT.3D:::Coverage(data_gamma_freq, 'incidence_freq', n*2)
       
-      level = c(level, ref_gamma, ref_alpha, ref_alpha_max) %>% sort %>% unique
+      level = c(level, ref_gamma, ref_alpha, ref_alpha_max, ref_gamma_max) %>% sort %>% unique
       # level = level[level < 1]
       
       m_gamma = sapply(level, function(i) coverage_to_size(data_gamma_freq, i, datatype='incidence_freq'))
