@@ -2106,8 +2106,10 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           
           alpha_v = alpha_x/alpha_a
-          alpha_v = alpha_v[alpha_a > 0]
-          alpha_a = alpha_a[alpha_a > 0]
+          alpha_v = rep(gamma_v,N)
+          
+          alpha_v = alpha_v[alpha_a>0]
+          alpha_a = alpha_a[alpha_a>0]
           
           ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
           
@@ -2154,9 +2156,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           alpha_a[alpha_a > n] = n
           alpha_a = as.vector(alpha_a)
           
-          # alpha_v = rep(gamma_v, N)
-          # alpha_v = alpha_v[alpha_a > 0]
-          alpha_v = as.vector(as.matrix(alpha_Y))/alpha_a
+          alpha_v = rep(gamma_v, N)
           alpha_v = alpha_v[alpha_a > 0]
           alpha_a = alpha_a[alpha_a > 0]
           
