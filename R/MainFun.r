@@ -1110,6 +1110,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           obs_beta_over_tau = sapply(obs_gamma_alpha_over_tau, function(x) x$gamma) / sapply(obs_gamma_alpha_over_tau, function(x) x$alpha)
           
+          if (length(q) == 1) obs_beta_over_tau = matrix(obs_beta_over_tau, nrow = 1)
+          
           obs_beta = colSums( (apply(obs_beta_over_tau, 1, function(x) x[-FDcut_number]*width) + apply(obs_beta_over_tau, 1, function(x) x[-1]*width) ) / 2)
           
         }
@@ -1167,6 +1169,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           })
           
           obs_beta_over_tau = sapply(obs_gamma_alpha_over_tau, function(x) x$gamma) / sapply(obs_gamma_alpha_over_tau, function(x) x$alpha)
+          
+          if (length(q) == 1) obs_beta_over_tau = matrix(obs_beta_over_tau, nrow = 1)
           
           obs_beta = colSums( (apply(obs_beta_over_tau, 1, function(x) x[-FDcut_number]*width) + apply(obs_beta_over_tau, 1, function(x) x[-1]*width) ) / 2)
           
@@ -1289,6 +1293,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               
               beta_over_tau = gamma_over_tau/alpha_over_tau
               
+              if (length(q) == 1) beta_over_tau = matrix(beta_over_tau, nrow = 1)
+              
               left_limit  = apply(beta_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(beta_over_tau, 1, function(x) x[-1]*width)
               
@@ -1388,6 +1394,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
               
               beta_over_tau = gamma_over_tau/alpha_over_tau
+              
+              if (length(q) == 1) beta_over_tau = matrix(beta_over_tau, nrow = 1)
               
               left_limit  = apply(beta_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(beta_over_tau, 1, function(x) x[-1]*width)
