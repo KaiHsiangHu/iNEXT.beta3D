@@ -892,6 +892,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     if (diversity == 'FD') {
       
+      distM = as.matrix(distM)
+      
       FD_by_tau = function(data, distM, tau, level, datatype, by, m_gamma, m_alpha) {
         
         if (datatype == 'abundance') {
@@ -2100,6 +2102,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     }
     
     if (diversity == 'FD') {
+      
+      distM = as.matrix(distM)
       
       FD_by_tau = function(data, distM, tau, datatype, m_gamma, m_alpha) {
         
