@@ -108,7 +108,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   max_alpha_coverage = F
   if (datatype == 'abundance') {
     
-    if( class(data) == "data.frame" | class(data) == "matrix" ) data = list(Region_1 = data)
+    if( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Region_1 = data)
     
     if(class(data) == "list"){
       if(is.null(names(data))) region_names = paste0("Region_", 1:length(data)) else region_names = names(data)
