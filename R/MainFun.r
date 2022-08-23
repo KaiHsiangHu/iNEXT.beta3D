@@ -2,14 +2,15 @@
 #' 
 #' \code{iNEXTBeta3D}: Interpolation and extrapolation of Beta diversity with order q
 #' 
-#' @param data (a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix; see Note 1 for examples.\cr
-#' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-sampling units; see Note 2 for an example.
+#' @param data (a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
+#' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several lists (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units. 
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
 #' @param q a numerical vector specifying the diversity orders. Default is c(0, 1, 2).
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).
 #' @param base Sample-sized-based rarefaction and extrapolation for gamma and alpha diversity (\code{base = "size"}) or coverage-based rarefaction and extrapolation for gamma, alpha and beta diversity (\code{base = "coverage"}). Default is \code{base = "coverage"}.
 #' @param level A numerical vector specifying the particular value of sample coverage (between 0 and 1 when \code{base = "coverage"}) or sample size (\code{base = "size"}). \code{level = 1} (\code{base = "coverage"}) means complete coverage (the corresponding diversity represents asymptotic diversity).\cr
-#' If \code{base = "size"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to double the reference sample size. If \code{base = "coverage"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to one (for \code{q = 1, 2}) or up to the coverage of double the reference sample size (for \code{q = 0});\cr 
+#' If \code{base = "size"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to double the reference sample size. \cr 
+#' If \code{base = "coverage"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to one (for \code{q = 1, 2}) or up to the coverage of double the reference sample size (for \code{q = 0});
 #' the corresponding beta diversity is computed up to the same maximum coverage as the alpha diversity.
 #' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{20}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
@@ -17,7 +18,7 @@
 #' @param PDreftime (required only when \code{diversity = "PD"}), a vector of numerical values specifying reference times for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).  
 #' @param PDtype (required only when \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{"meanPD"}, where \code{meanPD = PD/tree depth}.
 #' @param FDdistM (required only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage. 
-#' @param FDtype (required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under specified threshold values, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.  
+#' @param FDtype (required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.  
 #' @param FDtau (required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical vector between 0 and 1 specifying tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy). 
 #' @param FDcut_number (required only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to split zero to one into several equal-spaced length. Default is 30.
 #' 
@@ -36,68 +37,74 @@
 #' @import tidyr
 #' @import tibble
 #' 
-#' @return A list of seven lists with three-diversity and four-dissimilarity.
+#' @return If \code{base = "coverage"}, return a list of seven lists with three diversity (gamma, alpha, and beta diversity) and four dissimilarity index. If \code{base = "size"}, return a list of two lists with two diversity (gamma and alpha diversity).
 #' 
 #' @examples
 #' ## Taxonomic diversity for abundance data
 #' data(beetle_abu)
-#' output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', level = seq(0.8, 1, 0.05), 
-#'                       nboot = 20, conf = 0.95)
+#' output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 #' output1
 #' 
 #' 
 #' ## Taxonomic diversity for incidence data
 #' data(beetle_inc)
-#' output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95)
+#' output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 #' output2
 #' 
 #' 
 #' ## Phylogenetic diversity for abundance data
 #' data(beetle_abu)
 #' data(beetle_tree)
-#' output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance', level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95, PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
+#' output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+#'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
 #' output3
 #' 
 #' 
 #' ## Phylogenetic diversity for incidence data
 #' data(beetle_inc)
 #' data(beetle_tree)
-#' output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95, PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
+#' output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+#'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
 #' output4
 #' 
 #' 
 #' ## Functional diversity for abundance data under single threshold
 #' data(beetle_abu)
 #' data(beetle_distM)
-#' output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95, FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
+#' output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+#'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #' output5
 #' 
 #' 
 #' ## Functional diversity for incidence data under single threshold
 #' data(beetle_inc)
 #' data(beetle_distM)
-#' output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95, FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
+#' output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+#'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #' output6
 #' 
 #' 
 #' ## Functional diversity for abundance data with thresholds integrating from 0 to 1
 #' data(beetle_abu)
 #' data(beetle_distM)
-#' output7 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', level = seq(0.8, 1, 0.05),
-#'                       nboot = 10, conf = 0.95, FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
+#' output7 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
+#'                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output7
 #' 
 #' 
 #' ## Functional diversity for incidence data with thresholds integrating from 0 to 1
 #' data(beetle_inc)
 #' data(beetle_distM)
-#' output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-#'                       nboot = 10, conf = 0.95, FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
+#' output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
+#'                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output8
 #' 
 #' @export
@@ -298,24 +305,20 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       gamma = (cbind(SC = rep(level, each=length(q)), gamma[,-c(1,2,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'))
-      )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      # for (i in 0:2) gamma$Order[gamma$Order==paste0('q = ', i)] = i
-      # gamma$Order = as.numeric(gamma$Order)
       
-      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC > 0
+      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC > 0
       gamma = gamma[under_max_alpha,]
       
       
       
       alpha = (cbind(SC = rep(level, each = length(q)), alpha[,-c(1,2,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'))
-      )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Estimate = alpha$Estimate / N
       
-      # for (i in 0:2) alpha$Order[alpha$Order == paste0('q = ', i)] = i
-      # alpha$Order = as.numeric(alpha$Order)
       
       alpha = alpha[under_max_alpha,]
       
@@ -325,10 +328,10 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       beta$Estimate = gamma$Estimate/alpha$Estimate
       beta[beta == "Observed"] = "Observed_alpha"
       beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
-                                     Order = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+                                     Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
       
-      C = beta %>% mutate(Estimate = ifelse(Order==1, log(Estimate)/log(N), (Estimate^(1-Order) - 1)/(N^(1-Order)-1)))
-      U = beta %>% mutate(Estimate = ifelse(Order==1, log(Estimate)/log(N), (Estimate^(Order-1) - 1)/(N^(Order-1)-1)))
+      C = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(1-Order.q) - 1)/(N^(1-Order.q)-1)))
+      U = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(Order.q-1) - 1)/(N^(Order.q-1)-1)))
       V = beta %>% mutate(Estimate = (Estimate-1)/(N-1))
       S = beta %>% mutate(Estimate = (1/Estimate-1)/(1/N-1))
       
@@ -413,12 +416,12 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           alpha = c(alpha, rep(0, length(q)))
           beta = c(beta, beta_obs)
           
-          order = rep(q, length(level) + 1)[under_max_alpha]
+          Order.q = rep(q, length(level) + 1)[under_max_alpha]
           
-          beta = data.frame(Estimate=beta, order)
+          beta = data.frame(Estimate=beta, Order.q)
           
-          C = (beta %>% mutate(Estimate = ifelse(order == 1,log(Estimate)/log(N),(Estimate^(1 - order) - 1)/(N^(1 - order) - 1))))$Estimate
-          U = (beta %>% mutate(Estimate = ifelse(order == 1,log(Estimate)/log(N),(Estimate^(order - 1) - 1)/(N^(order - 1) - 1))))$Estimate
+          C = (beta %>% mutate(Estimate = ifelse(Order.q == 1,log(Estimate)/log(N),(Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1))))$Estimate
+          U = (beta %>% mutate(Estimate = ifelse(Order.q == 1,log(Estimate)/log(N),(Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1))))$Estimate
           V = (beta %>% mutate(Estimate = (Estimate - 1)/(N - 1)))$Estimate
           S = (beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1)))$Estimate
           
@@ -474,7 +477,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
         
         gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, cal = "PD") %>% t %>% as.data.frame %>% 
-          set_colnames(q) %>% gather(Order, Estimate) %>% 
+          set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(SC = rep(level, length(q)), Size = rep(m_gamma, length(q)))
         
         
@@ -497,7 +500,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         qPDm = iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, cal = "PD")
         qPDm = qPDm/N
         alpha = qPDm %>% t %>% as.data.frame %>% 
-          set_colnames(q) %>% gather(Order, Estimate) %>% 
+          set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(SC = rep(level, length(q)), Size = rep(m_alpha, length(q)))
         
       }
@@ -508,7 +511,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         aL$treeNabu$branch.length = aL$BLbyT[,1]
         aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
         gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis=as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, cal = "PD") %>% t %>% as.data.frame %>% 
-          set_colnames(q) %>% gather(Order, Estimate) %>% 
+          set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(SC = rep(level, length(q)), Size = rep(m_gamma, length(q)))
         
         aL_table_alpha = c()
@@ -526,7 +529,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         }
         
         alpha = (iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, cal = "PD")/N) %>% t %>% as.data.frame %>% 
-          set_colnames(q) %>% gather(Order, Estimate) %>% 
+          set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(SC = rep(level, length(q)), Size = rep(m_alpha, length(q)))
         
         
@@ -534,19 +537,19 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       gamma = (gamma %>% 
                  mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated')))[,c(2,1,5,3,4)] %>% 
-        set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+        set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC>0
+      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC>0
       gamma = gamma[under_max_alpha,]
-      gamma$Order = as.numeric(gamma$Order)
+      gamma$Order.q = as.numeric(gamma$Order.q)
       
       
       alpha = (alpha %>% 
                  mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated')))[,c(2,1,5,3,4)] %>% 
-        set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+        set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha = alpha[under_max_alpha,]
-      alpha$Order = as.numeric(alpha$Order)
+      alpha$Order.q = as.numeric(alpha$Order.q)
       
       if (PDtype == 'meanPD') {
         gamma$Estimate = gamma$Estimate/reft
@@ -557,10 +560,10 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       beta$Estimate = gamma$Estimate/alpha$Estimate
       beta[beta == "Observed"] = "Observed_alpha"
       beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
-                                     Order = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+                                     Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
       
-      C = beta %>% mutate(Estimate = ifelse(Order == 1, log(Estimate)/log(N), (Estimate^(1 - Order) - 1)/(N^(1 - Order) - 1)))
-      U = beta %>% mutate(Estimate = ifelse(Order == 1, log(Estimate)/log(N), (Estimate^(Order - 1) - 1)/(N^(Order - 1) - 1)))
+      C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
+      U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
       V = beta %>% mutate(Estimate = (Estimate - 1)/(N - 1))
       S = beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1))
       
@@ -859,12 +862,12 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           alpha = c(alpha, rep(0, length(q)))
           beta = c(beta, beta_obs)
           
-          order = rep(q, each = length(level) + 1)[under_max_alpha]
+          Order.q = rep(q, each = length(level) + 1)[under_max_alpha]
           
-          beta = data.frame(Estimate = beta, order)
+          beta = data.frame(Estimate = beta, Order.q)
           
-          C = (beta %>% mutate(Estimate = ifelse(order == 1, log(Estimate)/log(N), (Estimate^(1 - order) - 1)/(N^(1 - order) - 1))))$Estimate
-          U = (beta %>% mutate(Estimate = ifelse(order == 1, log(Estimate)/log(N), (Estimate^(order - 1) - 1)/(N^(order - 1) - 1))))$Estimate
+          C = (beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1))))$Estimate
+          U = (beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1))))$Estimate
           V = (beta %>% mutate(Estimate = (Estimate - 1)/(N - 1)))$Estimate
           S = (beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1)))$Estimate
           
@@ -1009,11 +1012,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma = data.frame(SC = level, gamma) %>% 
             mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each=length(SC)/length(q)), Size = rep(m_gamma, length(q)))
+                   Order.q = rep(q, each=length(SC)/length(q)), Size = rep(m_gamma, length(q)))
           
           alpha = data.frame(SC = level, alpha) %>% 
             mutate(Method = ifelse(SC>=ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each=length(SC)/length(q)), Size = rep(m_alpha, length(q)))
+                   Order.q = rep(q, each=length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           beta = alpha
           beta$alpha = gamma$gamma/alpha$alpha
@@ -1034,11 +1037,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma = data.frame(SC = level, gamma) %>% 
             mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
+                   Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
           
           alpha = data.frame(SC = level, alpha) %>% 
             mutate(Method = ifelse(SC>=ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
+                   Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           beta = alpha
           beta$alpha = gamma$gamma/alpha$alpha
@@ -1093,15 +1096,15 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma = data.frame(SC = level, gamma) %>% 
             mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
+                   Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
           
           alpha = data.frame(SC = level, alpha) %>% 
             mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
+                   Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           beta = data.frame(SC = level, beta) %>% 
             mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
+                   Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           ## Observed Beta ##
           obs_gamma_alpha_over_tau = lapply(cut, function(tau) {
@@ -1153,15 +1156,15 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma = data.frame(SC = level, gamma) %>% 
             mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
+                   Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
           
           alpha = data.frame(SC = level, alpha) %>% 
             mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
+                   Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           beta = data.frame(SC = level, beta) %>% 
             mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
+                   Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           ## Observed Beta ##
           obs_gamma_alpha_over_tau = lapply(cut, function(tau) {
@@ -1180,26 +1183,26 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         
       }
       
-      gamma = gamma[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      gamma = gamma[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC > 0
+      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC > 0
       gamma = gamma[under_max_alpha,]
       
       
-      alpha = alpha[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      alpha = alpha[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha = alpha[under_max_alpha,]
       
-      beta = beta[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      beta = beta[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       beta = beta[under_max_alpha,]
       
       beta[beta == "Observed"] = "Observed_alpha"
       beta = beta %>% 
-        rbind(., data.frame(Estimate = obs_beta, Order = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+        rbind(., data.frame(Estimate = obs_beta, Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
       
-      C = beta %>% mutate(Estimate = ifelse(Order == 1, log(Estimate)/log(N), (Estimate^(1 - Order) - 1)/(N^(1 - Order) - 1)))
-      U = beta %>% mutate(Estimate = ifelse(Order == 1, log(Estimate)/log(N), (Estimate^(Order - 1) - 1)/(N^(Order - 1) - 1)))
+      C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
+      U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
       V = beta %>% mutate(Estimate = (Estimate - 1)/(N - 1))
       S = beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1))
       
@@ -1418,12 +1421,12 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           alpha = c(alpha, rep(0, length(q)))
           beta = c(beta, beta_obs)
           
-          order = rep(q, each=length(level) + 1)[under_max_alpha]
+          Order.q = rep(q, each=length(level) + 1)[under_max_alpha]
           
-          beta = data.frame(Estimate = beta, order)
+          beta = data.frame(Estimate = beta, Order.q)
           
-          C = (beta %>% mutate(Estimate = ifelse(order == 1, log(Estimate)/log(N), (Estimate^(1 - order) - 1)/(N^(1 - order) - 1))))$Estimate
-          U = (beta %>% mutate(Estimate = ifelse(order == 1, log(Estimate)/log(N), (Estimate^(order - 1) - 1)/(N^(order - 1) - 1))))$Estimate
+          C = (beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1))))$Estimate
+          U = (beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1))))$Estimate
           V = (beta %>% mutate(Estimate = (Estimate - 1)/(N - 1)))$Estimate
           S = (beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1)))$Estimate
           
@@ -1452,57 +1455,70 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     se = as.data.frame(se)
     
+    if (diversity == "TD") index = "TD"
+    if (diversity == "PD" & PDtype == "PD") index = "PD"
+    if (diversity == "PD" & PDtype == "meanPD") index = "meanPD"
+    if (diversity == "FD" & FDtype == "tau_value") index = "FD_tau"
+    if (diversity == "FD" & FDtype == "AUC") index = "FD_AUC"
+    
     gamma = gamma %>% mutate(s.e. = se$gamma[1:(nrow(se) - length(q))],
                              LCL = Estimate - tmp * se$gamma[1:(nrow(se) - length(q))],
                              UCL = Estimate + tmp * se$gamma[1:(nrow(se) - length(q))],
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     alpha = alpha %>% mutate(s.e. = se$alpha[1:(nrow(se) - length(q))],
                              LCL = Estimate - tmp * se$alpha[1:(nrow(se) - length(q))],
                              UCL = Estimate + tmp * se$alpha[1:(nrow(se) - length(q))],
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     beta = beta %>% mutate(  s.e. = se$beta,
                              LCL = Estimate - tmp * se$beta,
                              UCL = Estimate + tmp * se$beta,
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     C = C %>% mutate(        s.e. = se$C,
                              LCL = Estimate - tmp * se$C,
                              UCL = Estimate + tmp * se$C,
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     
     U = U %>% mutate(        s.e. = se$U,
                              LCL = Estimate - tmp * se$U,
                              UCL = Estimate + tmp * se$U,
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     V = V %>% mutate(        s.e. = se$V,
                              LCL = Estimate - tmp * se$V,
                              UCL = Estimate + tmp * se$V,
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     S = S %>% mutate(        s.e. = se$S,
                              LCL = Estimate - tmp * se$S,
                              UCL = Estimate + tmp * se$S,
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     if (trunc) {
       
-      gamma = gamma %>% filter(!(Order==0 & round(Size)>2*n))
+      gamma = gamma %>% filter(!(Order.q==0 & round(Size)>2*n))
       
-      alpha = alpha %>% filter(!(Order==0 & round(Size)>2*n))
+      alpha = alpha %>% filter(!(Order.q==0 & round(Size)>2*n))
       
-      beta  = beta  %>% filter(!(Order==0 & round(Size)>2*n))
+      beta  = beta  %>% filter(!(Order.q==0 & round(Size)>2*n))
       
-      C    =  C    %>% filter(!(Order==0 & round(Size)>2*n))
+      C    =  C    %>% filter(!(Order.q==0 & round(Size)>2*n))
       
-      U    =  U    %>% filter(!(Order==0 & round(Size)>2*n))
+      U    =  U    %>% filter(!(Order.q==0 & round(Size)>2*n))
       
-      V    =  V    %>% filter(!(Order==0 & round(Size)>2*n))
+      V    =  V    %>% filter(!(Order.q==0 & round(Size)>2*n))
       
-      S    =  S    %>% filter(!(Order==0 & round(Size)>2*n))
+      S    =  S    %>% filter(!(Order.q==0 & round(Size)>2*n))
       
     }
     
@@ -1573,20 +1589,20 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       gamma = (cbind(Size = rep(level, each=length(q)), gamma[,-c(1,2,8,9)]) %>% 
                  mutate(Method = ifelse(Size>=ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'))
-      )[,c(5,3,2,4,1)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      )[,c(5,3,2,4,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
       alpha = (cbind(Size = rep(level, each = length(q)), alpha[,-c(1,2,8,9)]) %>% 
                  mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'))
-      )[,c(5,3,2,4,1)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      )[,c(5,3,2,4,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Estimate = alpha$Estimate / N
       
       # beta = alpha
       # beta$Estimate = gamma$Estimate/alpha$Estimate
       # 
-      # C = beta %>% mutate(Estimate = ifelse(Order==1, log(Estimate)/log(N), (Estimate^(1-Order) - 1)/(N^(1-Order)-1)))
-      # U = beta %>% mutate(Estimate = ifelse(Order==1, log(Estimate)/log(N), (Estimate^(Order-1) - 1)/(N^(Order-1)-1)))
+      # C = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(1-Order.q) - 1)/(N^(1-Order.q)-1)))
+      # U = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(Order.q-1) - 1)/(N^(Order.q-1)-1)))
       # V = beta %>% mutate(Estimate = (Estimate-1)/(N-1))
       # S = beta %>% mutate(Estimate = (1/Estimate-1)/(1/N-1))
       
@@ -1661,12 +1677,12 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       #     
       #     # beta = gamma/alpha
       #     # 
-      #     # order = rep(q, length(level))
+      #     # Order.q = rep(q, length(level))
       #     # 
-      #     # beta = data.frame(Estimate=beta, order)
+      #     # beta = data.frame(Estimate=beta, Order.q)
       #     # 
-      #     # C = (beta %>% mutate(Estimate = ifelse(order == 1,log(Estimate)/log(N),(Estimate^(1 - order) - 1)/(N^(1 - order) - 1))))$Estimate
-      #     # U = (beta %>% mutate(Estimate = ifelse(order == 1,log(Estimate)/log(N),(Estimate^(order - 1) - 1)/(N^(order - 1) - 1))))$Estimate
+      #     # C = (beta %>% mutate(Estimate = ifelse(Order.q == 1,log(Estimate)/log(N),(Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1))))$Estimate
+      #     # U = (beta %>% mutate(Estimate = ifelse(Order.q == 1,log(Estimate)/log(N),(Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1))))$Estimate
       #     # V = (beta %>% mutate(Estimate = (Estimate - 1)/(N - 1)))$Estimate
       #     # S = (beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1)))$Estimate
       #     # 
@@ -1706,7 +1722,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
         
         gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, cal = "PD") %>% t %>% as.data.frame %>% 
-          set_colnames(q) %>% gather(Order, Estimate) %>% 
+          set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma, "abundance", level), length(q)), Size = rep(level, length(q)), Size = rep(level, length(q)))
         
         
@@ -1729,7 +1745,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         qPDm = iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q = q, nt = n, cal = "PD")
         qPDm = qPDm/N
         alpha = qPDm %>% t %>% as.data.frame %>% 
-          set_colnames(q) %>% gather(Order, Estimate) %>% 
+          set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)), Size = rep(level, length(q)))
         
       }
@@ -1740,7 +1756,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         aL$treeNabu$branch.length = aL$BLbyT[,1]
         aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
         gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis=as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, cal = "PD") %>% t %>% as.data.frame %>% 
-          set_colnames(q) %>% gather(Order, Estimate) %>% 
+          set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma_freq, "incidence_freq", level), length(q)), Size = rep(level, length(q)))
         
         aL_table_alpha = c()
@@ -1758,7 +1774,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         }
         
         alpha = (iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q = q, nt = n, cal = "PD")/N) %>% t %>% as.data.frame %>% 
-          set_colnames(q) %>% gather(Order, Estimate) %>% 
+          set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)), Size = rep(level, length(q)))
         
         
@@ -1766,16 +1782,16 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       gamma = (gamma %>% 
                  mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated')))[,c(2,1,5,3,4)] %>% 
-        set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+        set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      gamma$Order = as.numeric(gamma$Order)
+      gamma$Order.q = as.numeric(gamma$Order.q)
       
       
       alpha = (alpha %>% 
                  mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated')))[,c(2,1,5,3,4)] %>% 
-        set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+        set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      alpha$Order = as.numeric(alpha$Order)
+      alpha$Order.q = as.numeric(alpha$Order.q)
       
       if (PDtype == 'meanPD') {
         gamma$Estimate = gamma$Estimate/reft
@@ -1785,8 +1801,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       # beta = alpha
       # beta$Estimate = gamma$Estimate/alpha$Estimate
       # 
-      # C = beta %>% mutate(Estimate = ifelse(Order == 1, log(Estimate)/log(N), (Estimate^(1 - Order) - 1)/(N^(1 - Order) - 1)))
-      # U = beta %>% mutate(Estimate = ifelse(Order == 1, log(Estimate)/log(N), (Estimate^(Order - 1) - 1)/(N^(Order - 1) - 1)))
+      # C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
+      # U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
       # V = beta %>% mutate(Estimate = (Estimate - 1)/(N - 1))
       # S = beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1))
       
@@ -2065,12 +2081,12 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           # beta = gamma/alpha
           # 
-          # order = rep(q, each = length(level))
+          # Order.q = rep(q, each = length(level))
           # 
-          # beta = data.frame(Estimate = beta, order)
+          # beta = data.frame(Estimate = beta, Order.q)
           # 
-          # C = (beta %>% mutate(Estimate = ifelse(order == 1, log(Estimate)/log(N), (Estimate^(1 - order) - 1)/(N^(1 - order) - 1))))$Estimate
-          # U = (beta %>% mutate(Estimate = ifelse(order == 1, log(Estimate)/log(N), (Estimate^(order - 1) - 1)/(N^(order - 1) - 1))))$Estimate
+          # C = (beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1))))$Estimate
+          # U = (beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1))))$Estimate
           # V = (beta %>% mutate(Estimate = (Estimate - 1)/(N - 1)))$Estimate
           # S = (beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1)))$Estimate
           # 
@@ -2209,11 +2225,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma = data.frame(Size = level, gamma) %>% 
             mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma, "abundance", level), length(q)))
+                   Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma, "abundance", level), length(q)))
           
           alpha = data.frame(Size = level, alpha) %>% 
             mutate(Method = ifelse(Size>=ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
+                   Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
           
           beta = alpha
           beta$alpha = gamma$gamma/alpha$alpha
@@ -2228,11 +2244,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma = data.frame(Size = level, gamma) %>% 
             mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma_freq, "incidence_freq", level), length(q)))
+                   Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma_freq, "incidence_freq", level), length(q)))
           
           alpha = data.frame(Size = level, alpha) %>% 
             mutate(Method = ifelse(Size>=ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
+                   Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
           
           beta = alpha
           beta$alpha = gamma$gamma/alpha$alpha
@@ -2277,15 +2293,15 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma = data.frame(Size = level, gamma) %>% 
             mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma, "abundance", level), length(q)))
+                   Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma, "abundance", level), length(q)))
           
           alpha = data.frame(Size = level, alpha) %>% 
             mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
+                   Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
           
           # beta = data.frame(Size = level, beta) %>% 
           #   mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-          #          Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
+          #          Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
           
         }
         
@@ -2320,30 +2336,30 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma = data.frame(Size = level, gamma) %>% 
             mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma_freq, "incidence_freq", level), length(q)))
+                   Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma_freq, "incidence_freq", level), length(q)))
           
           alpha = data.frame(Size = level, alpha) %>% 
             mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-                   Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
+                   Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
           
           # beta = data.frame(Size = level, beta) %>% 
           #   mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
-          #          Order = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
+          #          Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
           
         }
         
       }
       
-      gamma = gamma[,c(2,4,3,5,1)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      gamma = gamma[,c(2,4,3,5,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
-      alpha = alpha[,c(2,4,3,5,1)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      alpha = alpha[,c(2,4,3,5,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
-      # beta = beta[,c(2,4,3,5,1)] %>% set_colnames(c('Estimate', 'Order', 'Method', 'SC', 'Size'))
+      # beta = beta[,c(2,4,3,5,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       # 
-      # C = beta %>% mutate(Estimate = ifelse(Order == 1, log(Estimate)/log(N), (Estimate^(1 - Order) - 1)/(N^(1 - Order) - 1)))
-      # U = beta %>% mutate(Estimate = ifelse(Order == 1, log(Estimate)/log(N), (Estimate^(Order - 1) - 1)/(N^(Order - 1) - 1)))
+      # C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
+      # U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
       # V = beta %>% mutate(Estimate = (Estimate - 1)/(N - 1))
       # S = beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1))
       
@@ -2490,12 +2506,12 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           # beta = gamma/alpha
           # 
-          # order = rep(q, each=length(level))
+          # Order.q = rep(q, each=length(level))
           # 
-          # beta = data.frame(Estimate = beta, order)
+          # beta = data.frame(Estimate = beta, Order.q)
           # 
-          # C = (beta %>% mutate(Estimate = ifelse(order == 1, log(Estimate)/log(N), (Estimate^(1 - order) - 1)/(N^(1 - order) - 1))))$Estimate
-          # U = (beta %>% mutate(Estimate = ifelse(order == 1, log(Estimate)/log(N), (Estimate^(order - 1) - 1)/(N^(order - 1) - 1))))$Estimate
+          # C = (beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1))))$Estimate
+          # U = (beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1))))$Estimate
           # V = (beta %>% mutate(Estimate = (Estimate - 1)/(N - 1)))$Estimate
           # S = (beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1)))$Estimate
           # 
@@ -2529,41 +2545,54 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     se = as.data.frame(se)
     
+    if (diversity == "TD") index = "TD"
+    if (diversity == "PD" & PDtype == "PD") index = "PD"
+    if (diversity == "PD" & PDtype == "meanPD") index = "meanPD"
+    if (diversity == "FD" & FDtype == "tau_value") index = "FD_tau"
+    if (diversity == "FD" & FDtype == "AUC") index = "FD_AUC"
+    
     gamma = gamma %>% mutate(s.e. = se$gamma,
                              LCL = Estimate - tmp * se$gamma,
                              UCL = Estimate + tmp * se$gamma,
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     alpha = alpha %>% mutate(s.e. = se$alpha,
                              LCL = Estimate - tmp * se$alpha,
                              UCL = Estimate + tmp * se$alpha,
-                             Region = region_name)
+                             Region = region_name,
+                             diversity = index)
     
     # beta = beta %>% mutate(  s.e. = se$beta,
     #                          LCL = Estimate - tmp * se$beta,
     #                          UCL = Estimate + tmp * se$beta,
-    #                          Region = region_name)
+    #                          Region = region_name,
+    #                          diversity = index)
     # 
     # C = C %>% mutate(        s.e. = se$C,
     #                          LCL = Estimate - tmp * se$C,
     #                          UCL = Estimate + tmp * se$C,
-    #                          Region = region_name)
+    #                          Region = region_name,
+    #                          diversity = index)
     # 
     # 
     # U = U %>% mutate(        s.e. = se$U,
     #                          LCL = Estimate - tmp * se$U,
     #                          UCL = Estimate + tmp * se$U,
-    #                          Region = region_name)
+    #                          Region = region_name,
+    #                          diversity = index)
     # 
     # V = V %>% mutate(        s.e. = se$V,
     #                          LCL = Estimate - tmp * se$V,
     #                          UCL = Estimate + tmp * se$V,
-    #                          Region = region_name)
+    #                          Region = region_name,
+    #                          diversity = index)
     # 
     # S = S %>% mutate(        s.e. = se$S,
     #                          LCL = Estimate - tmp * se$S,
     #                          UCL = Estimate + tmp * se$S,
-    #                          Region = region_name)
+    #                          Region = region_name,
+    #                          diversity = index)
     # 
     # list(gamma = gamma, alpha = alpha, beta = beta, C = C, U = U, V = V, S = S)
     
@@ -2586,108 +2615,114 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 
 
 
-#' ggplot for Beta diversity
+#' ggplot2 extension for an iNEXTBeta3D object
 #' 
-#' \code{ggiNEXTBeta3D}: ggplot for Interpolation and extrapolation of Beta diversity with order q
+#' \code{ggiNEXTBeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTBeta3D}} object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 #' 
 #' @param output the output from iNEXTBeta3D
-#' @param type selection of plot type : \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ; \code{type = 'D'} for plotting 4 turnover dissimilarities.
-#' @param measurement character indicating the label of y-axis.
-#' @param scale Are scales shared across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.
-#' @param main The title of the plot.
-#' @param transp a value between 0 and 1 controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.
+#' @param type (required only when \code{base = "coverage"}), selection of plot type : \cr
+#' \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
+#' \code{type = 'D'} for plotting 4 turnover dissimilarities.
+#' @param scale Do scales share across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.
+#' @param transp a value between 0 and 1 for controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.
 #' 
-#' @return a figure for Beta diversity or dissimilarity diversity.
+#' @return a figure for Beta diversity or dissimilarity index.
 #' 
 #' @examples
 #' ## Taxonomic diversity for abundance data
 #' data(beetle_abu)
-#' output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', level = seq(0.8, 1, 0.05), 
-#'                       nboot = 20)
+#' output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20)
 #' 
-#' ggiNEXTBeta3D(output1, type = 'B', measurement = 'TD', scale = 'free', main = NULL, transp = 0.4)
-#' ggiNEXTBeta3D(output1, type = 'D', measurement = 'TD', scale = 'free', main = NULL, transp = 0.4)
+#' ggiNEXTBeta3D(output1, type = 'B', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output1, type = 'D', scale = 'free', transp = 0.4)
 #' 
 #' 
 #' ## Taxonomic diversity for incidence data
 #' data(beetle_inc)
-#' output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95)
+#' output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 #' 
-#' ggiNEXTBeta3D(output2, type = 'B', measurement = 'TD', scale = 'free', main = NULL, transp = 0.4)
-#' ggiNEXTBeta3D(output2, type = 'D', measurement = 'TD', scale = 'free', main = NULL, transp = 0.4)
+#' ggiNEXTBeta3D(output2, type = 'B', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output2, type = 'D', scale = 'free', transp = 0.4)
 #' 
 #' 
-#' ## Phylogenetic Hill numbers for abundance data
+#' ## Phylogenetic diversity for abundance data
 #' data(beetle_abu)
 #' data(beetle_tree)
-#' output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance',  level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95, PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
+#' output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+#'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
-#' ggiNEXTBeta3D(output3, type = 'B', measurement = 'meanPD', scale = 'free', main = NULL, transp = 0.4)
-#' ggiNEXTBeta3D(output3, type = 'D', measurement = 'meanPD', scale = 'free', main = NULL, transp = 0.4)
+#' ggiNEXTBeta3D(output3, type = 'B', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output3, type = 'D', scale = 'free', transp = 0.4)
 #' 
 #' 
-#' ## Phylogenetic Hill numbers for incidence data
+#' ## Phylogenetic diversity for incidence data
 #' data(beetle_inc)
 #' data(beetle_tree)
-#' output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-#'                       nboot = 0, conf = 0.95, PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
+#' output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 0, conf = 0.95, 
+#'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
-#' ggiNEXTBeta3D(output4, type = 'B', measurement = 'meanPD', scale = 'free', main = NULL, transp=0.4)
-#' ggiNEXTBeta3D(output4, type = 'D', measurement = 'meanPD', scale = 'free', main = NULL, transp= 0.4)
+#' ggiNEXTBeta3D(output4, type = 'B', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output4, type = 'D', scale = 'free', transp = 0.4)
 #' 
 #' 
 #' ## Functional diversity for abundance data under single threshold
 #' data(beetle_abu)
 #' data(beetle_distM)
-#' output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95, FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
+#' output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+#'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #' 
-#' ggiNEXTBeta3D(output5, type = 'B', measurement = 'FD_tau', scale = 'free', main = NULL, transp = 0.4)
-#' ggiNEXTBeta3D(output5, type = 'D', measurement = 'FD_tau', scale = 'free', main = NULL, transp = 0.4)
+#' ggiNEXTBeta3D(output5, type = 'B', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output5, type = 'D', scale = 'free', transp = 0.4)
 #' 
 #' 
 #' ## Functional diversity for incidence data under single threshold
 #' data(beetle_inc)
 #' data(beetle_distM)
-#' output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-#'                       nboot = 20, conf = 0.95, FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
+#' output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+#'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #'
-#' ggiNEXTBeta3D(output6, type = 'B', measurement = 'FD_tau', scale = 'free', main = NULL, transp = 0.4)
-#' ggiNEXTBeta3D(output6, type = 'D', measurement = 'FD_tau', scale = 'free', main = NULL, transp = 0.4)
+#' ggiNEXTBeta3D(output6, type = 'B', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output6, type = 'D', scale = 'free', transp = 0.4)
 #' 
 #' 
-#' #' ## Functional diversity for abundance data with thresholds integrating from 0 to 1
+#' ## Functional diversity for abundance data with thresholds integrating from 0 to 1
 #' data(beetle_abu)
 #' data(beetle_distM)
-#' output7 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', level = seq(0.8, 1, 0.05),
-#'                       nboot = 10, conf = 0.95, FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
+#' output7 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
+#'                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
-#' ggiNEXTBeta3D(output7, type = 'B', measurement = 'FD_AUC', scale = 'free', main = NULL, transp = 0.4)
-#' ggiNEXTBeta3D(output7, type = 'D', measurement = 'FD_AUC', scale = 'free', main = NULL, transp = 0.4)
+#' ggiNEXTBeta3D(output7, type = 'B', scale = 'free')
+#' ggiNEXTBeta3D(output7, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Functional diversity for incidence data with thresholds integrating from 0 to 1
 #' data(beetle_inc)
 #' data(beetle_distM)
-#' output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-#'                      nboot = 10, conf = 0.95, FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
+#' output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#'                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
+#'                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
-#' ggiNEXTBeta3D(output8, type = 'B', measurement = 'FD_AUC', scale = 'free', main = NULL, transp = 0.4)
-#' ggiNEXTBeta3D(output8, type = 'D', measurement = 'FD_AUC', scale = 'free', main = NULL, transp = 0.4)
+#' ggiNEXTBeta3D(output8, type = 'B', scale = 'free')
+#' ggiNEXTBeta3D(output8, type = 'D', scale = 'free')
 #' 
 #' @export
-ggiNEXTBeta3D = function(output, type = c('B', 'D'), measurement = c('TD', 'PD','meanPD' ,'FD_tau', 'FD_AUC'), scale = 'free', main = NULL, transp = 0.4){
+ggiNEXTBeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
   
   cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                      "#330066", "#CC79A7", "#0072B2", "#D55E00"))
   
-  if (measurement == 'TD') { ylab = "Taxonomic diversity" }
-  if (measurement == 'PD') { ylab = "Phylogenetic diversity" }
-  if (measurement == 'meanPD') { ylab = "Phylogenetic Hill number" }
-  if (measurement == 'FD_tau') { ylab = "Functional diversity (given tau)" }
-  if (measurement == 'FD_AUC') { ylab = "Functional diversity (AUC)" }
+  if (unique(output[[1]]$gamma$diversity) == 'TD') { ylab = "Taxonomic diversity" }
+  if (unique(output[[1]]$gamma$diversity) == 'PD') { ylab = "Phylogenetic diversity" }
+  if (unique(output[[1]]$gamma$diversity) == 'meanPD') { ylab = "Phylogenetic Hill number" }
+  if (unique(output[[1]]$gamma$diversity) == 'FD_tau') { ylab = "Functional diversity (given tau)" }
+  if (unique(output[[1]]$gamma$diversity) == 'FD_AUC') { ylab = "Functional diversity (AUC)" }
   
   if (length(output[[1]]) == 7) {
     if (type == 'B'){
@@ -2704,10 +2739,10 @@ ggiNEXTBeta3D = function(output, type = c('B', 'D'), measurement = c('TD', 'PD',
       # for(i in 1:length(unique(gamma$Region))){
       #   
       #   Gamma <- gamma %>% filter(Region==unique(gamma$Region)[i]) ; ref_size = unique(Gamma[Gamma$Method=="Observed",]$Size)
-      #   Gamma = Gamma %>% filter(!(Order==0 & round(Size)>2*ref_size))
+      #   Gamma = Gamma %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
       #   
-      #   Alpha <- alpha %>% filter(Region==unique(gamma$Region)[i]) ; Alpha = Alpha %>% filter(!(Order==0 & round(Size)>2*ref_size))
-      #   Beta <- beta %>% filter(Region==unique(gamma$Region)[i]) ; Beta = Beta %>% filter(!(Order==0 & round(Size)>2*ref_size))
+      #   Alpha <- alpha %>% filter(Region==unique(gamma$Region)[i]) ; Alpha = Alpha %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
+      #   Beta <- beta %>% filter(Region==unique(gamma$Region)[i]) ; Beta = Beta %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
       #   
       #   gamma1 = rbind(gamma1,Gamma) ; alpha1 = rbind(alpha1,Alpha) ; beta1 = rbind(beta1,Beta)
       #   
@@ -2716,7 +2751,7 @@ ggiNEXTBeta3D = function(output, type = c('B', 'D'), measurement = c('TD', 'PD',
       # gamma = gamma1 ; alpha = alpha1 ; beta= beta1
       
       df = rbind(gamma, alpha, beta)
-      for (i in unique(gamma$Order)) df$Order[df$Order == i] = paste0('q = ', i)
+      for (i in unique(gamma$Order.q)) df$Order.q[df$Order.q == i] = paste0('q = ', i)
       df$div_type <- factor(df$div_type, levels = c("Gamma","Alpha","Beta"))
       
       id_obs = which(df$Method == 'Observed')
@@ -2756,11 +2791,11 @@ ggiNEXTBeta3D = function(output, type = c('B', 'D'), measurement = c('TD', 'PD',
       # for(i in 1:length(unique(C$Region))){
       #   
       #   CC <- C %>% filter(Region==unique(C$Region)[i]) ; ref_size = unique(CC[CC$Method=="Observed",]$Size)
-      #   CC = CC %>% filter(!(Order==0 & round(Size)>2*ref_size))
+      #   CC = CC %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
       #   
-      #   UU <- U %>% filter(Region==unique(C$Region)[i]) ; UU = UU %>% filter(!(Order==0 & round(Size)>2*ref_size))
-      #   VV <- V %>% filter(Region==unique(C$Region)[i]) ; VV = VV %>% filter(!(Order==0 & round(Size)>2*ref_size))
-      #   SS <- S %>% filter(Region==unique(C$Region)[i]) ; SS = SS %>% filter(!(Order==0 & round(Size)>2*ref_size))
+      #   UU <- U %>% filter(Region==unique(C$Region)[i]) ; UU = UU %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
+      #   VV <- V %>% filter(Region==unique(C$Region)[i]) ; VV = VV %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
+      #   SS <- S %>% filter(Region==unique(C$Region)[i]) ; SS = SS %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
       #   
       #   c1 = rbind(c1,CC) ; u1 = rbind(u1,UU) ; v1 = rbind(v1,VV) ; s1 = rbind(s1,SS)
       #   
@@ -2770,7 +2805,7 @@ ggiNEXTBeta3D = function(output, type = c('B', 'D'), measurement = c('TD', 'PD',
       
       
       df = rbind(C, U, V, S)
-      for (i in unique(C$Order)) df$Order[df$Order == i] = paste0('q = ', i)
+      for (i in unique(C$Order.q)) df$Order.q[df$Order.q == i] = paste0('q = ', i)
       df$div_type <- factor(df$div_type, levels = c("1-CqN", "1-UqN", "1-VqN", "1-SqN"))
       
       id_obs = which(df$Method == 'Observed')
@@ -2799,8 +2834,8 @@ ggiNEXTBeta3D = function(output, type = c('B', 'D'), measurement = c('TD', 'PD',
     double_extrapolation = df %>% filter(Method == "Extrapolated" & round(Size) %in% double_size)
     
     ggplot(data = df, aes(x = SC, y = Estimate, col = Region)) +
-      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha=transp) + 
-      geom_line(data = subset(df, Method!='Observed'), aes(linetype=Method), size=1.1) + scale_linetype_manual(values = lty) +
+      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = transp) + 
+      geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       # geom_line(lty=2) + 
       geom_point(data = subset(df, Method == 'Observed' & div_type == "Gamma"), shape = 19, size = 3) + 
       geom_point(data = subset(df, Method == 'Observed' & div_type != "Gamma"), shape = 1, size = 3, stroke = 1.5)+
@@ -2808,23 +2843,26 @@ ggiNEXTBeta3D = function(output, type = c('B', 'D'), measurement = c('TD', 'PD',
       geom_point(data = subset(double_extrapolation, div_type != "Gamma"), shape = 2, size = 3, stroke = 1.5) + 
       scale_colour_manual(values = cbPalette) + 
       scale_fill_manual(values = cbPalette) + 
-      facet_grid(div_type ~ Order, scales = scale) +
+      facet_grid(div_type ~ Order.q, scales = scale) +
       theme_bw() + 
       theme(legend.position = "bottom", legend.title = element_blank()) +
-      labs(x = 'Sample coverage', y = ylab, title = main)
+      labs(x = 'Sample coverage', y = ylab)
+    
   } else if (length(output[[1]]) == 2) {
     
     gamma = lapply(output, function(y) y[["gamma"]]) %>% do.call(rbind,.) %>% mutate(div_type = "Gamma") %>% as_tibble()
     alpha = lapply(output, function(y) y[["alpha"]]) %>% do.call(rbind,.) %>% mutate(div_type = "Alpha") %>% as_tibble()
     
     if ('nT' %in% colnames(gamma)) {
+      
       xlab = 'Number of sampling units'
       colnames(gamma)[colnames(gamma) == 'nT'] = 'Size'
       colnames(alpha)[colnames(alpha) == 'nT'] = 'Size'
+      
     } else xlab = 'Number of individuals'
     
     df = rbind(gamma, alpha)
-    for (i in unique(gamma$Order)) df$Order[df$Order == i] = paste0('q = ', i)
+    for (i in unique(gamma$Order.q)) df$Order.q[df$Order.q == i] = paste0('q = ', i)
     df$div_type <- factor(df$div_type, levels = c("Gamma","Alpha"))
     
     id_obs = which(df$Method == 'Observed')
@@ -2850,19 +2888,18 @@ ggiNEXTBeta3D = function(output, type = c('B', 'D'), measurement = c('TD', 'PD',
     double_extrapolation = df %>% filter(Method == "Extrapolated" & round(Size) %in% double_size)
     
     ggplot(data = df, aes(x = Size, y = Estimate, col = Region)) +
-      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha=transp) + 
-      geom_line(data = subset(df, Method!='Observed'), aes(linetype=Method), size=1.1) + scale_linetype_manual(values = lty) +
-      # geom_line(lty=2) + 
+      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = transp) + 
+      geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       geom_point(data = subset(df, Method == 'Observed' & div_type == "Gamma"), shape = 19, size = 3) + 
-      geom_point(data = subset(df, Method == 'Observed' & div_type != "Gamma"), shape = 1, size = 3, stroke = 1.5)+
+      geom_point(data = subset(df, Method == 'Observed' & div_type != "Gamma"), shape = 1, size = 3, stroke = 1.5) +
       geom_point(data = subset(double_extrapolation, div_type == "Gamma"), shape = 17, size = 3) + 
       geom_point(data = subset(double_extrapolation, div_type != "Gamma"), shape = 2, size = 3, stroke = 1.5) + 
       scale_colour_manual(values = cbPalette) + 
       scale_fill_manual(values = cbPalette) + 
-      facet_grid(div_type ~ Order, scales = scale) +
+      facet_grid(div_type ~ Order.q, scales = scale) +
       theme_bw() + 
       theme(legend.position = "bottom", legend.title = element_blank()) +
-      labs(x = xlab, y = ylab, title = main)
+      labs(x = xlab, y = ylab)
   }
 }
 

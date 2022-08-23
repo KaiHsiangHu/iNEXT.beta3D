@@ -4,7 +4,7 @@ Title: Interpolation and Extrapolation for three dimensions of Beta diversity
 Version: 1.0.1
 Author: Anne Chao, KaiHsiang Hu, Y.S. Kao and Z.C. Szu-tu
 Maintainer: K. S. Hu <river19951224@gmail.com>
-Description: iNEXT.Beta3D provides computing beta diversity for multiple assemblages.
+Description: iNEXT.Beta3D provides the function computing beta diversity for multiple assemblages.
 Depends: R (>= 4.0)
 Imports: tidyverse,
          magrittr,
@@ -23,4 +23,4 @@ Remotes: AnneChao/iNEXT.3D
 Encoding: UTF-8
 BugReports: https://github.com/KaiHsiangHu/iNEXT.Beta3D/issues
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0

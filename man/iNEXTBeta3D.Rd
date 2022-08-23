@@ -23,8 +23,8 @@ iNEXTBeta3D(
 )
 }
 \arguments{
-\item{data}{(a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix; see Note 1 for examples.\cr
-(b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-sampling units; see Note 2 for an example.}
+\item{data}{(a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
+(b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several lists (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units.}
 
 \item{diversity}{selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.}
 
@@ -35,7 +35,8 @@ iNEXTBeta3D(
 \item{base}{Sample-sized-based rarefaction and extrapolation for gamma and alpha diversity (\code{base = "size"}) or coverage-based rarefaction and extrapolation for gamma, alpha and beta diversity (\code{base = "coverage"}). Default is \code{base = "coverage"}.}
 
 \item{level}{A numerical vector specifying the particular value of sample coverage (between 0 and 1 when \code{base = "coverage"}) or sample size (\code{base = "size"}). \code{level = 1} (\code{base = "coverage"}) means complete coverage (the corresponding diversity represents asymptotic diversity).\cr
-If \code{base = "size"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to double the reference sample size. If \code{base = "coverage"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to one (for \code{q = 1, 2}) or up to the coverage of double the reference sample size (for \code{q = 0});\cr 
+If \code{base = "size"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to double the reference sample size. \cr 
+If \code{base = "coverage"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to one (for \code{q = 1, 2}) or up to the coverage of double the reference sample size (for \code{q = 0});
 the corresponding beta diversity is computed up to the same maximum coverage as the alpha diversity.}
 
 \item{nboot}{a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{20}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).}
@@ -50,14 +51,14 @@ the corresponding beta diversity is computed up to the same maximum coverage as 
 
 \item{FDdistM}{(required only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage.}
 
-\item{FDtype}{(required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under specified threshold values, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.}
+\item{FDtype}{(required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.}
 
 \item{FDtau}{(required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical vector between 0 and 1 specifying tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
 
 \item{FDcut_number}{(required only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to split zero to one into several equal-spaced length. Default is 30.}
 }
 \value{
-A list of seven lists with three-diversity and four-dissimilarity.
+If \code{base = "coverage"}, return a list of seven lists with three diversity (gamma, alpha, and beta diversity) and four dissimilarity index. If \code{base = "size"}, return a list of two lists with two diversity (gamma and alpha diversity).
 }
 \description{
 \code{iNEXTBeta3D}: Interpolation and extrapolation of Beta diversity with order q
@@ -65,63 +66,69 @@ A list of seven lists with three-diversity and four-dissimilarity.
 \examples{
 ## Taxonomic diversity for abundance data
 data(beetle_abu)
-output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', level = seq(0.8, 1, 0.05), 
-                      nboot = 20, conf = 0.95)
+output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
+                      level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 output1
 
 
 ## Taxonomic diversity for incidence data
 data(beetle_inc)
-output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-                      nboot = 20, conf = 0.95)
+output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
+                      level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 output2
 
 
 ## Phylogenetic diversity for abundance data
 data(beetle_abu)
 data(beetle_tree)
-output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance',  level = seq(0.8, 1, 0.05),
-                      nboot = 20, conf = 0.95, PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
+output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance', 
+                      level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+                      PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
 output3
 
 
 ## Phylogenetic diversity for incidence data
 data(beetle_inc)
 data(beetle_tree)
-output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-                      nboot = 20, conf = 0.95, PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
+output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', 
+                      level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+                      PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
 output4
 
 
 ## Functional diversity for abundance data under single threshold
 data(beetle_abu)
 data(beetle_distM)
-output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', level = seq(0.8, 1, 0.05),
-                      nboot = 20, conf = 0.95, FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
+output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+                      level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+                      FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 output5
 
 
 ## Functional diversity for incidence data under single threshold
 data(beetle_inc)
 data(beetle_distM)
-output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-                      nboot = 20, conf = 0.95, FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
+output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+                      level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
+                      FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 output6
 
 
 ## Functional diversity for abundance data with thresholds integrating from 0 to 1
 data(beetle_abu)
 data(beetle_distM)
-output7 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', level = seq(0.8, 1, 0.05),
-                      nboot = 10, conf = 0.95, FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
+output7 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+                      level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
+                      FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 output7
 
 
 ## Functional diversity for incidence data with thresholds integrating from 0 to 1
 data(beetle_inc)
 data(beetle_distM)
-output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', level = seq(0.8, 1, 0.05),
-                      nboot = 10, conf = 0.95, FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
+output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+                      level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
+                      FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 output8
 
 }
