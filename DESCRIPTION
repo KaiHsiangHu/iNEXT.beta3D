@@ -2,7 +2,7 @@ Package: iNEXT.Beta3D
 Type: Package
 Title: Interpolation and Extrapolation for three dimensions of Beta diversity
 Version: 1.0.1
-Author: Anne Chao, KaiHsiang Hu, Y.S. Kao and Z.C. Szu-tu
+Author: Anne Chao, K.S. Hu, Y.S. Kao and Z.C. Szu-tu
 Maintainer: K. S. Hu <river19951224@gmail.com>
 Description: iNEXT.Beta3D provides the function computing beta diversity for multiple assemblages.
 Depends: R (>= 4.0)

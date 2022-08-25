@@ -24,7 +24,7 @@ iNEXTBeta3D(
 }
 \arguments{
 \item{data}{(a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
-(b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several lists (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units.}
+(b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units.}
 
 \item{diversity}{selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.}
 
@@ -45,7 +45,7 @@ the corresponding beta diversity is computed up to the same maximum coverage as 
 
 \item{PDtree}{(required only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
 
-\item{PDreftime}{(required only when \code{diversity = "PD"}), a vector of numerical values specifying reference times for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).}
+\item{PDreftime}{(required only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).}
 
 \item{PDtype}{(required only when \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{"meanPD"}, where \code{meanPD = PD/tree depth}.}
 
@@ -53,12 +53,12 @@ the corresponding beta diversity is computed up to the same maximum coverage as 
 
 \item{FDtype}{(required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.}
 
-\item{FDtau}{(required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical vector between 0 and 1 specifying tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
+\item{FDtau}{(required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
 
 \item{FDcut_number}{(required only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to split zero to one into several equal-spaced length. Default is 30.}
 }
 \value{
-If \code{base = "coverage"}, return a list of seven lists with three diversity (gamma, alpha, and beta diversity) and four dissimilarity index. If \code{base = "size"}, return a list of two lists with two diversity (gamma and alpha diversity).
+If \code{base = "coverage"}, return a list of seven matrices with three diversity (gamma, alpha, and beta diversity) and four dissimilarity indices. If \code{base = "size"}, return a list of two matrices with two diversity (gamma and alpha diversity).
 }
 \description{
 \code{iNEXTBeta3D}: Interpolation and extrapolation of Beta diversity with order q
@@ -130,5 +130,4 @@ output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence
                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 output8
-
 }
