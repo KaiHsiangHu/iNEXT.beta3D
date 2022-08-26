@@ -367,8 +367,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               estimate3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", base = "coverage", level = level[i], nboot = 0)
             }) %>% do.call(rbind,.)
             
-            beta_obs = (AO3D(as.numeric(bootstrap_data_gamma), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Empirical") %>% select(qD) / 
-                          (AO3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Empirical") %>% select(qD) / N)) %>% unlist()
+            beta_obs = (AO3D(as.numeric(bootstrap_data_gamma), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Observed") %>% select(qD) / 
+                          (AO3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Observed") %>% select(qD) / N)) %>% unlist()
             
           }
           
@@ -399,8 +399,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               estimate3D(bootstrap_data_alpha_freq, diversity = 'TD', q = q, datatype = "incidence_freq", base = "coverage", level = level[i], nboot = 0)
             }) %>% do.call(rbind,.)
             
-            beta_obs = (AO3D(as.numeric(bootstrap_data_gamma_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Empirical") %>% select(qD) / 
-                          (AO3D(as.numeric(bootstrap_data_alpha_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Empirical") %>% select(qD) / N)) %>% unlist()
+            beta_obs = (AO3D(as.numeric(bootstrap_data_gamma_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Observed") %>% select(qD) / 
+                          (AO3D(as.numeric(bootstrap_data_alpha_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Observed") %>% select(qD) / N)) %>% unlist()
             
           }
           

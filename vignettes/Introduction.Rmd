@@ -1,6 +1,6 @@
 ---
 title: "A Quick Introduction to iNEXT.Beta3D"
-author: "Anne Chao, K. S. Hu, Y. S. Kao, and Z. C. Szu Tu"
+author: "Anne Chao, K. H. Hu, Y. S. Kao, and Z. C. Szu Tu"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
