@@ -165,17 +165,17 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       if (length(level) != length(data_list)) level <- lapply(1:length(data_list), function(x) level[[1]])
       
-      level <- lapply(1:length(data_list), function(i) {
-        
-        if (datatype == "abundance") {
-          ni <- sum(data_list[[i]])
-        } else if (datatype == "incidence_raw"){
-          ni <- ncol(data_list[[i]][[1]])
-        }
-        
-        if( sum(level[[i]] == ni) == 0 ) mi <- sort(c(ni, level[[i]])) else mi <- level[[i]]
-        unique(mi)
-      })
+      # level <- lapply(1:length(data_list), function(i) {
+      #   
+      #   if (datatype == "abundance") {
+      #     ni <- sum(data_list[[i]])
+      #   } else if (datatype == "incidence_raw"){
+      #     ni <- ncol(data_list[[i]][[1]])
+      #   }
+      #   
+      #   if( sum(level[[i]] == ni) == 0 ) mi <- sort(c(ni, level[[i]])) else mi <- level[[i]]
+      #   unique(mi)
+      # })
     }
   }
   
@@ -2865,18 +2865,20 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
     
     id_obs = which(df$Method == 'Observed')
     
-    for (i in 1:length(id_obs)) {
-      
-      new = df[id_obs[i],]
-      new$Size = new$Size - 0.0001
-      new$Method = 'Interpolated'
-      
-      newe = df[id_obs[i],]
-      newe$Size = newe$Size + 0.0001
-      newe$Method = 'Extrapolated'
-      
-      df = rbind(df, new, newe)
-      
+    if (sum(id_obs) > 0) {
+      for (i in 1:length(id_obs)) {
+        
+        new = df[id_obs[i],]
+        new$Size = new$Size - 0.0001
+        new$Method = 'Interpolated'
+        
+        newe = df[id_obs[i],]
+        newe$Size = newe$Size + 0.0001
+        newe$Method = 'Extrapolated'
+        
+        df = rbind(df, new, newe)
+        
+      }
     }
     
     lty = c(Interpolated = "solid", Extrapolated = "dashed")
