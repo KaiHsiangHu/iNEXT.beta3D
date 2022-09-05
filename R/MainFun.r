@@ -2623,7 +2623,6 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 #' \code{type = 'D'} for plotting 4 turnover dissimilarities.
 #' @param scale Are scales shared across all facets (the default, \code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.
-#' @param transp a value between 0 and 1 for controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.
 #' 
 #' @return a figure for Beta diversity or dissimilarity index.
 #' 
@@ -2633,8 +2632,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20)
 #' 
-#' ggiNEXTBeta3D(output1, type = 'B', scale = 'free', transp = 0.4)
-#' ggiNEXTBeta3D(output1, type = 'D', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output1, type = 'B', scale = 'free')
+#' ggiNEXTBeta3D(output1, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Taxonomic diversity for incidence data
@@ -2642,8 +2641,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 #' 
-#' ggiNEXTBeta3D(output2, type = 'B', scale = 'free', transp = 0.4)
-#' ggiNEXTBeta3D(output2, type = 'D', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output2, type = 'B', scale = 'free')
+#' ggiNEXTBeta3D(output2, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Phylogenetic diversity for abundance data
@@ -2653,8 +2652,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
-#' ggiNEXTBeta3D(output3, type = 'B', scale = 'free', transp = 0.4)
-#' ggiNEXTBeta3D(output3, type = 'D', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output3, type = 'B', scale = 'free')
+#' ggiNEXTBeta3D(output3, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Phylogenetic diversity for incidence data
@@ -2664,8 +2663,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                       level = seq(0.8, 1, 0.05), nboot = 0, conf = 0.95, 
 #'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
-#' ggiNEXTBeta3D(output4, type = 'B', scale = 'free', transp = 0.4)
-#' ggiNEXTBeta3D(output4, type = 'D', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output4, type = 'B', scale = 'free')
+#' ggiNEXTBeta3D(output4, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Functional diversity for abundance data under single threshold
@@ -2675,8 +2674,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #' 
-#' ggiNEXTBeta3D(output5, type = 'B', scale = 'free', transp = 0.4)
-#' ggiNEXTBeta3D(output5, type = 'D', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output5, type = 'B', scale = 'free')
+#' ggiNEXTBeta3D(output5, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Functional diversity for incidence data under single threshold
@@ -2686,8 +2685,8 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #'
-#' ggiNEXTBeta3D(output6, type = 'B', scale = 'free', transp = 0.4)
-#' ggiNEXTBeta3D(output6, type = 'D', scale = 'free', transp = 0.4)
+#' ggiNEXTBeta3D(output6, type = 'B', scale = 'free')
+#' ggiNEXTBeta3D(output6, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Functional diversity for abundance data with thresholds integrating from 0 to 1
@@ -2711,7 +2710,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' ggiNEXTBeta3D(output8, type = 'B', scale = 'free')
 #' ggiNEXTBeta3D(output8, type = 'D', scale = 'free')
 #' @export
-ggiNEXTBeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
+ggiNEXTBeta3D = function(output, type = 'B', scale = 'free'){
   
   cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                      "#330066", "#CC79A7", "#0072B2", "#D55E00"))
@@ -2832,7 +2831,7 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
     double_extrapolation = df %>% filter(Method == "Extrapolated" & round(Size) %in% double_size)
     
     ggplot(data = df, aes(x = SC, y = Estimate, col = Region)) +
-      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = transp) + 
+      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = 0.4) + 
       geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       # geom_line(lty=2) + 
       geom_point(data = subset(df, Method == 'Observed' & div_type == "Gamma"), shape = 19, size = 3) + 
@@ -2888,7 +2887,7 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
     double_extrapolation = df %>% filter(Method == "Extrapolated" & round(Size) %in% double_size)
     
     ggplot(data = df, aes(x = Size, y = Estimate, col = Region)) +
-      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = transp) + 
+      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = 0.4) + 
       geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       geom_point(data = subset(df, Method == 'Observed' & div_type == "Gamma"), shape = 19, size = 3) + 
       geom_point(data = subset(df, Method == 'Observed' & div_type != "Gamma"), shape = 1, size = 3, stroke = 1.5) +

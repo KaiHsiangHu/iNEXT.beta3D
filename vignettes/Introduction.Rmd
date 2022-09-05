@@ -336,7 +336,7 @@ Incidence_FDAUC
 The function `ggiNEXTBeta3D()`, which extends `ggplot2` to the `"iNEXTBeta3D"` object with default arguments, is described as follows: 
 
 ```{r eval=FALSE}
-ggiNEXTBeta3D(output, type = "B", scale = "free", transp = 0.4)  
+ggiNEXTBeta3D(output, type = "B", scale = "free")  
 ```
 
 <table style="width:100%;">
@@ -364,11 +364,6 @@ ggiNEXTBeta3D(output, type = "B", scale = "free", transp = 0.4)
 <tr class="odd">
 <td align="center"><code>scale</code></td>
 <td align="left">Are scales shared across all facets (the default, <code>"fixed"</code>), or do they vary across rows (<code>"free_x"</code>), columns (<code>"free_y"</code>), or both rows and columns (<code>"free"</code>)? Default is <code>"free"</code>.</td>
-
-</tr>
-<tr class="even">
-<td align="center"><code>transp</code></td>
-<td align="left">a value between 0 and 1 controlling transparency. <code>transp = 0</code> is completely transparent, default is <code>0.4</code>.</td>
 
 
 </tbody>

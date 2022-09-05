@@ -4,7 +4,7 @@
 \alias{ggiNEXTBeta3D}
 \title{ggplot2 extension for an iNEXTBeta3D object}
 \usage{
-ggiNEXTBeta3D(output, type = "B", scale = "free", transp = 0.4)
+ggiNEXTBeta3D(output, type = "B", scale = "free")
 }
 \arguments{
 \item{output}{the output from iNEXTBeta3D}
@@ -14,8 +14,6 @@ ggiNEXTBeta3D(output, type = "B", scale = "free", transp = 0.4)
 \code{type = 'D'} for plotting 4 turnover dissimilarities.}
 
 \item{scale}{Are scales shared across all facets (the default, \code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.}
-
-\item{transp}{a value between 0 and 1 for controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.}
 }
 \value{
 a figure for Beta diversity or dissimilarity index.
@@ -29,8 +27,8 @@ data(beetle_abu)
 output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
                       level = seq(0.8, 1, 0.05), nboot = 20)
 
-ggiNEXTBeta3D(output1, type = 'B', scale = 'free', transp = 0.4)
-ggiNEXTBeta3D(output1, type = 'D', scale = 'free', transp = 0.4)
+ggiNEXTBeta3D(output1, type = 'B', scale = 'free')
+ggiNEXTBeta3D(output1, type = 'D', scale = 'free')
 
 
 ## Taxonomic diversity for incidence data
@@ -38,8 +36,8 @@ data(beetle_inc)
 output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 
-ggiNEXTBeta3D(output2, type = 'B', scale = 'free', transp = 0.4)
-ggiNEXTBeta3D(output2, type = 'D', scale = 'free', transp = 0.4)
+ggiNEXTBeta3D(output2, type = 'B', scale = 'free')
+ggiNEXTBeta3D(output2, type = 'D', scale = 'free')
 
 
 ## Phylogenetic diversity for abundance data
@@ -49,8 +47,8 @@ output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance
                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
 
-ggiNEXTBeta3D(output3, type = 'B', scale = 'free', transp = 0.4)
-ggiNEXTBeta3D(output3, type = 'D', scale = 'free', transp = 0.4)
+ggiNEXTBeta3D(output3, type = 'B', scale = 'free')
+ggiNEXTBeta3D(output3, type = 'D', scale = 'free')
 
 
 ## Phylogenetic diversity for incidence data
@@ -60,8 +58,8 @@ output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence
                       level = seq(0.8, 1, 0.05), nboot = 0, conf = 0.95, 
                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
 
-ggiNEXTBeta3D(output4, type = 'B', scale = 'free', transp = 0.4)
-ggiNEXTBeta3D(output4, type = 'D', scale = 'free', transp = 0.4)
+ggiNEXTBeta3D(output4, type = 'B', scale = 'free')
+ggiNEXTBeta3D(output4, type = 'D', scale = 'free')
 
 
 ## Functional diversity for abundance data under single threshold
@@ -71,8 +69,8 @@ output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance
                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 
-ggiNEXTBeta3D(output5, type = 'B', scale = 'free', transp = 0.4)
-ggiNEXTBeta3D(output5, type = 'D', scale = 'free', transp = 0.4)
+ggiNEXTBeta3D(output5, type = 'B', scale = 'free')
+ggiNEXTBeta3D(output5, type = 'D', scale = 'free')
 
 
 ## Functional diversity for incidence data under single threshold
@@ -82,8 +80,8 @@ output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence
                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 
-ggiNEXTBeta3D(output6, type = 'B', scale = 'free', transp = 0.4)
-ggiNEXTBeta3D(output6, type = 'D', scale = 'free', transp = 0.4)
+ggiNEXTBeta3D(output6, type = 'B', scale = 'free')
+ggiNEXTBeta3D(output6, type = 'D', scale = 'free')
 
 
 ## Functional diversity for abundance data with thresholds integrating from 0 to 1
