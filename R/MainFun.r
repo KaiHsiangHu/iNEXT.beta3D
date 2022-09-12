@@ -303,7 +303,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       }
       
       gamma = (cbind(SC = rep(level, each=length(q)), gamma[,-c(1,2,7,8,9)]) %>% 
-                 mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'))
+                 mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'))
       )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
@@ -313,7 +313,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       
       alpha = (cbind(SC = rep(level, each = length(q)), alpha[,-c(1,2,7,8,9)]) %>% 
-                 mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'))
+                 mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'))
       )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Estimate = alpha$Estimate / N
@@ -438,7 +438,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         
       } else {
         
-        se = matrix(0, ncol = 7, nrow = nrow(beta))
+        se = matrix(NA, ncol = 7, nrow = nrow(beta))
         colnames(se) = c("gamma", "alpha", "beta", "C", "U", 'V', 'S')
         se = as.data.frame(se)
         
@@ -458,7 +458,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         alpha.se = alpha.se / N
         
       } else {
-        gamma.se = alpha.se = 0
+        gamma.se = alpha.se = NA
       }
       
       se[1:( length(level) * length(q) ), 'gamma'] = gamma.se
@@ -535,7 +535,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       }
       
       gamma = (gamma %>% 
-                 mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated')))[,c(2,1,5,3,4)] %>% 
+                 mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation')))[,c(2,1,5,3,4)] %>% 
         set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC>0
@@ -544,7 +544,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       
       alpha = (alpha %>% 
-                 mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated')))[,c(2,1,5,3,4)] %>% 
+                 mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation')))[,c(2,1,5,3,4)] %>% 
         set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha = alpha[under_max_alpha,]
@@ -884,7 +884,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         
       } else {
         
-        se = matrix(0, ncol = 7, nrow = nrow(beta))
+        se = matrix(NA, ncol = 7, nrow = nrow(beta))
         colnames(se) = c("gamma", "alpha", "beta", "C", "U", 'V', 'S')
         se = as.data.frame(se)
         
@@ -1010,11 +1010,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           alpha = output$alpha
           
           gamma = data.frame(SC = level, gamma) %>% 
-            mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each=length(SC)/length(q)), Size = rep(m_gamma, length(q)))
           
           alpha = data.frame(SC = level, alpha) %>% 
-            mutate(Method = ifelse(SC>=ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC>=ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each=length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           beta = alpha
@@ -1035,11 +1035,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           alpha = output$alpha
           
           gamma = data.frame(SC = level, gamma) %>% 
-            mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
           
           alpha = data.frame(SC = level, alpha) %>% 
-            mutate(Method = ifelse(SC>=ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC>=ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           beta = alpha
@@ -1094,15 +1094,15 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           beta = colSums((left_limit + right_limit)/2)
           
           gamma = data.frame(SC = level, gamma) %>% 
-            mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
           
           alpha = data.frame(SC = level, alpha) %>% 
-            mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           beta = data.frame(SC = level, beta) %>% 
-            mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           ## Observed Beta ##
@@ -1154,15 +1154,15 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           beta = colSums((left_limit + right_limit)/2)
           
           gamma = data.frame(SC = level, gamma) %>% 
-            mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_gamma, length(q)))
           
           alpha = data.frame(SC = level, alpha) %>% 
-            mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           beta = data.frame(SC = level, beta) %>% 
-            mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           ## Observed Beta ##
@@ -1443,7 +1443,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         
       } else {
         
-        se = matrix(0, ncol = 7, nrow = nrow(beta))
+        se = matrix(NA, ncol = 7, nrow = nrow(beta))
         colnames(se) = c("gamma", "alpha", "beta", "C", "U", 'V', 'S')
         se = as.data.frame(se)
         
@@ -1584,15 +1584,15 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       se = cbind(gamma$s.e., alpha$s.e. / N)
       colnames(se) = c("gamma", "alpha")
       se = as.data.frame(se)
-      se[is.na(se)] = 0
+      # se[is.na(se)] = 0
       
       gamma = (cbind(Size = rep(level, each=length(q)), gamma[,-c(1,2,8,9)]) %>% 
-                 mutate(Method = ifelse(Size>=ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'))
+                 mutate(Method = ifelse(Size>=ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'))
       )[,c(5,3,2,4,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
       alpha = (cbind(Size = rep(level, each = length(q)), alpha[,-c(1,2,8,9)]) %>% 
-                 mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'))
+                 mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'))
       )[,c(5,3,2,4,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Estimate = alpha$Estimate / N
@@ -1780,14 +1780,14 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       }
       
       gamma = (gamma %>% 
-                 mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated')))[,c(2,1,5,3,4)] %>% 
+                 mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation')))[,c(2,1,5,3,4)] %>% 
         set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       gamma$Order.q = as.numeric(gamma$Order.q)
       
       
       alpha = (alpha %>% 
-                 mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated')))[,c(2,1,5,3,4)] %>% 
+                 mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation')))[,c(2,1,5,3,4)] %>% 
         set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Order.q = as.numeric(alpha$Order.q)
@@ -2108,7 +2108,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         # colnames(se) = c("gamma", "alpha", "beta", "C", "U", 'V', 'S')
         # se = as.data.frame(se)
         
-        se = matrix(0, ncol = 2, nrow = nrow(gamma))
+        se = matrix(NA, ncol = 2, nrow = nrow(gamma))
         colnames(se) = c("gamma", "alpha")
         se = as.data.frame(se)
         
@@ -2223,11 +2223,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           alpha = output$alpha
           
           gamma = data.frame(Size = level, gamma) %>% 
-            mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma, "abundance", level), length(q)))
           
           alpha = data.frame(Size = level, alpha) %>% 
-            mutate(Method = ifelse(Size>=ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(Size>=ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
           
           beta = alpha
@@ -2242,11 +2242,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           alpha = output$alpha
           
           gamma = data.frame(Size = level, gamma) %>% 
-            mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma_freq, "incidence_freq", level), length(q)))
           
           alpha = data.frame(Size = level, alpha) %>% 
-            mutate(Method = ifelse(Size>=ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(Size>=ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
           
           beta = alpha
@@ -2291,15 +2291,15 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           beta = colSums((left_limit + right_limit)/2)
           
           gamma = data.frame(Size = level, gamma) %>% 
-            mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma, "abundance", level), length(q)))
           
           alpha = data.frame(Size = level, alpha) %>% 
-            mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
           
           # beta = data.frame(Size = level, beta) %>% 
-          #   mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+          #   mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
           #          Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha, "abundance", level), length(q)))
           
         }
@@ -2334,15 +2334,15 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           beta = colSums((left_limit + right_limit)/2)
           
           gamma = data.frame(Size = level, gamma) %>% 
-            mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(Size >= ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma_freq, "incidence_freq", level), length(q)))
           
           alpha = data.frame(Size = level, alpha) %>% 
-            mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+            mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
                    Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
           
           # beta = data.frame(Size = level, beta) %>% 
-          #   mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolated'), 'Interpolated'),
+          #   mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Interpolation'),
           #          Order.q = rep(q, each = length(level)), Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)))
           
         }
@@ -2533,7 +2533,7 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         # colnames(se) = c("gamma", "alpha", "beta", "C", "U", 'V', 'S')
         # se = as.data.frame(se)
         
-        se = matrix(0, ncol = 2, nrow = nrow(gamma))
+        se = matrix(NA, ncol = 2, nrow = nrow(gamma))
         colnames(se) = c("gamma", "alpha")
         se = as.data.frame(se)
         
@@ -2757,11 +2757,11 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free'){
         
         new = df[id_obs[i],]
         new$SC = new$SC - 0.0001
-        new$Method = 'Interpolated'
+        new$Method = 'Interpolation'
         
         newe = df[id_obs[i],]
         newe$SC = newe$SC + 0.0001
-        newe$Method = 'Extrapolated'
+        newe$Method = 'Extrapolation'
         
         df = rbind(df, new, newe)
         
@@ -2811,11 +2811,11 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free'){
         
         new = df[id_obs[i],]
         new$SC = new$SC - 0.0001
-        new$Method = 'Interpolated'
+        new$Method = 'Interpolation'
         
         newe = df[id_obs[i],]
         newe$SC = newe$SC + 0.0001
-        newe$Method = 'Extrapolated'
+        newe$Method = 'Extrapolation'
         
         df = rbind(df, new, newe)
         
@@ -2824,11 +2824,11 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free'){
       
     }
     
-    lty = c(Interpolated = "solid", Extrapolated = "dashed")
-    df$Method = factor(df$Method, levels = c('Interpolated', 'Extrapolated', 'Observed'))
+    lty = c(Interpolation = "solid", Extrapolation = "dashed")
+    df$Method = factor(df$Method, levels = c('Interpolation', 'Extrapolation', 'Observed'))
     
     double_size = unique(df[df$Method == "Observed",]$Size)*2
-    double_extrapolation = df %>% filter(Method == "Extrapolated" & round(Size) %in% double_size)
+    double_extrapolation = df %>% filter(Method == "Extrapolation" & round(Size) %in% double_size)
     
     ggplot(data = df, aes(x = SC, y = Estimate, col = Region)) +
       geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = 0.4) + 
@@ -2869,22 +2869,22 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free'){
         
         new = df[id_obs[i],]
         new$Size = new$Size - 0.0001
-        new$Method = 'Interpolated'
+        new$Method = 'Interpolation'
         
         newe = df[id_obs[i],]
         newe$Size = newe$Size + 0.0001
-        newe$Method = 'Extrapolated'
+        newe$Method = 'Extrapolation'
         
         df = rbind(df, new, newe)
         
       }
     }
     
-    lty = c(Interpolated = "solid", Extrapolated = "dashed")
-    df$Method = factor(df$Method, levels = c('Interpolated', 'Extrapolated', 'Observed'))
+    lty = c(Interpolation = "solid", Extrapolation = "dashed")
+    df$Method = factor(df$Method, levels = c('Interpolation', 'Extrapolation', 'Observed'))
     
     double_size = unique(df[df$Method == "Observed",]$Size)*2
-    double_extrapolation = df %>% filter(Method == "Extrapolated" & round(Size) %in% double_size)
+    double_extrapolation = df %>% filter(Method == "Extrapolation" & round(Size) %in% double_size)
     
     ggplot(data = df, aes(x = Size, y = Estimate, col = Region)) +
       geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = 0.4) + 
