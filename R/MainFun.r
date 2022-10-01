@@ -2843,7 +2843,8 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free'){
       facet_grid(div_type ~ Order.q, scales = scale) +
       theme_bw() + 
       theme(legend.position = "bottom", legend.title = element_blank()) +
-      labs(x = 'Sample coverage', y = ylab)
+      labs(x = 'Sample coverage', y = ylab) +
+      guides(linetype = guide_legend(keywidth = 2.5))
     
   } else if (length(output[[1]]) == 2) {
     
@@ -2898,7 +2899,8 @@ ggiNEXTBeta3D = function(output, type = 'B', scale = 'free'){
       facet_grid(div_type ~ Order.q, scales = scale) +
       theme_bw() + 
       theme(legend.position = "bottom", legend.title = element_blank()) +
-      labs(x = xlab, y = ylab)
+      labs(x = xlab, y = ylab) +
+      guides(linetype = guide_legend(keywidth = 2.5))
   }
 }
 
