@@ -1,1 +1,1 @@
-iNEXT.Beta3D (Interpolation and Extrapolation in three dimensions for Beta diversity)
+iNEXT.beta3D (Interpolation and Extrapolation in three dimensions for beta diversity)

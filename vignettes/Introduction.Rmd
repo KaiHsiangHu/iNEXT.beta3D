@@ -58,17 +58,17 @@ library(iNEXT.Beta3D)
 
 Here are two main functions we provide in this package : 
 
-- **iNEXTBeta3D** : Computing standardized gamma, alpha, beta diversity, and four dissimilarity-turnover indices for three dimensions: taxonomic, phylogenetic and functional diversity at specified sample coverage or sample size.
+- **iNEXTbeta3D** : Computing standardized gamma, alpha, beta diversity, and four dissimilarity-turnover indices for three dimensions: taxonomic, phylogenetic and functional diversity at specified sample coverage or sample size.
 
-- **ggiNEXTBeta3D** : Visualizing the output from the function `iNEXTBeta3D`
+- **ggiNEXTbeta3D** : Visualizing the output from the function `iNEXTbeta3D`
 
 
-## MAIN FUNCTION: iNEXTBeta3D()
+## MAIN FUNCTION: iNEXTbeta3D()
 
-We first describe the main function `iNEXTBeta3D()` with default arguments: 
+We first describe the main function `iNEXTbeta3D()` with default arguments: 
 
 ```{r eval=FALSE}
-iNEXTBeta3D(data, diversity = "TD", q = c(0, 1, 2), datatype = "abundance",
+iNEXTbeta3D(data, diversity = "TD", q = c(0, 1, 2), datatype = "abundance",
             base = "coverage", level = NULL, nboot = 20, conf = 0.95,
             PDtree = NULL, PDreftime = NULL, PDtype = "meanPD",
             FDdistM = NULL, FDtype = "AUC", FDtau = NULL, FDcut_number = 30)
@@ -178,8 +178,8 @@ the corresponding beta diversity is computed up to the same maximum coverage as 
 </table>
 
 
-This function returns an `"iNEXTBeta3D"` object which can be further used to make plots 
-using the function `ggiNEXTBeta3D()` to be described below. 
+This function returns an `"iNEXTbeta3D"` object which can be further used to make plots 
+using the function `ggiNEXTbeta3D()` to be described below. 
 
 ## DATA FORMAT/INFORMATION
 Two types of data are supported:
@@ -220,7 +220,7 @@ lapply(beetle_inc, function(x) lapply(x, function(y) y[1:10,1:6]))
 ```
 
 
-When `base = 'coverage'`, the `iNEXTBeta3D()` function returns the `"iNEXTBeta3D"` object including seven data frames for each regions: 
+When `base = 'coverage'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D"` object including seven data frames for each regions: 
 
 - gamma 
 - alpha 
@@ -230,7 +230,7 @@ When `base = 'coverage'`, the `iNEXTBeta3D()` function returns the `"iNEXTBeta3D
 - V ( Sorensen-type turnover )
 - S ( Jaccard-type  turnover )
 
-When `base = 'size'`, the `iNEXTBeta3D()` function returns the `"iNEXTBeta3D"` object including two data frames for each regions: 
+When `base = 'size'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D"` object including two data frames for each regions: 
 
 - gamma 
 - alpha 
@@ -239,20 +239,20 @@ When `base = 'size'`, the `iNEXTBeta3D()` function returns the `"iNEXTBeta3D"` o
 
 ### Taxonomic diversity
 
-First, we run the `iNEXTBeta3D()` function with beetles abundance data to compute standardized gamma, alpha, beta diversity, and four dissimilarities under `base = 'coverage'`. (Here we only show the first six outputs for each output in region "unlogged")
+First, we run the `iNEXTbeta3D()` function with beetles abundance data to compute standardized gamma, alpha, beta diversity, and four dissimilarities under `base = 'coverage'`. (Here we only show the first six outputs for each output in region "unlogged")
 
 ```{r eval=FALSE}
 data("beetle_abu")
 
 # Taxonomic diversity
-Abundance_TD = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
+Abundance_TD = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
                            base = 'coverage', nboot = 30)
 Abundance_TD
 ```
 
 
 ```{r echo=FALSE}
-Abundance_TD = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
+Abundance_TD = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
                            base = 'coverage', nboot = 30)
 lapply(Abundance_TD$`2008 vs. 2009 unlogged`, function(x) {
     tmp = x[1:6,]
@@ -270,7 +270,7 @@ Then, we can also use beetles incidence raw data to compute standardized gamma, 
 ```{r eval=FALSE}
 data("beetle_inc")
 
-Incidence_TD = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = "incidence_raw",
+Incidence_TD = iNEXTbeta3D(data = beetle_inc, diversity = 'TD', datatype = "incidence_raw",
                            base = 'coverage', nboot = 30)
 Incidence_TD
 ```
@@ -287,11 +287,11 @@ data("beetle_tree")
 
 
 # Phylogenetic diversity
-Abundance_PD = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = "abundance", 
+Abundance_PD = iNEXTbeta3D(data = beetle_abu, diversity = 'PD', datatype = "abundance", 
                            base = 'coverage', nboot = 30, PDtree = beetle_tree)
 Abundance_PD
 
-Incidence_PD = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = "incidence_raw", 
+Incidence_PD = iNEXTbeta3D(data = beetle_inc, diversity = 'PD', datatype = "incidence_raw", 
                            base = 'coverage', nboot = 30, PDtree = beetle_tree)
 Incidence_PD
 ```
@@ -307,36 +307,36 @@ data("beetle_distM")
 
 
 # Functional diversity - under specified threshold
-Abundance_FDtau = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = "abundance", 
+Abundance_FDtau = iNEXTbeta3D(data = beetle_abu, diversity = 'FD', datatype = "abundance", 
                               base = 'coverage', nboot = 30, 
                               FDdistM = beetle_distM, FDtype = 'tau_value')
 Abundance_FDtau
 
-Incidence_FDtau = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = "incidence_raw", 
+Incidence_FDtau = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = "incidence_raw", 
                               base = 'coverage', nboot = 30, 
                               FDdistM = beetle_distM, FDtype = 'tau_value')
 Incidence_FDtau
 
 
 # Functional diversity - area under curve (integrates all threshold values between zero and one)
-Abundance_FDAUC = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = "abundance", 
+Abundance_FDAUC = iNEXTbeta3D(data = beetle_abu, diversity = 'FD', datatype = "abundance", 
                               base = 'coverage', nboot = 30, 
                               FDdistM = beetle_distM, FDtype = 'AUC')
 Abundance_FDAUC
 
-Incidence_FDAUC = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = "incidence_raw", 
+Incidence_FDAUC = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = "incidence_raw", 
                               base = 'coverage', nboot = 30, 
                               FDdistM = beetle_distM, FDtype = 'AUC')
 Incidence_FDAUC
 ```
 
 
-## GRAPHIC DISPLAYS: FUNCTION ggiNEXTBeta3D()
+## GRAPHIC DISPLAYS: FUNCTION ggiNEXTbeta3D()
 
-The function `ggiNEXTBeta3D()`, which extends `ggplot2` to the `"iNEXTBeta3D"` object with default arguments, is described as follows: 
+The function `ggiNEXTbeta3D()`, which extends `ggplot2` to the `"iNEXTbeta3D"` object with default arguments, is described as follows: 
 
 ```{r eval=FALSE}
-ggiNEXTBeta3D(output, type = "B", scale = "free")  
+ggiNEXTbeta3D(output, type = "B", scale = "free")  
 ```
 
 <table style="width:100%;">
@@ -353,7 +353,7 @@ ggiNEXTBeta3D(output, type = "B", scale = "free")
 <tbody>
 <tr class="odd">
 <td align="center"><code>output</code></td>
-<td align="left">the output of <code>iNEXTBeta3D</code>.</td>
+<td align="left">the output of <code>iNEXTbeta3D</code>.</td>
 
 </tr>
 <tr class="even">
@@ -370,26 +370,26 @@ ggiNEXTBeta3D(output, type = "B", scale = "free")
 </table>
 
 
-The `ggiNEXTBeta3D()` function is a wrapper around the `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so it can be manipulated using the `ggplot2` tools. Users can visualize the output of beta diversity or four dissimilarities by setting the parameter <code>**type**</code>:
+The `ggiNEXTbeta3D()` function is a wrapper around the `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so it can be manipulated using the `ggplot2` tools. Users can visualize the output of beta diversity or four dissimilarities by setting the parameter <code>**type**</code>:
 
 ```{r, fig.align='center', fig.height=6, fig.width=6}
-Abundance_TD = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
+Abundance_TD = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
                            base = 'coverage', nboot = 30)
-ggiNEXTBeta3D(Abundance_TD, type = 'B')
+ggiNEXTbeta3D(Abundance_TD, type = 'B')
 ```
 
 
 ```{r, fig.align='center', fig.height=8, fig.width=6}
-ggiNEXTBeta3D(Abundance_TD, type = 'D')
+ggiNEXTbeta3D(Abundance_TD, type = 'D')
 ```
 
 
 The following commands return the size-based R/E sampling curves for gamma and alpha taxonomic diversity:
 
 ```{r, fig.align='center', fig.height=4, fig.width=6}
-output = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
+output = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
                      base = "size", nboot = 30)
-ggiNEXTBeta3D(output)
+ggiNEXTbeta3D(output)
 ```
 
 

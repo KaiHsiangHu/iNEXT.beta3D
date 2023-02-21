@@ -1,6 +1,6 @@
-#' iNterpolation and EXTrapolation for Beta diversity 
+#' iNterpolation and EXTrapolation for beta diversity 
 #' 
-#' \code{iNEXTBeta3D}: Interpolation and extrapolation of Beta diversity with order q
+#' \code{iNEXTbeta3D}: Interpolation and extrapolation of beta diversity with order q
 #' 
 #' @param data (a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
 #' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units. 
@@ -42,14 +42,14 @@
 #' @examples
 #' ## Taxonomic diversity for abundance data
 #' data(beetle_abu)
-#' output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
+#' output1 = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 #' output1
 #' 
 #' 
 #' ## Taxonomic diversity for incidence data
 #' data(beetle_inc)
-#' output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
+#' output2 = iNEXTbeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 #' output2
 #' 
@@ -57,7 +57,7 @@
 #' ## Phylogenetic diversity for abundance data
 #' data(beetle_abu)
 #' data(beetle_tree)
-#' output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance', 
+#' output3 = iNEXTbeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
 #' output3
@@ -66,7 +66,7 @@
 #' ## Phylogenetic diversity for incidence data
 #' data(beetle_inc)
 #' data(beetle_tree)
-#' output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', 
+#' output4 = iNEXTbeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'PD')
 #' output4
@@ -75,7 +75,7 @@
 #' ## Functional diversity for abundance data under single threshold
 #' data(beetle_abu)
 #' data(beetle_distM)
-#' output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+#' output5 = iNEXTbeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #' output5
@@ -84,7 +84,7 @@
 #' ## Functional diversity for incidence data under single threshold
 #' data(beetle_inc)
 #' data(beetle_distM)
-#' output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#' output6 = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #' output6
@@ -93,7 +93,7 @@
 #' ## Functional diversity for abundance data with thresholds integrating from 0 to 1
 #' data(beetle_abu)
 #' data(beetle_distM)
-#' output7 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+#' output7 = iNEXTbeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output7
@@ -102,12 +102,12 @@
 #' ## Functional diversity for incidence data with thresholds integrating from 0 to 1
 #' data(beetle_inc)
 #' data(beetle_distM)
-#' output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#' output8 = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output8
 #' @export
-iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abundance', 
+iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abundance', 
                        base = 'coverage', level = NULL, nboot = 20, conf = 0.95, 
                        PDtree = NULL, PDreftime = NULL, PDtype = 'meanPD',
                        FDdistM = NULL, FDtype = 'AUC', FDtau = NULL, FDcut_number = 30) {
@@ -2614,11 +2614,11 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 
 
 
-#' ggplot2 extension for an iNEXTBeta3D object
+#' ggplot2 extension for an iNEXTbeta3D object
 #' 
-#' \code{ggiNEXTBeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTBeta3D}} object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
+#' \code{ggiNEXTbeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTbeta3D}} object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 #' 
-#' @param output the output from iNEXTBeta3D
+#' @param output the output from iNEXTbeta3D
 #' @param type (required only when \code{base = "coverage"}), selection of plot type : \cr
 #' \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 #' \code{type = 'D'} for plotting 4 turnover dissimilarities.
@@ -2629,88 +2629,88 @@ iNEXTBeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' @examples
 #' ## Taxonomic diversity for abundance data
 #' data(beetle_abu)
-#' output1 = iNEXTBeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
+#' output1 = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20)
 #' 
-#' ggiNEXTBeta3D(output1, type = 'B', scale = 'free')
-#' ggiNEXTBeta3D(output1, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output1, type = 'B', scale = 'free')
+#' ggiNEXTbeta3D(output1, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Taxonomic diversity for incidence data
 #' data(beetle_inc)
-#' output2 = iNEXTBeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
+#' output2 = iNEXTbeta3D(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95)
 #' 
-#' ggiNEXTBeta3D(output2, type = 'B', scale = 'free')
-#' ggiNEXTBeta3D(output2, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output2, type = 'B', scale = 'free')
+#' ggiNEXTbeta3D(output2, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Phylogenetic diversity for abundance data
 #' data(beetle_abu)
 #' data(beetle_tree)
-#' output3 = iNEXTBeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance', 
+#' output3 = iNEXTbeta3D(data = beetle_abu, diversity = 'PD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
-#' ggiNEXTBeta3D(output3, type = 'B', scale = 'free')
-#' ggiNEXTBeta3D(output3, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output3, type = 'B', scale = 'free')
+#' ggiNEXTbeta3D(output3, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Phylogenetic diversity for incidence data
 #' data(beetle_inc)
 #' data(beetle_tree)
-#' output4 = iNEXTBeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', 
+#' output4 = iNEXTbeta3D(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 0, conf = 0.95, 
 #'                       PDtree = beetle_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
-#' ggiNEXTBeta3D(output4, type = 'B', scale = 'free')
-#' ggiNEXTBeta3D(output4, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output4, type = 'B', scale = 'free')
+#' ggiNEXTbeta3D(output4, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Functional diversity for abundance data under single threshold
 #' data(beetle_abu)
 #' data(beetle_distM)
-#' output5 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+#' output5 = iNEXTbeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #' 
-#' ggiNEXTBeta3D(output5, type = 'B', scale = 'free')
-#' ggiNEXTBeta3D(output5, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output5, type = 'B', scale = 'free')
+#' ggiNEXTbeta3D(output5, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Functional diversity for incidence data under single threshold
 #' data(beetle_inc)
 #' data(beetle_distM)
-#' output6 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#' output6 = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 20, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
 #'
-#' ggiNEXTBeta3D(output6, type = 'B', scale = 'free')
-#' ggiNEXTBeta3D(output6, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output6, type = 'B', scale = 'free')
+#' ggiNEXTbeta3D(output6, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Functional diversity for abundance data with thresholds integrating from 0 to 1
 #' data(beetle_abu)
 #' data(beetle_distM)
-#' output7 = iNEXTBeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
+#' output7 = iNEXTbeta3D(data = beetle_abu, diversity = 'FD', datatype = 'abundance', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
-#' ggiNEXTBeta3D(output7, type = 'B', scale = 'free')
-#' ggiNEXTBeta3D(output7, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output7, type = 'B', scale = 'free')
+#' ggiNEXTbeta3D(output7, type = 'D', scale = 'free')
 #' 
 #' 
 #' ## Functional diversity for incidence data with thresholds integrating from 0 to 1
 #' data(beetle_inc)
 #' data(beetle_distM)
-#' output8 = iNEXTBeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#' output8 = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
 #'                       level = seq(0.8, 1, 0.05), nboot = 10, conf = 0.95, 
 #'                       FDdistM = beetle_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
-#' ggiNEXTBeta3D(output8, type = 'B', scale = 'free')
-#' ggiNEXTBeta3D(output8, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output8, type = 'B', scale = 'free')
+#' ggiNEXTbeta3D(output8, type = 'D', scale = 'free')
 #' @export
-ggiNEXTBeta3D = function(output, type = 'B', scale = 'free'){
+ggiNEXTbeta3D = function(output, type = 'B', scale = 'free'){
   
   cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                      "#330066", "#CC79A7", "#0072B2", "#D55E00"))
