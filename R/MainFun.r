@@ -2623,6 +2623,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 #' \code{type = 'D'} for plotting 4 turnover dissimilarities.
 #' @param scale Are scales shared across all facets (the default, \code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.
+#' @param transp a value between 0 and 1 controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.
 #' 
 #' @return a figure for Beta diversity or dissimilarity index.
 #' 
@@ -2710,7 +2711,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' ggiNEXTbeta3D(output8, type = 'B', scale = 'free')
 #' ggiNEXTbeta3D(output8, type = 'D', scale = 'free')
 #' @export
-ggiNEXTbeta3D = function(output, type = 'B', scale = 'free'){
+ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
   
   cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                      "#330066", "#CC79A7", "#0072B2", "#D55E00"))
@@ -2831,7 +2832,7 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free'){
     double_extrapolation = df %>% filter(Method == "Extrapolation" & round(Size) %in% double_size)
     
     ggplot(data = df, aes(x = SC, y = Estimate, col = Region)) +
-      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = 0.4) + 
+      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = transp) + 
       geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       # geom_line(lty=2) + 
       geom_point(data = subset(df, Method == 'Observed' & div_type == "Gamma"), shape = 19, size = 3) + 
@@ -2888,7 +2889,7 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free'){
     double_extrapolation = df %>% filter(Method == "Extrapolation" & round(Size) %in% double_size)
     
     ggplot(data = df, aes(x = Size, y = Estimate, col = Region)) +
-      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = 0.4) + 
+      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = transp) + 
       geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       geom_point(data = subset(df, Method == 'Observed' & div_type == "Gamma"), shape = 19, size = 3) + 
       geom_point(data = subset(df, Method == 'Observed' & div_type != "Gamma"), shape = 1, size = 3, stroke = 1.5) +
