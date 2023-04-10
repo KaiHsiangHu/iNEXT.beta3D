@@ -26,7 +26,7 @@ iNEXT.beta3D (R package)
 
 <font color="394CAE"><h3 color= 394CAE style = "font-weight: bold"> Introduction to iNEXT.beta3D (R package): Excerpt from iNEXT.beta3D User’s Guide </h3> </font>
 <br>
-<h5><b>Hsieh, Anne Chao, Kai-Hsiang Hu</b>
+<h5><b>Anne Chao, Kai-Hsiang Hu</b>
 <br><br>
 <i>Institute of Statistics, National Tsing Hua University, Hsin-Chu, Taiwan 30043</i>  
 </h5>
@@ -51,7 +51,7 @@ to compute diversity estimates and the associated 95% confidence intervals for t
 
 ### HOW TO RUN iNEXT.beta3D:
 
-The `iNEXT.beta3D` package can be downloaded from Anne Chao's [iNEXT.beta3D_github](https://github.com/AnneChao/iNEXT.beta3D) using the following commands. For a first-time installation, an additional visualization extension package (`ggplot2`) and (`iNEXT.3D`) from Anne Chao's github must be installed and loaded. 
+The `iNEXT.beta3D` package can be downloaded from Anne Chao's [iNEXT.beta3D_github](https://github.com/AnneChao/iNEXT.beta3D) using the following commands. For a first-time installation, additional visualization extension packages (`ggplot2`) from CRAN and (`iNEXT.3D`) from Anne Chao's github must be installed and loaded. 
 
 ```{r install, eval=FALSE}
 # install_github('AnneChao/iNEXT.3D')
