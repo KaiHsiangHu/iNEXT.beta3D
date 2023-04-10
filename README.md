@@ -473,66 +473,66 @@ Abundance_TD
 
     $gamma
       Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    2.032       0 Rarefaction 0.500 2.534 0.023 1.987 2.076 2008 vs. 2009 unlogged        TD
-    2    1.909       1 Rarefaction 0.500 2.534 0.020 1.871 1.948 2008 vs. 2009 unlogged        TD
-    3    1.776       2 Rarefaction 0.500 2.534 0.017 1.743 1.809 2008 vs. 2009 unlogged        TD
-    4    2.174       0 Rarefaction 0.525 2.787 0.026 2.123 2.225 2008 vs. 2009 unlogged        TD
-    5    2.028       1 Rarefaction 0.525 2.787 0.023 1.983 2.072 2008 vs. 2009 unlogged        TD
-    6    1.871       2 Rarefaction 0.525 2.787 0.019 1.833 1.909 2008 vs. 2009 unlogged        TD
+    1    2.032       0 Rarefaction 0.500 2.534 0.029 1.975 2.089 2008 vs. 2009 unlogged        TD
+    2    1.909       1 Rarefaction 0.500 2.534 0.026 1.859 1.960 2008 vs. 2009 unlogged        TD
+    3    1.776       2 Rarefaction 0.500 2.534 0.022 1.734 1.819 2008 vs. 2009 unlogged        TD
+    4    2.174       0 Rarefaction 0.525 2.787 0.033 2.109 2.239 2008 vs. 2009 unlogged        TD
+    5    2.028       1 Rarefaction 0.525 2.787 0.029 1.971 2.085 2008 vs. 2009 unlogged        TD
+    6    1.871       2 Rarefaction 0.525 2.787 0.025 1.822 1.920 2008 vs. 2009 unlogged        TD
 
     $alpha
       Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    1.566       0 Rarefaction 0.500 4.141 0.022 1.522 1.610 2008 vs. 2009 unlogged        TD
-    2    1.434       1 Rarefaction 0.500 4.141 0.019 1.397 1.471 2008 vs. 2009 unlogged        TD
-    3    1.291       2 Rarefaction 0.500 4.141 0.016 1.260 1.322 2008 vs. 2009 unlogged        TD
-    4    1.686       0 Rarefaction 0.525 4.615 0.026 1.636 1.737 2008 vs. 2009 unlogged        TD
-    5    1.527       1 Rarefaction 0.525 4.615 0.022 1.484 1.570 2008 vs. 2009 unlogged        TD
-    6    1.360       2 Rarefaction 0.525 4.615 0.018 1.325 1.395 2008 vs. 2009 unlogged        TD
+    1    1.566       0 Rarefaction 0.500 4.141 0.027 1.512 1.619 2008 vs. 2009 unlogged        TD
+    2    1.434       1 Rarefaction 0.500 4.141 0.023 1.388 1.480 2008 vs. 2009 unlogged        TD
+    3    1.291       2 Rarefaction 0.500 4.141 0.019 1.253 1.329 2008 vs. 2009 unlogged        TD
+    4    1.686       0 Rarefaction 0.525 4.615 0.031 1.625 1.747 2008 vs. 2009 unlogged        TD
+    5    1.527       1 Rarefaction 0.525 4.615 0.027 1.475 1.579 2008 vs. 2009 unlogged        TD
+    6    1.360       2 Rarefaction 0.525 4.615 0.022 1.317 1.403 2008 vs. 2009 unlogged        TD
 
     $beta
       Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    1.298       0 Rarefaction 0.500 4.141 0.005 1.288 1.307 2008 vs. 2009 unlogged        TD
-    2    1.332       1 Rarefaction 0.500 4.141 0.005 1.322 1.341 2008 vs. 2009 unlogged        TD
-    3    1.376       2 Rarefaction 0.500 4.141 0.005 1.367 1.385 2008 vs. 2009 unlogged        TD
-    4    1.289       0 Rarefaction 0.525 4.615 0.005 1.279 1.299 2008 vs. 2009 unlogged        TD
-    5    1.328       1 Rarefaction 0.525 4.615 0.005 1.318 1.338 2008 vs. 2009 unlogged        TD
-    6    1.376       2 Rarefaction 0.525 4.615 0.005 1.366 1.385 2008 vs. 2009 unlogged        TD
+    1    1.298       0 Rarefaction 0.500 4.141 0.007 1.285 1.310 2008 vs. 2009 unlogged        TD
+    2    1.332       1 Rarefaction 0.500 4.141 0.006 1.319 1.344 2008 vs. 2009 unlogged        TD
+    3    1.376       2 Rarefaction 0.500 4.141 0.006 1.364 1.388 2008 vs. 2009 unlogged        TD
+    4    1.289       0 Rarefaction 0.525 4.615 0.007 1.276 1.303 2008 vs. 2009 unlogged        TD
+    5    1.328       1 Rarefaction 0.525 4.615 0.007 1.315 1.341 2008 vs. 2009 unlogged        TD
+    6    1.376       2 Rarefaction 0.525 4.615 0.006 1.363 1.388 2008 vs. 2009 unlogged        TD
 
     $C
       Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    0.298       0 Rarefaction 0.500 4.141 0.005 0.288 0.307 2008 vs. 2009 unlogged        TD
-    2    0.413       1 Rarefaction 0.500 4.141 0.005 0.403 0.423 2008 vs. 2009 unlogged        TD
-    3    0.546       2 Rarefaction 0.500 4.141 0.005 0.537 0.556 2008 vs. 2009 unlogged        TD
-    4    0.289       0 Rarefaction 0.525 4.615 0.005 0.279 0.299 2008 vs. 2009 unlogged        TD
-    5    0.409       1 Rarefaction 0.525 4.615 0.005 0.398 0.420 2008 vs. 2009 unlogged        TD
-    6    0.546       2 Rarefaction 0.525 4.615 0.005 0.536 0.556 2008 vs. 2009 unlogged        TD
+    1    0.298       0 Rarefaction 0.500 4.141 0.007 0.285 0.310 2008 vs. 2009 unlogged        TD
+    2    0.413       1 Rarefaction 0.500 4.141 0.007 0.400 0.427 2008 vs. 2009 unlogged        TD
+    3    0.546       2 Rarefaction 0.500 4.141 0.006 0.534 0.559 2008 vs. 2009 unlogged        TD
+    4    0.289       0 Rarefaction 0.525 4.615 0.007 0.276 0.303 2008 vs. 2009 unlogged        TD
+    5    0.409       1 Rarefaction 0.525 4.615 0.007 0.395 0.423 2008 vs. 2009 unlogged        TD
+    6    0.546       2 Rarefaction 0.525 4.615 0.007 0.533 0.560 2008 vs. 2009 unlogged        TD
 
     $U
       Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    0.459       0 Rarefaction 0.500 4.141 0.006 0.447 0.470 2008 vs. 2009 unlogged        TD
-    2    0.413       1 Rarefaction 0.500 4.141 0.005 0.403 0.423 2008 vs. 2009 unlogged        TD
-    3    0.376       2 Rarefaction 0.500 4.141 0.005 0.367 0.385 2008 vs. 2009 unlogged        TD
-    4    0.449       0 Rarefaction 0.525 4.615 0.006 0.437 0.461 2008 vs. 2009 unlogged        TD
-    5    0.409       1 Rarefaction 0.525 4.615 0.005 0.398 0.420 2008 vs. 2009 unlogged        TD
-    6    0.376       2 Rarefaction 0.525 4.615 0.005 0.366 0.385 2008 vs. 2009 unlogged        TD
+    1    0.459       0 Rarefaction 0.500 4.141 0.008 0.443 0.474 2008 vs. 2009 unlogged        TD
+    2    0.413       1 Rarefaction 0.500 4.141 0.007 0.400 0.427 2008 vs. 2009 unlogged        TD
+    3    0.376       2 Rarefaction 0.500 4.141 0.006 0.364 0.388 2008 vs. 2009 unlogged        TD
+    4    0.449       0 Rarefaction 0.525 4.615 0.008 0.433 0.465 2008 vs. 2009 unlogged        TD
+    5    0.409       1 Rarefaction 0.525 4.615 0.007 0.395 0.423 2008 vs. 2009 unlogged        TD
+    6    0.376       2 Rarefaction 0.525 4.615 0.006 0.363 0.388 2008 vs. 2009 unlogged        TD
 
     $V
       Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    0.298       0 Rarefaction 0.500 4.141 0.005 0.288 0.307 2008 vs. 2009 unlogged        TD
-    2    0.332       1 Rarefaction 0.500 4.141 0.005 0.322 0.341 2008 vs. 2009 unlogged        TD
-    3    0.376       2 Rarefaction 0.500 4.141 0.005 0.367 0.385 2008 vs. 2009 unlogged        TD
-    4    0.289       0 Rarefaction 0.525 4.615 0.005 0.279 0.299 2008 vs. 2009 unlogged        TD
-    5    0.328       1 Rarefaction 0.525 4.615 0.005 0.318 0.338 2008 vs. 2009 unlogged        TD
-    6    0.376       2 Rarefaction 0.525 4.615 0.005 0.366 0.385 2008 vs. 2009 unlogged        TD
+    1    0.298       0 Rarefaction 0.500 4.141 0.007 0.285 0.310 2008 vs. 2009 unlogged        TD
+    2    0.332       1 Rarefaction 0.500 4.141 0.006 0.319 0.344 2008 vs. 2009 unlogged        TD
+    3    0.376       2 Rarefaction 0.500 4.141 0.006 0.364 0.388 2008 vs. 2009 unlogged        TD
+    4    0.289       0 Rarefaction 0.525 4.615 0.007 0.276 0.303 2008 vs. 2009 unlogged        TD
+    5    0.328       1 Rarefaction 0.525 4.615 0.007 0.315 0.341 2008 vs. 2009 unlogged        TD
+    6    0.376       2 Rarefaction 0.525 4.615 0.006 0.363 0.388 2008 vs. 2009 unlogged        TD
 
     $S
       Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    0.459       0 Rarefaction 0.500 4.141 0.006 0.447 0.470 2008 vs. 2009 unlogged        TD
-    2    0.498       1 Rarefaction 0.500 4.141 0.005 0.487 0.509 2008 vs. 2009 unlogged        TD
-    3    0.546       2 Rarefaction 0.500 4.141 0.005 0.537 0.556 2008 vs. 2009 unlogged        TD
-    4    0.449       0 Rarefaction 0.525 4.615 0.006 0.437 0.461 2008 vs. 2009 unlogged        TD
-    5    0.494       1 Rarefaction 0.525 4.615 0.006 0.483 0.505 2008 vs. 2009 unlogged        TD
-    6    0.546       2 Rarefaction 0.525 4.615 0.005 0.536 0.556 2008 vs. 2009 unlogged        TD
+    1    0.459       0 Rarefaction 0.500 4.141 0.008 0.443 0.474 2008 vs. 2009 unlogged        TD
+    2    0.498       1 Rarefaction 0.500 4.141 0.007 0.484 0.512 2008 vs. 2009 unlogged        TD
+    3    0.546       2 Rarefaction 0.500 4.141 0.006 0.534 0.559 2008 vs. 2009 unlogged        TD
+    4    0.449       0 Rarefaction 0.525 4.615 0.008 0.433 0.465 2008 vs. 2009 unlogged        TD
+    5    0.494       1 Rarefaction 0.525 4.615 0.008 0.479 0.508 2008 vs. 2009 unlogged        TD
+    6    0.546       2 Rarefaction 0.525 4.615 0.007 0.533 0.560 2008 vs. 2009 unlogged        TD
 
 The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`,
 `U`, `V`, `S`. For each data frame, it includes the diversity estimate
@@ -700,13 +700,13 @@ Abundance_TD = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abun
 ggiNEXTbeta3D(Abundance_TD, type = 'B')
 ```
 
-<img src="README/README-unnamed-chunk-13-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="README/README-unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" />
 
 ``` r
 ggiNEXTbeta3D(Abundance_TD, type = 'D')
 ```
 
-<img src="README/README-unnamed-chunk-14-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="README/README-unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
 
 The following commands return the size-based R/E sampling curves for
 gamma and alpha taxonomic diversity:
@@ -717,7 +717,7 @@ output = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance"
 ggiNEXTbeta3D(output)
 ```
 
-<img src="README/README-unnamed-chunk-15-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="README/README-unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
 
 ### How to cite
 
