@@ -13,7 +13,7 @@ ggiNEXTbeta3D(output, type = "B", scale = "free", transp = 0.4)
 \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 \code{type = 'D'} for plotting 4 turnover dissimilarities.}
 
-\item{scale}{Are scales shared across all facets (the default, \code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.}
+\item{scale}{Are scales shared across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.}
 
 \item{transp}{a value between 0 and 1 controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.}
 }

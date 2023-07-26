@@ -4,7 +4,7 @@ Title: Interpolation and Extrapolation for three dimensions of beta diversity
 Version: 1.0.1
 Author: Anne Chao, K.S. Hu, Y.S. Kao and Z.C. Szu-tu
 Maintainer: K. S. Hu <river19951224@gmail.com>
-Description: iNEXT.beta3D provides the function computing beta diversity for multiple assemblages.
+Description: iNEXT.beta3D features non-asymptotic analyses for taxonomic, phylogenetic, and functional diversity based on Hill numbers family: It computes the estimated diversities for standardized samples with a common sample size or sample completeness (sample coverages). This approach aims to compare gamma, alpha, and beta diversity estimates for equally-large (with a common sample size) or equally-complete (with a common sample coverage) samples; it is based on the seamless rarefaction and extrapolation (R/E) sampling curves of Hill numbers family.
 Depends: R (>= 4.0)
 Imports: tidyverse,
          magrittr,
@@ -23,4 +23,4 @@ Remotes: AnneChao/iNEXT.3D
 Encoding: UTF-8
 BugReports: https://github.com/KaiHsiangHu/iNEXT.beta3D/issues
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
