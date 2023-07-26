@@ -1,6 +1,6 @@
 Package: iNEXT.beta3D
 Type: Package
-Title: Interpolation and Extrapolation for three dimensions of beta diversity
+Title: iNterpolation and EXTrapolation with beta diversity for three dimensions of biodiversity
 Version: 1.0.1
 Author: Anne Chao, K.S. Hu, Y.S. Kao and Z.C. Szu-tu
 Maintainer: K. S. Hu <river19951224@gmail.com>
