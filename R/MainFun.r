@@ -2921,7 +2921,17 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
       scale_fill_manual(values = cbPalette) + 
       facet_grid(div_type ~ Order.q, scales = scale) +
       theme_bw() + 
-      theme(legend.position = "bottom", legend.title = element_blank()) +
+      theme(legend.position = "bottom", 
+            legend.title = element_blank(),
+            strip.text = element_text(size = 15, face = 'bold'),
+            axis.title = element_text(hjust = 0.5, size = 15, face = 'bold'),
+            axis.text.x = element_text(size = 15),
+            axis.text.y = element_text(size = 15),
+            legend.box = "vertical",
+            legend.margin = margin(0, 0, 0, 0),
+            legend.box.margin = margin(-10, -10, -5, -10),
+            legend.text = element_text(size = 13),
+            plot.margin = unit(c(5.5, 5.5, 5.5, 5.5), "pt")) +
       labs(x = 'Sample coverage', y = ylab) +
       guides(linetype = guide_legend(keywidth = 2.5))
     
@@ -2977,7 +2987,17 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
       scale_fill_manual(values = cbPalette) + 
       facet_grid(div_type ~ Order.q, scales = scale) +
       theme_bw() + 
-      theme(legend.position = "bottom", legend.title = element_blank()) +
+      theme(legend.position = "bottom", 
+            legend.title = element_blank(),
+            strip.text = element_text(size = 15, face = 'bold'),
+            axis.title = element_text(hjust = 0.5, size = 15, face = 'bold'),
+            axis.text.x = element_text(size = 15),
+            axis.text.y = element_text(size = 15),
+            legend.box = "vertical",
+            legend.margin = margin(0, 0, 0, 0),
+            legend.box.margin = margin(-10, -10, -5, -10),
+            legend.text = element_text(size = 13),
+            plot.margin = unit(c(5.5, 5.5, 5.5, 5.5), "pt")) +
       labs(x = xlab, y = ylab) +
       guides(linetype = guide_legend(keywidth = 2.5))
   }
