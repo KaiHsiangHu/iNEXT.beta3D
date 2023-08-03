@@ -33,7 +33,7 @@ library(iNEXT.beta3D)
 ## HOW TO CITE iNEXT.beta3D
 If you publish your work based on the results from the `iNEXT.beta3D` package, you should make references to the following methodology paper:
 
-- Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zelený, D., Colwell, R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i>, e1588.
+- Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zelen??, D., Colwell, R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i>, e1588.
 
 ## SOFTWARE NEEDED TO RUN iNEXT.beta3D IN R
 - Required: [R](https://cran.r-project.org/)
@@ -48,7 +48,7 @@ The `iNEXT.beta3D` package will be submitted to [CRAN] and can be downloaded fro
 # library(iNEXT.3D)
 
 ## install iNEXT.beta3D package from CRAN
-install.packages("iNEXT.beta3D")
+# install.packages("iNEXT.beta3D")  # coming soon
 
 ## install the latest version from github
 install.packages('devtools')
@@ -423,9 +423,9 @@ The iNEXT.beta3D package is licensed under the GPLv3. To help refine `iNEXT.beta
 ## References
 - Chiu, C.-H., Jost, L. and Chao*, A. (2014). Phylogenetic beta diversity, similarity, and differentiation measures based on Hill numbers. Ecological Monographs 84, 21-44.
 
-- Chao, A., Chiu, C.-H., Villéger, S., Sun, I.-F., Thorn, S., Lin, Y.-C., Chiang, J. M. and Sherwin, W. B. (2019). An attribute-diversity approach to functional diversity, functional beta diversity, and related (dis)similarity measures. Ecological Monographs, 89, e01343. 10.1002/ecm.1343.
+- Chao, A., Chiu, C.-H., Vill?�ger, S., Sun, I.-F., Thorn, S., Lin, Y.-C., Chiang, J. M. and Sherwin, W. B. (2019). An attribute-diversity approach to functional diversity, functional beta diversity, and related (dis)similarity measures. Ecological Monographs, 89, e01343. 10.1002/ecm.1343.
 
-- Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zelený, D., Colwell, R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i>, e1588.
+- Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zelen??, D., Colwell, R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i>, e1588.
 
 
 
