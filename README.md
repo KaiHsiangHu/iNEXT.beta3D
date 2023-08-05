@@ -3,7 +3,7 @@
 # iNEXT.beta3D (R package)
 
 <h5 align="right">
-Latest version: 2023-04-10
+Latest version: 2023-08-05
 </h5>
 <font color="394CAE">
 <h3 color="394CAE" style="font-weight: bold">
@@ -12,8 +12,9 @@ User’s Guide
 </h3>
 </font> <br>
 <h5>
-<b>Anne Chao, Kai-Hsiang Hu</b> <br><br> <i>Institute of Statistics,
-National Tsing Hua University, Hsin-Chu, Taiwan 30043</i>
+<b>Anne Chao, Kai-Hsiang Hu, Y.S. Kao and Z.C. Szu-tu</b> <br><br>
+<i>Institute of Statistics, National Tsing Hua University, Hsin-Chu,
+Taiwan 30043</i>
 </h5>
 
 <br> iNEXT.beta3D (iNterpolation and EXTrapolation for three dimensions
@@ -27,57 +28,62 @@ which is available from [Anne Chao’s
 website](http://chao.stat.nthu.edu.tw/wordpress/software_download/).
 
 `iNEXT.beta3D` focuses on Chiu’s et al.’s multiple assemblages
-decomposition (Chiu, Jost, and Chao (2014)) based on three measures of
-Hill numbers of order q: species richness (`q = 0`), Shannon diversity
+decomposition (Chiu et al., 2014) based on three measures of Hill
+numbers of order q: species richness (`q = 0`), Shannon diversity
 (`q = 1`, the exponential of Shannon entropy) and Simpson diversity
 (`q = 2`, the inverse of Simpson concentration). Besides, `iNEXT.beta3D`
-also promote phylogenetic diversity level and functional diversity
-level. For each diversity measure, `iNEXT.beta3D` uses the observed
-sample of abundance or incidence data (called the “reference sample”) to
-compute diversity estimates and the associated 95% confidence intervals
-for the following two types of rarefaction and extrapolation (R/E):
+also promote phylogenetic diversity level and functional diversity level
+(Chao et al., 2019). For each diversity measure, `iNEXT.beta3D` uses the
+observed sample of abundance or incidence data (called the “reference
+sample”) to compute diversity estimates and the associated 95%
+confidence intervals for the following two types of rarefaction and
+extrapolation (R/E):
 
 1.  Sample-size-based (or size-based) R/E sampling curves:
-    `iNEXT.beta3D` computes gamma, alpha, and beta diversity estimates
-    for rarefied and extrapolated samples up to an appropriate size.
-    This type of sampling curve plots the diversity estimates with
-    respect to sample size.  
-2.  Coverage-based R/E sampling curves: `iNEXT.beta3D` computes gamma,
-    alpha, and beta diversity estimates for rarefied and extrapolated
-    samples based on a standardized level of sample completeness (as
-    measured by sample coverage) up to an appropriate coverage value.
-    This type of sampling curve plots the diversity estimates with
-    respect to sample coverage.
+    `iNEXT.beta3D` computes <font color=#FF6781>gamma and alpha</font>
+    diversity estimates for rarefied and extrapolated samples up to an
+    appropriate size. This type of sampling curve plots the diversity
+    estimates with respect to sample size.
 
-`iNEXT.beta3D` plots the above two types of sampling curves for gamma,
-alpha, and beta diversity and four dissimilarity-turnover.
+2.  Coverage-based R/E sampling curves: `iNEXT.beta3D` computes
+    <font color=#FF6781>gamma, alpha, and beta</font> diversity
+    estimates and <font color=#FF6781>four dissimilarity</font> measures
+    estimates for rarefied and extrapolated samples based on a
+    standardized level of sample completeness (as measured by sample
+    coverage) up to an appropriate coverage value. This type of sampling
+    curve plots the diversity estimates with respect to sample coverage.
+
+`iNEXT.beta3D` also plots the above two types of sampling curves for
+gamma, alpha, and beta diversity and four dissimilarity-turnover.
 
 ### SOFTWARE NEEDED TO RUN iNEXT.beta3D IN R
 
 -   Required: [R](http://cran.rstudio.com/)
 -   Suggested: [RStudio IDE](http://www.rstudio.com/ide/download/)
 
-### HOW TO RUN iNEXT.beta3D:
+## HOW TO RUN iNEXT.beta3D:
 
-The `iNEXT.beta3D` package can be downloaded from Anne Chao’s
+The `iNEXT.beta3D` package will be submitted to \[CRAN\] and can be
+downloaded from Anne Chao’s
 [iNEXT.beta3D_github](https://github.com/AnneChao/iNEXT.beta3D) using
-the following commands. For a first-time installation, additional
-visualization extension packages (`ggplot2`) from CRAN and (`iNEXT.3D`)
-from Anne Chao’s github must be installed and loaded.
+the following commands. For a first-time installation, an additional
+visualization extension package (`ggplot2`) and (`iNEXT.3D`) from Anne
+Chao’s github must be installed and loaded.
 
 ``` r
 # install_github('AnneChao/iNEXT.3D')
 # library(iNEXT.3D)
 
+## install iNEXT.beta3D package from CRAN
+# install.packages("iNEXT.beta3D")  # coming soon
+
 ## install the latest version from github
 install.packages('devtools')
 library(devtools)
-
 install_github('AnneChao/iNEXT.beta3D')
+
 ## import packages
 library(iNEXT.beta3D)
-
-library(ggplot2)
 ```
 
 Here are two main functions we provide in this package :
@@ -88,29 +94,32 @@ Here are two main functions we provide in this package :
     specified sample coverage or sample size.
 
 -   **ggiNEXTbeta3D** : Visualizing the output from the function
-    `iNEXTbeta3D`
+    `iNEXTbeta3D`.
 
-## MAIN FUNCTION: iNEXTbeta3D()
+### MAIN FUNCTION: iNEXTbeta3D()
 
 We first describe the main function `iNEXTbeta3D()` with default
 arguments:
 
-<br> iNEXTbeta3D(data, diversity = “TD”, q = c(0, 1, 2), datatype =
-“abundance”, base = “coverage”, level = NULL, nboot = 20, conf = 0.95,
-PDtree = NULL, PDreftime = NULL, PDtype = “meanPD”, FDdistM = NULL,
-FDtype = “AUC”, FDtau = NULL, FDcut_number = 30) <br>
+``` r
+iNEXTbeta3D(data, diversity = "TD", q = c(0, 1, 2), datatype = "abundance",
+            base = "coverage", level = NULL, nboot = 20, conf = 0.95,
+            PDtree = NULL, PDreftime = NULL, PDtype = "meanPD",
+            FDdistM = NULL, FDtype = "AUC", FDtau = NULL, FDcut_number = 30)
+```
 
 The arguments of this function are briefly described below, and will be
 explained in more details by illustrative examples in later text. This
 main function computes gamma, alpha and beta diversity estimates of
-order q at specified sample coverage or sample size and measure of
-diversity. By default of <code>base = “size”</code> and <code>level =
-NULL</code>, then this function computes the gamma and alpha diversity
-estimates up to double the reference sample size in each region. If
-<code>base = “coverage”</code> and <code>level = NULL</code>, then this
-function computes the gamma, alpha, beta diversity, and four
+order q at specified sample coverage or sample size and measures of
+dissimilarity. <font color=#FF6781>By default of</font> <code>base =
+“coverage”</code> and <code>level = NULL</code>, then this function
+computes the gamma, alpha, beta diversity, and four
 dissimilarity-turnover indices estimates up to one (for q = 1, 2) or up
 to the coverage of double the reference sample size (for q = 0).
+<font color=#FF6781>If</font> <code>base = “size”</code> and <code>level
+= NULL</code>, then this function computes the gamma and alpha diversity
+estimates up to double the reference sample size in each region.
 
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -317,61 +326,194 @@ Two types of data are supported:
     species abundances in an empirical sample of n individuals
     (“reference sample”). When there are N assemblages in a region,
     input data consist of a list with an S by N abundance matrix; For M
-    regions consisting N assemblages, input data should be M lists of S
-    by N abundance matrix.
+    regions consisting N assemblages, input data should be
+    <font color=#FF6781>a list of M S by N abundance matrices</font>.
 
-2.  Sampling-unit-based incidence data (`datatype = "incidence_raw"`):
-    Input data for a reference sample consist of a
-    species-by-sampling-unit matrix; The number of sampling units and
-    species for each assemblages in a region should be the same. For M
-    regions consisting N assemblages, input data should be M lists of N
-    lists of species-by-sampling-unit matrix.
+2.  Sampling-unit-based incidence raw data
+    (`datatype = "incidence_raw"`): Input data for a reference sample
+    consist of a species-by-sampling-unit matrix; The number of sampling
+    units and species for each assemblages in a region should be the
+    same. For M regions consisting N assemblages, input data should be
+    <font color=#FF6781>a list of M lists each consists of N
+    species-by-sampling-unit matrices</font>.
 
-Two data sets ( Beetles under different time periods for abundance and
-incidence raw data ) are included in `iNEXT.beta3D` package for
-illustration. For abundance data, the beetles data consist a list of two
-matrices (“unlogged” and “logged”). Each matrix represents a
-species-by-time (year 2008 and 2009) in a regions. For incidence raw
-data, the beetles data consist two lists (“unlogged” and “logged”). For
-each list, it has two matrices (each means year 2008 and 2009) which
-represents a species-by-sampling units assemblage. For these data, the
-following commands display how to compute taxonomic, phylogenetic and
-functional beta decomposition and dissimilarities at specified sample
-coverage for abundance and incidence raw data respectively.
+Two data sets ( Brazil rain-forests under different habitats for
+abundance data and Beetles under different time periods for incidence
+raw data ) are included in `iNEXT.beta3D` package for illustration. For
+abundance data, the Brazil rain-forests data consist a list of twelve
+matrices (here we use two sites “Marim” and “Edge” for computing). Each
+matrix represents a species-by-habitat (“Edge” and “Interior”) in a
+site. For incidence raw data, the beetles data consist two lists
+(“unlogged” and “logged”). For each list, it has two matrices (each
+means year 2008 and 2009) which represent species-by-sampling units
+assemblages. For these data, the following commands display how to
+compute taxonomic, phylogenetic and functional beta decomposition and
+dissimilarities at specified sample coverage for abundance and incidence
+raw data respectively.
 
-Run the following code to view Beetles abundance data: (Here we only
-show the first ten rows for each matrix)
+Run the following code to view Brazil rain-forests abundance data: (Here
+we only show the first ten rows for each matrix)
 
 ``` r
-data("beetle_abu")
-beetle_abu
+data("Brazil_data")
+Brazil_data
 ```
 
-    $`2008 vs. 2009 unlogged`
-                          2008 2009
-    Abdera_flexuosa          0    2
-    Onyxacalles_pyrenaeus    0    0
-    Acanthocinus_griseus     2    0
-    Agathidium_nigripenne    1    2
-    Ampedus_aethiops        24    9
-    Ampedus_auripes         90   79
-    Ampedus_balteatus        2    5
-    Ampedus_erythrogonus     3    0
-    Ampedus_melanurus        0    0
-    Ampedus_nigrinus        29   35
+    $Caliman
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               0        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        1
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    0        0
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           1        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                2        0
 
-    $`2008 vs. 2009 logged`
-                          2008 2009
-    Abdera_flexuosa          0    0
-    Onyxacalles_pyrenaeus    0    0
-    Acanthocinus_griseus     0    0
-    Agathidium_nigripenne    0    0
-    Ampedus_aethiops        34   24
-    Ampedus_auripes         88   40
-    Ampedus_balteatus       19   11
-    Ampedus_erythrogonus     0    2
-    Ampedus_melanurus        0    1
-    Ampedus_nigrinus       106   68
+    $`Fibria(g)`
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               1        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    1        0
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           0        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                6        0
+
+    $`Fibria(p)`
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               0        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    0        0
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           0        1
+    Alchornea sidifolia Klotzch.                                  0        2
+    Allophylus petiolulatus Radlk.                                2        1
+
+    $Marim
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               1        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    0        0
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           0        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                5        0
+
+    $NEB
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                      10        0
+    Acosmium lentiscifolium Spreng.                               0        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    2        8
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           5        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                6        0
+
+    $`Rebio 1`
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       5        1
+    Acosmium lentiscifolium Spreng.                               2        2
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    0        0
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           3        1
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                4        1
+
+    $`Rebio 2`
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               0        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    0        0
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           1        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                3        3
+
+    $`Rebio 3`
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               2        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    0        0
+    Aegiphila verticillata Vell.                                  0        1
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           1        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                2        0
+
+    $`RNV(c)`
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               0        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    0        0
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             1        0
+    Albizia polycephala (Benth.) Killip                           0        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                0        0
+
+    $`RNV(p)`
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        1
+    Acacia glomerosa Benth.                                       2        0
+    Acosmium lentiscifolium Spreng.                               2        0
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    1       17
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           3        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                9        3
+
+    $Rochedo
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               0        1
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax   23       27
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           3        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                5        0
+
+    $Xerxes
+                                                               Edge Interior
+    Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
+    Acacia glomerosa Benth.                                       0        0
+    Acosmium lentiscifolium Spreng.                               0        3
+    Actinostemon concolor (Spreng.) Mull. Arg.                    0        0
+    Actinostemon estrellensis (Mull. Arg.) var. latifolius Pax    0        0
+    Aegiphila verticillata Vell.                                  0        0
+    Albizia pedicellaris ( DC. ) Barneby & J.W.Grimes             0        0
+    Albizia polycephala (Benth.) Killip                           1        0
+    Alchornea sidifolia Klotzch.                                  0        0
+    Allophylus petiolulatus Radlk.                                1        0
 
 Run the following code to view Beetles incidence raw data: (Here we only
 show the first ten rows and six columns for each matrix)
@@ -436,12 +578,16 @@ beetle_abu
     Ampedus_melanurus             0          0          0          0         0          0
     Ampedus_nigrinus              0          1          1          1         1          1
 
+## Rarefaction/Extrapolation Via Examples
+
+#### Output of iNEXTbeta3D()
+
 When `base = 'coverage'`, the `iNEXTbeta3D()` function returns the
 `"iNEXTbeta3D"` object including seven data frames for each regions:
 
--   gamma
--   alpha
--   beta
+-   gamma ( gamma diversity )
+-   alpha ( alpha diversity )
+-   beta ( beta diversity )
 -   C ( Sorensen-type non-overlap )
 -   U ( Jaccard-type non-overlap )
 -   V ( Sorensen-type turnover )
@@ -450,89 +596,87 @@ When `base = 'coverage'`, the `iNEXTbeta3D()` function returns the
 When `base = 'size'`, the `iNEXTbeta3D()` function returns the
 `"iNEXTbeta3D"` object including two data frames for each regions:
 
--   gamma
--   alpha
-
-## Rarefaction/Extrapolation Via Examples
+-   gamma ( gamma diversity )
+-   alpha ( alpha diversity )
 
 ## Taxonomic Diversity
 
-First, we run the `iNEXTbeta3D()` function with beetles abundance data
-to compute standardized gamma, alpha, beta diversity, and four
-dissimilarities under `base = 'coverage'`. (Here we only show the first
-six outputs for each output in region “unlogged”)
+First, we run the `iNEXTbeta3D()` function with Brazil rain-forests
+abundance data to compute standardized gamma, alpha, beta diversity, and
+four dissimilarities under `base = 'coverage'`. (Here we only show the
+first six outputs for each output in region “Marim”)
 
 ``` r
-data("beetle_abu")
+data("Brazil_data")
 
 # Taxonomic diversity
-Abundance_TD = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
-                           base = 'coverage', nboot = 30)
+Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = "abundance", 
+                           base = 'coverage', nboot = 100)
 Abundance_TD
 ```
 
     $gamma
-      Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    2.032       0 Rarefaction 0.500 2.534 0.026 1.980 2.083 2008 vs. 2009 unlogged        TD
-    2    1.909       1 Rarefaction 0.500 2.534 0.023 1.864 1.955 2008 vs. 2009 unlogged        TD
-    3    1.776       2 Rarefaction 0.500 2.534 0.020 1.738 1.815 2008 vs. 2009 unlogged        TD
-    4    2.174       0 Rarefaction 0.525 2.787 0.030 2.116 2.233 2008 vs. 2009 unlogged        TD
-    5    2.028       1 Rarefaction 0.525 2.787 0.026 1.976 2.079 2008 vs. 2009 unlogged        TD
-    6    1.871       2 Rarefaction 0.525 2.787 0.022 1.827 1.915 2008 vs. 2009 unlogged        TD
+      Estimate Order.q      Method    SC   Size  s.e.    LCL    UCL Region diversity
+    1   58.408       0 Rarefaction 0.500 83.059 3.070 52.391 64.425  Marim        TD
+    2   51.347       1 Rarefaction 0.500 83.059 2.852 45.757 56.936  Marim        TD
+    3   43.332       2 Rarefaction 0.500 83.059 2.777 37.889 48.775  Marim        TD
+    4   62.187       0 Rarefaction 0.525 90.787 3.200 55.915 68.458  Marim        TD
+    5   54.203       1 Rarefaction 0.525 90.787 2.957 48.408 59.998  Marim        TD
+    6   45.322       2 Rarefaction 0.525 90.787 2.897 39.645 51.000  Marim        TD
 
     $alpha
-      Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    1.566       0 Rarefaction 0.500 4.141 0.021 1.525 1.606 2008 vs. 2009 unlogged        TD
-    2    1.434       1 Rarefaction 0.500 4.141 0.017 1.400 1.468 2008 vs. 2009 unlogged        TD
-    3    1.291       2 Rarefaction 0.500 4.141 0.014 1.263 1.319 2008 vs. 2009 unlogged        TD
-    4    1.686       0 Rarefaction 0.525 4.615 0.024 1.639 1.733 2008 vs. 2009 unlogged        TD
-    5    1.527       1 Rarefaction 0.525 4.615 0.020 1.488 1.567 2008 vs. 2009 unlogged        TD
-    6    1.360       2 Rarefaction 0.525 4.615 0.016 1.328 1.392 2008 vs. 2009 unlogged        TD
+      Estimate Order.q      Method    SC    Size  s.e.    LCL    UCL Region diversity
+    1   53.071       0 Rarefaction 0.500 151.449 3.505 46.201 59.940  Marim        TD
+    2   46.661       1 Rarefaction 0.500 151.449 3.175 40.438 52.883  Marim        TD
+    3   39.619       2 Rarefaction 0.500 151.449 2.902 33.931 45.307  Marim        TD
+    4   56.626       0 Rarefaction 0.525 166.013 3.685 49.404 63.847  Marim        TD
+    5   49.339       1 Rarefaction 0.525 166.013 3.312 42.848 55.830  Marim        TD
+    6   41.513       2 Rarefaction 0.525 166.013 3.026 35.582 47.444  Marim        TD
 
     $beta
-      Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    1.298       0 Rarefaction 0.500 4.141 0.005 1.289 1.307 2008 vs. 2009 unlogged        TD
-    2    1.332       1 Rarefaction 0.500 4.141 0.005 1.323 1.341 2008 vs. 2009 unlogged        TD
-    3    1.376       2 Rarefaction 0.500 4.141 0.005 1.367 1.385 2008 vs. 2009 unlogged        TD
-    4    1.289       0 Rarefaction 0.525 4.615 0.005 1.280 1.298 2008 vs. 2009 unlogged        TD
-    5    1.328       1 Rarefaction 0.525 4.615 0.005 1.319 1.337 2008 vs. 2009 unlogged        TD
-    6    1.376       2 Rarefaction 0.525 4.615 0.005 1.367 1.385 2008 vs. 2009 unlogged        TD
+      Estimate Order.q      Method    SC    Size  s.e.   LCL   UCL Region diversity
+    1    1.101       0 Rarefaction 0.500 151.449 0.060 0.982 1.219  Marim        TD
+    2    1.100       1 Rarefaction 0.500 151.449 0.059 0.986 1.215  Marim        TD
+    3    1.094       2 Rarefaction 0.500 151.449 0.062 0.972 1.215  Marim        TD
+    4    1.098       0 Rarefaction 0.525 166.013 0.061 0.978 1.218  Marim        TD
+    5    1.099       1 Rarefaction 0.525 166.013 0.059 0.984 1.214  Marim        TD
+    6    1.092       2 Rarefaction 0.525 166.013 0.063 0.969 1.215  Marim        TD
 
     $C
-      Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    0.298       0 Rarefaction 0.500 4.141 0.005 0.289 0.307 2008 vs. 2009 unlogged        TD
-    2    0.413       1 Rarefaction 0.500 4.141 0.005 0.403 0.423 2008 vs. 2009 unlogged        TD
-    3    0.546       2 Rarefaction 0.500 4.141 0.005 0.537 0.556 2008 vs. 2009 unlogged        TD
-    4    0.289       0 Rarefaction 0.525 4.615 0.005 0.280 0.298 2008 vs. 2009 unlogged        TD
-    5    0.409       1 Rarefaction 0.525 4.615 0.005 0.399 0.419 2008 vs. 2009 unlogged        TD
-    6    0.546       2 Rarefaction 0.525 4.615 0.005 0.537 0.556 2008 vs. 2009 unlogged        TD
+      Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
+    1    0.101       0 Rarefaction 0.500 151.449 0.060 -0.018 0.219  Marim        TD
+    2    0.138       1 Rarefaction 0.500 151.449 0.058  0.025 0.251  Marim        TD
+    3    0.171       2 Rarefaction 0.500 151.449 0.061  0.051 0.292  Marim        TD
+    4    0.098       0 Rarefaction 0.525 166.013 0.061 -0.022 0.218  Marim        TD
+    5    0.136       1 Rarefaction 0.525 166.013 0.058  0.023 0.249  Marim        TD
+    6    0.168       2 Rarefaction 0.525 166.013 0.062  0.046 0.290  Marim        TD
 
     $U
-      Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    0.459       0 Rarefaction 0.500 4.141 0.005 0.448 0.469 2008 vs. 2009 unlogged        TD
-    2    0.413       1 Rarefaction 0.500 4.141 0.005 0.403 0.423 2008 vs. 2009 unlogged        TD
-    3    0.376       2 Rarefaction 0.500 4.141 0.005 0.367 0.385 2008 vs. 2009 unlogged        TD
-    4    0.449       0 Rarefaction 0.525 4.615 0.005 0.438 0.460 2008 vs. 2009 unlogged        TD
-    5    0.409       1 Rarefaction 0.525 4.615 0.005 0.399 0.419 2008 vs. 2009 unlogged        TD
-    6    0.376       2 Rarefaction 0.525 4.615 0.005 0.367 0.385 2008 vs. 2009 unlogged        TD
+      Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
+    1    0.183       0 Rarefaction 0.500 151.449 0.055  0.075 0.290  Marim        TD
+    2    0.138       1 Rarefaction 0.500 151.449 0.058  0.025 0.251  Marim        TD
+    3    0.094       2 Rarefaction 0.500 151.449 0.062 -0.028 0.215  Marim        TD
+    4    0.179       0 Rarefaction 0.525 166.013 0.055  0.071 0.287  Marim        TD
+    5    0.136       1 Rarefaction 0.525 166.013 0.058  0.023 0.249  Marim        TD
+    6    0.092       2 Rarefaction 0.525 166.013 0.063 -0.031 0.215  Marim        TD
 
     $V
-      Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    0.298       0 Rarefaction 0.500 4.141 0.005 0.289 0.307 2008 vs. 2009 unlogged        TD
-    2    0.332       1 Rarefaction 0.500 4.141 0.005 0.323 0.341 2008 vs. 2009 unlogged        TD
-    3    0.376       2 Rarefaction 0.500 4.141 0.005 0.367 0.385 2008 vs. 2009 unlogged        TD
-    4    0.289       0 Rarefaction 0.525 4.615 0.005 0.280 0.298 2008 vs. 2009 unlogged        TD
-    5    0.328       1 Rarefaction 0.525 4.615 0.005 0.319 0.337 2008 vs. 2009 unlogged        TD
-    6    0.376       2 Rarefaction 0.525 4.615 0.005 0.367 0.385 2008 vs. 2009 unlogged        TD
+      Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
+    1    0.101       0 Rarefaction 0.500 151.449 0.060 -0.018 0.219  Marim        TD
+    2    0.100       1 Rarefaction 0.500 151.449 0.059 -0.014 0.215  Marim        TD
+    3    0.094       2 Rarefaction 0.500 151.449 0.062 -0.028 0.215  Marim        TD
+    4    0.098       0 Rarefaction 0.525 166.013 0.061 -0.022 0.218  Marim        TD
+    5    0.099       1 Rarefaction 0.525 166.013 0.059 -0.016 0.214  Marim        TD
+    6    0.092       2 Rarefaction 0.525 166.013 0.063 -0.031 0.215  Marim        TD
 
     $S
-      Estimate Order.q      Method    SC  Size  s.e.   LCL   UCL                 Region diversity
-    1    0.459       0 Rarefaction 0.500 4.141 0.005 0.448 0.469 2008 vs. 2009 unlogged        TD
-    2    0.498       1 Rarefaction 0.500 4.141 0.005 0.488 0.508 2008 vs. 2009 unlogged        TD
-    3    0.546       2 Rarefaction 0.500 4.141 0.005 0.537 0.556 2008 vs. 2009 unlogged        TD
-    4    0.449       0 Rarefaction 0.525 4.615 0.005 0.438 0.460 2008 vs. 2009 unlogged        TD
-    5    0.494       1 Rarefaction 0.525 4.615 0.005 0.483 0.504 2008 vs. 2009 unlogged        TD
-    6    0.546       2 Rarefaction 0.525 4.615 0.005 0.537 0.556 2008 vs. 2009 unlogged        TD
+      Estimate Order.q      Method    SC    Size  s.e.   LCL   UCL Region diversity
+    1    0.183       0 Rarefaction 0.500 151.449 0.055 0.075 0.290  Marim        TD
+    2    0.183       1 Rarefaction 0.500 151.449 0.055 0.075 0.290  Marim        TD
+    3    0.171       2 Rarefaction 0.500 151.449 0.061 0.051 0.292  Marim        TD
+    4    0.179       0 Rarefaction 0.525 166.013 0.055 0.071 0.287  Marim        TD
+    5    0.179       1 Rarefaction 0.525 166.013 0.055 0.073 0.286  Marim        TD
+    6    0.168       2 Rarefaction 0.525 166.013 0.062 0.046 0.290  Marim        TD
 
 The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`,
 `U`, `V`, `S`. For each data frame, it includes the diversity estimate
@@ -562,35 +706,39 @@ Incidence_TD
 We can compute standardized gamma, alpha, beta diversity under
 phylogenetic level with newick format data (`beetle_tree`). Here,
 `PDtree` is the essential setting, and user can select `PDtype` and
-`PDreft` alternatively. `PDtype` has two selection: `"PD"` (effective
+`PDreftime` alternatively. `PDtype` has two selection: `"PD"` (effective
 total branch length) or `"meanPD"` (effective number of equally
-divergent lineages). `PDreft` means a numerical value specifying
-reference time for computing phylogenetic diversity. If `PDreft = NULL`,
-then it is set the reference time to the age of the root of PDtree.
-(Here we don’t show the output)
+divergent lineages). `PDreftime` means a numerical value specifying
+reference time for computing phylogenetic diversity. If
+`PDreftime = NULL`, then it is set the reference time to the age of the
+root of PDtree. (Here we don’t show the output)
 
 ``` r
-data("beetle_abu")
+## Phylogenetic diversity
+# Abundance data
+data("Brazil_PDFD_data")
+data("Brazil_tree")
+
+Abundance_PD = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'PD', datatype = "abundance", 
+                           base = 'coverage', nboot = 10, PDtree = Brazil_tree)
+Abundance_PD
+
+
+# Incidence data
 data("beetle_inc")
 data("beetle_tree")
-
-
-# Phylogenetic diversity
-Abundance_PD = iNEXTbeta3D(data = beetle_abu, diversity = 'PD', datatype = "abundance", 
-                           base = 'coverage', nboot = 30, PDtree = beetle_tree)
-Abundance_PD
 
 Incidence_PD = iNEXTbeta3D(data = beetle_inc, diversity = 'PD', datatype = "incidence_raw", 
                            base = 'coverage', nboot = 30, PDtree = beetle_tree)
 Incidence_PD
 ```
 
-## Functional Diversity
+## Functional diversity
 
 We can compute standardized gamma, alpha, beta diversity under
 functional level with distance matrix (`beetle_distM`). Here, `FDdistM`
 is the essential setting, and user can select `FDtype`, `FDtau`, and
-`FDcut_number` alternatively. `FDtype` hase two selections: “tau_value”
+`FDcut_number` alternatively. `FDtype` has two selections: “tau_value”
 means compute functional diversity under a specific threshold value and
 “AUC” means compute functional diversity by integrating all threshold
 values between zero and one. If user selects `FDtype = "tau_value"`, it
@@ -600,16 +748,20 @@ selected from the pooled assemblage (i.e., quadratic entropy). (Here we
 don’t show the output)
 
 ``` r
-data("beetle_abu")
+## Functional diversity - under specified threshold
+# Abundance data
+data("Brazil_PDFD_data")
+data("Brazil_distM")
+
+Abundance_FDtau = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', 
+                              datatype = "abundance", base = 'coverage', nboot = 30, 
+                              FDdistM = Brazil_distM, FDtype = 'tau_value')
+Abundance_FDtau
+
+
+# Incidence data
 data("beetle_inc")
 data("beetle_distM")
-
-
-# Functional diversity - under specified threshold
-Abundance_FDtau = iNEXTbeta3D(data = beetle_abu, diversity = 'FD', datatype = "abundance", 
-                              base = 'coverage', nboot = 30, 
-                              FDdistM = beetle_distM, FDtype = 'tau_value')
-Abundance_FDtau
 
 Incidence_FDtau = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = "incidence_raw", 
                               base = 'coverage', nboot = 30, 
@@ -617,25 +769,30 @@ Incidence_FDtau = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = "i
 Incidence_FDtau
 
 
-# Functional diversity - area under curve (integrates all threshold values between zero and one)
-Abundance_FDAUC = iNEXTbeta3D(data = beetle_abu, diversity = 'FD', datatype = "abundance", 
-                              base = 'coverage', nboot = 30, 
-                              FDdistM = beetle_distM, FDtype = 'AUC')
+
+## Functional diversity - area under curve (integrates all threshold values between zero and one)
+# Abundance data
+Abundance_FDAUC = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', 
+                              datatype = "abundance", base = 'coverage', nboot = 30, 
+                              FDdistM = Brazil_distM, FDtype = 'AUC')
 Abundance_FDAUC
 
+
+# Incidence data
 Incidence_FDAUC = iNEXTbeta3D(data = beetle_inc, diversity = 'FD', datatype = "incidence_raw", 
                               base = 'coverage', nboot = 30, 
                               FDdistM = beetle_distM, FDtype = 'AUC')
 Incidence_FDAUC
 ```
 
-### GRAPHIC DISPLAYS: FUNCTION ggiNEXTbeta3D()
+## GRAPHIC DISPLAYS: FUNCTION ggiNEXTbeta3D()
 
 The function `ggiNEXTbeta3D()`, which extends `ggplot2` to the
 `"iNEXTbeta3D"` object with default arguments, is described as follows:
 
-<br> ggiNEXTbeta3D(output, type = “B”, scale = “free”)  
-<br>
+``` r
+ggiNEXTbeta3D(output, type = "B", scale = "free", transp = 0.4)  
+```
 
 <table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
@@ -692,41 +849,65 @@ The `ggiNEXTbeta3D()` function is a wrapper around the `ggplot2` package
 to create a R/E curve using a single line of code. The resulting object
 is of class `"ggplot"`, so it can be manipulated using the `ggplot2`
 tools. Users can visualize the output of beta diversity or four
-dissimilarities by setting the parameter ‘type’:
+dissimilarities by setting the parameter <code>**type**</code>:
 
 ``` r
-Abundance_TD = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
-                           base = 'coverage', nboot = 30)
+Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance', 
+                           base = "coverage", nboot = 30, conf = 0.95)
 ggiNEXTbeta3D(Abundance_TD, type = 'B')
 ```
 
-<img src="README/README-unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" />
+<img src="README/README-unnamed-chunk-15-1.png" width="576" style="display: block; margin: auto;" />
 
 ``` r
 ggiNEXTbeta3D(Abundance_TD, type = 'D')
 ```
 
-<img src="README/README-unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" />
+<img src="README/README-unnamed-chunk-16-1.png" width="576" style="display: block; margin: auto;" />
 
 The following commands return the size-based R/E sampling curves for
 gamma and alpha taxonomic diversity:
 
 ``` r
-output = iNEXTbeta3D(data = beetle_abu, diversity = 'TD', datatype = "abundance", 
-                     base = "size", nboot = 30)
+output = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance', 
+                     base = "size", nboot = 30, conf = 0.95)
 ggiNEXTbeta3D(output)
 ```
 
-<img src="README/README-unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
+<img src="README/README-unnamed-chunk-17-1.png" width="576" style="display: block; margin: auto;" />
 
-### How to cite
+## HOW TO CITE iNEXT.beta3D
+
+If you publish your work based on the results from the `iNEXT.beta3D`
+package, you should make references to the following methodology paper:
+
+-   Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R.
+    L., Wu, J., Dornelas, M., Zelen??, D., Colwell, R. K., and
+    Magurran, A. E. (2023). Rarefaction and extrapolation with beta
+    diversity under a framework of Hill numbers: the iNEXT.beta3D
+    standardization. <i>Ecological Monographs</i>, e1588.
+
+## License
+
+The iNEXT.beta3D package is licensed under the GPLv3. To help refine
+`iNEXT.beta3D`, your comments or feedback would be welcome (please send
+them to Anne Chao or report an issue on the iNEXT.beta3D github
+[iNEXT.beta3D_github](https://github.com/AnneChao/iNEXT.beta3D).
+
+## References
 
 -   Chiu, C.-H., Jost, L. and Chao\*, A. (2014). Phylogenetic beta
     diversity, similarity, and differentiation measures based on Hill
     numbers. Ecological Monographs 84, 21-44.
 
-### Referance
+-   Chao, A., Chiu, C.-H., Vill??ger, S., Sun, I.-F., Thorn, S., Lin,
+    Y.-C., Chiang, J. M. and Sherwin, W. B. (2019). An
+    attribute-diversity approach to functional diversity, functional
+    beta diversity, and related (dis)similarity measures. Ecological
+    Monographs, 89, e01343. 10.1002/ecm.1343.
 
-Chiu, C.-H., Jost, L. and Chao\*, A. (2014). Phylogenetic beta
-diversity, similarity, and differentiation measures based on Hill
-numbers. Ecological Monographs 84, 21-44.
+-   Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R.
+    L., Wu, J., Dornelas, M., Zelen??, D., Colwell, R. K., and
+    Magurran, A. E. (2023). Rarefaction and extrapolation with beta
+    diversity under a framework of Hill numbers: the iNEXT.beta3D
+    standardization. <i>Ecological Monographs</i>, e1588.

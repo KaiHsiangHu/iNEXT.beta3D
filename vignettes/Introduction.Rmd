@@ -1,5 +1,5 @@
 ---
-title: "A Quick Introduction to iNEXT.beta3D"
+title: "A Quick Introduction to iNEXT.beta3D via Examples"
 author: "Anne Chao, K. H. Hu, Y. S. Kao, and Z. C. Szu Tu"
 date: "`r Sys.Date()`"
 output:
@@ -60,12 +60,13 @@ library(iNEXT.beta3D)
 ```
 
 
+An online version of iNEXT.beta3D(https://chao.shinyapps.io/iNEXT_beta3D/) is also available for users without R background.
+
 Here are two main functions we provide in this package : 
 
 - **iNEXTbeta3D** : Computing standardized gamma, alpha, beta diversity, and four dissimilarity-turnover indices for three dimensions: taxonomic, phylogenetic and functional diversity at specified sample coverage or sample size.
 
 - **ggiNEXTbeta3D** : Visualizing the output from the function `iNEXTbeta3D`.
-
 
 ## MAIN FUNCTION: iNEXTbeta3D()
 
@@ -79,7 +80,7 @@ iNEXTbeta3D(data, diversity = "TD", q = c(0, 1, 2), datatype = "abundance",
 ```
 
 
-The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes gamma, alpha and beta diversity estimates of order q at specified sample coverage or sample size and measures of dissimilarity <font color=#FF6781>By default of</font> <code>base = "coverage"</code> and <code>level = NULL</code>, then this function computes the gamma, alpha, beta diversity, and four dissimilarity-turnover indices estimates up to one (for q = 1, 2) or up to the coverage of double the reference sample size (for q = 0). <font color=#FF6781>If</font> <code>base = "size"</code> and <code>level = NULL</code>, then this function computes the gamma and alpha diversity estimates up to double the reference sample size in each region. 
+The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes gamma, alpha and beta diversity estimates of order q at specified sample coverage or sample size and measures of dissimilarity. <font color=#FF6781>By default of</font> <code>base = "coverage"</code> and <code>level = NULL</code>, then this function computes the gamma, alpha, beta diversity, and four dissimilarity-turnover indices estimates up to one (for q = 1, 2) or up to the coverage of double the reference sample size (for q = 0). <font color=#FF6781>If</font> <code>base = "size"</code> and <code>level = NULL</code>, then this function computes the gamma and alpha diversity estimates up to double the reference sample size in each region. 
 
 
   
@@ -244,7 +245,7 @@ When `base = 'size'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D"` o
 - alpha ( alpha diversity )
 
 
-### Taxonomic diversity
+## Taxonomic diversity
 
 First, we run the `iNEXTbeta3D()` function with Brazil rain-forests abundance data to compute standardized gamma, alpha, beta diversity, and four dissimilarities under `base = 'coverage'`. (Here we only show the first six outputs for each output in region "Marim")
 
@@ -268,8 +269,7 @@ lapply(Abundance_TD$Marim, function(x) {
 })
 ```
 
-The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`, `U`, `V`, `S`. For each data frame, it includes the diversity estimate (`Estimate`), the diversity order (`Order.q`), `Method` (Interpolated, Observed, or Extrapolated, depending on whether the size `m` is less than, equal to, or greater than the reference sample size), the sample coverage estimate (`SC`), the sample size (`Size`), the standard error from bootstrap replications (`s.e.`), the 95% lower and upper confidence limits of diversity (`LCL`, `UCL`), and the name of region (`Region`). These
-diversity estimates with confidence intervals are used for plotting the diversity curve.
+The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`, `U`, `V`, `S`. For each data frame, it includes the diversity estimate (`Estimate`), the diversity order (`Order.q`), `Method` (Interpolated, Observed, or Extrapolated, depending on whether the size `m` is less than, equal to, or greater than the reference sample size), the sample coverage estimate (`SC`), the sample size (`Size`), the standard error from bootstrap replications (`s.e.`), the 95% lower and upper confidence limits of diversity (`LCL`, `UCL`), and the name of region (`Region`). These diversity estimates with confidence intervals are used for plotting the diversity curve.
 
 
 Then, we can also use beetles incidence raw data to compute standardized gamma, alpha, beta diversity, and four dissimilarities under `base = 'coverage'`. (Here we don't show the output)
@@ -423,7 +423,7 @@ The iNEXT.beta3D package is licensed under the GPLv3. To help refine `iNEXT.beta
 ## References
 - Chiu, C.-H., Jost, L. and Chao*, A. (2014). Phylogenetic beta diversity, similarity, and differentiation measures based on Hill numbers. Ecological Monographs 84, 21-44.
 
-- Chao, A., Chiu, C.-H., Vill?©ger, S., Sun, I.-F., Thorn, S., Lin, Y.-C., Chiang, J. M. and Sherwin, W. B. (2019). An attribute-diversity approach to functional diversity, functional beta diversity, and related (dis)similarity measures. Ecological Monographs, 89, e01343. 10.1002/ecm.1343.
+- Chao, A., Chiu, C.-H., Vill??ger, S., Sun, I.-F., Thorn, S., Lin, Y.-C., Chiang, J. M. and Sherwin, W. B. (2019). An attribute-diversity approach to functional diversity, functional beta diversity, and related (dis)similarity measures. Ecological Monographs, 89, e01343. 10.1002/ecm.1343.
 
 - Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zelen??, D., Colwell, R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i>, e1588.
 
