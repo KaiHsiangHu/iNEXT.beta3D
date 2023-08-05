@@ -38,7 +38,7 @@ An online version of [iNEXT.beta3D Online](https://chao.shinyapps.io/iNEXT_beta3
 
 1. Sample-size-based (or size-based) R/E sampling curves: `iNEXT.beta3D` computes <font color=#FF6781>gamma and alpha</font> diversity estimates for rarefied and extrapolated samples up to an appropriate size. This type of sampling curve plots the diversity estimates with respect to sample size.     
 
-2. Coverage-based R/E sampling curves: `iNEXT.beta3D` computes <font color=#FF6781>gamma, alpha, and beta</font> diversity estimates and <font color=#FF6781>four dissimilarity</font> measures estimates for rarefied and extrapolated samples based on a standardized level of sample completeness (as measured by sample coverage) up to an appropriate coverage value. This type of sampling curve plots the diversity estimates with respect to sample coverage. 
+2. Sample-coverage-based (or coverage-based) R/E sampling curves: `iNEXT.beta3D` computes <font color=#FF6781>gamma, alpha, and beta</font> diversity estimates and <font color=#FF6781>four dissimilarity</font> measures estimates for rarefied and extrapolated samples based on a standardized level of sample completeness (as measured by sample coverage) up to an appropriate coverage value. This type of sampling curve plots the diversity estimates with respect to sample coverage. 
 
 `iNEXT.beta3D` also plots the above two types of sampling curves for gamma, alpha, and beta diversity and four dissimilarity-turnover.
 

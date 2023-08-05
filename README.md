@@ -45,13 +45,14 @@ extrapolation (R/E):
     appropriate size. This type of sampling curve plots the diversity
     estimates with respect to sample size.
 
-2.  Coverage-based R/E sampling curves: `iNEXT.beta3D` computes
-    <font color=#FF6781>gamma, alpha, and beta</font> diversity
-    estimates and <font color=#FF6781>four dissimilarity</font> measures
-    estimates for rarefied and extrapolated samples based on a
-    standardized level of sample completeness (as measured by sample
-    coverage) up to an appropriate coverage value. This type of sampling
-    curve plots the diversity estimates with respect to sample coverage.
+2.  Sample-coverage-based (or coverage-based) R/E sampling curves:
+    `iNEXT.beta3D` computes <font color=#FF6781>gamma, alpha, and
+    beta</font> diversity estimates and <font color=#FF6781>four
+    dissimilarity</font> measures estimates for rarefied and
+    extrapolated samples based on a standardized level of sample
+    completeness (as measured by sample coverage) up to an appropriate
+    coverage value. This type of sampling curve plots the diversity
+    estimates with respect to sample coverage.
 
 `iNEXT.beta3D` also plots the above two types of sampling curves for
 gamma, alpha, and beta diversity and four dissimilarity-turnover.
@@ -617,66 +618,66 @@ Abundance_TD
 
     $gamma
       Estimate Order.q      Method    SC   Size  s.e.    LCL    UCL Region diversity
-    1   58.408       0 Rarefaction 0.500 83.059 3.070 52.391 64.425  Marim        TD
-    2   51.347       1 Rarefaction 0.500 83.059 2.852 45.757 56.936  Marim        TD
-    3   43.332       2 Rarefaction 0.500 83.059 2.777 37.889 48.775  Marim        TD
-    4   62.187       0 Rarefaction 0.525 90.787 3.200 55.915 68.458  Marim        TD
-    5   54.203       1 Rarefaction 0.525 90.787 2.957 48.408 59.998  Marim        TD
-    6   45.322       2 Rarefaction 0.525 90.787 2.897 39.645 51.000  Marim        TD
+    1   58.408       0 Rarefaction 0.500 83.059 3.262 52.015 64.801  Marim        TD
+    2   51.347       1 Rarefaction 0.500 83.059 2.971 45.524 57.169  Marim        TD
+    3   43.332       2 Rarefaction 0.500 83.059 2.775 37.892 48.772  Marim        TD
+    4   62.187       0 Rarefaction 0.525 90.787 3.417 55.490 68.883  Marim        TD
+    5   54.203       1 Rarefaction 0.525 90.787 3.092 48.143 60.262  Marim        TD
+    6   45.322       2 Rarefaction 0.525 90.787 2.893 39.652 50.992  Marim        TD
 
     $alpha
       Estimate Order.q      Method    SC    Size  s.e.    LCL    UCL Region diversity
-    1   53.071       0 Rarefaction 0.500 151.449 3.505 46.201 59.940  Marim        TD
-    2   46.661       1 Rarefaction 0.500 151.449 3.175 40.438 52.883  Marim        TD
-    3   39.619       2 Rarefaction 0.500 151.449 2.902 33.931 45.307  Marim        TD
-    4   56.626       0 Rarefaction 0.525 166.013 3.685 49.404 63.847  Marim        TD
-    5   49.339       1 Rarefaction 0.525 166.013 3.312 42.848 55.830  Marim        TD
-    6   41.513       2 Rarefaction 0.525 166.013 3.026 35.582 47.444  Marim        TD
+    1   53.071       0 Rarefaction 0.500 151.449 3.202 46.795 59.346  Marim        TD
+    2   46.661       1 Rarefaction 0.500 151.449 2.917 40.943 52.379  Marim        TD
+    3   39.619       2 Rarefaction 0.500 151.449 2.709 34.310 44.928  Marim        TD
+    4   56.626       0 Rarefaction 0.525 166.013 3.359 50.041 63.210  Marim        TD
+    5   49.339       1 Rarefaction 0.525 166.013 3.036 43.388 55.290  Marim        TD
+    6   41.513       2 Rarefaction 0.525 166.013 2.821 35.984 47.041  Marim        TD
 
     $beta
       Estimate Order.q      Method    SC    Size  s.e.   LCL   UCL Region diversity
-    1    1.101       0 Rarefaction 0.500 151.449 0.060 0.982 1.219  Marim        TD
-    2    1.100       1 Rarefaction 0.500 151.449 0.059 0.986 1.215  Marim        TD
-    3    1.094       2 Rarefaction 0.500 151.449 0.062 0.972 1.215  Marim        TD
-    4    1.098       0 Rarefaction 0.525 166.013 0.061 0.978 1.218  Marim        TD
-    5    1.099       1 Rarefaction 0.525 166.013 0.059 0.984 1.214  Marim        TD
-    6    1.092       2 Rarefaction 0.525 166.013 0.063 0.969 1.215  Marim        TD
+    1    1.101       0 Rarefaction 0.500 151.449 0.065 0.974 1.227  Marim        TD
+    2    1.100       1 Rarefaction 0.500 151.449 0.060 0.983 1.217  Marim        TD
+    3    1.094       2 Rarefaction 0.500 151.449 0.058 0.981 1.207  Marim        TD
+    4    1.098       0 Rarefaction 0.525 166.013 0.066 0.970 1.227  Marim        TD
+    5    1.099       1 Rarefaction 0.525 166.013 0.060 0.981 1.216  Marim        TD
+    6    1.092       2 Rarefaction 0.525 166.013 0.058 0.978 1.205  Marim        TD
 
     $C
       Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
-    1    0.101       0 Rarefaction 0.500 151.449 0.060 -0.018 0.219  Marim        TD
-    2    0.138       1 Rarefaction 0.500 151.449 0.058  0.025 0.251  Marim        TD
-    3    0.171       2 Rarefaction 0.500 151.449 0.061  0.051 0.292  Marim        TD
-    4    0.098       0 Rarefaction 0.525 166.013 0.061 -0.022 0.218  Marim        TD
-    5    0.136       1 Rarefaction 0.525 166.013 0.058  0.023 0.249  Marim        TD
-    6    0.168       2 Rarefaction 0.525 166.013 0.062  0.046 0.290  Marim        TD
+    1    0.101       0 Rarefaction 0.500 151.449 0.065 -0.026 0.227  Marim        TD
+    2    0.138       1 Rarefaction 0.500 151.449 0.059  0.022 0.254  Marim        TD
+    3    0.171       2 Rarefaction 0.500 151.449 0.057  0.059 0.284  Marim        TD
+    4    0.098       0 Rarefaction 0.525 166.013 0.066 -0.030 0.227  Marim        TD
+    5    0.136       1 Rarefaction 0.525 166.013 0.059  0.020 0.252  Marim        TD
+    6    0.168       2 Rarefaction 0.525 166.013 0.058  0.055 0.281  Marim        TD
 
     $U
       Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
-    1    0.183       0 Rarefaction 0.500 151.449 0.055  0.075 0.290  Marim        TD
-    2    0.138       1 Rarefaction 0.500 151.449 0.058  0.025 0.251  Marim        TD
-    3    0.094       2 Rarefaction 0.500 151.449 0.062 -0.028 0.215  Marim        TD
-    4    0.179       0 Rarefaction 0.525 166.013 0.055  0.071 0.287  Marim        TD
-    5    0.136       1 Rarefaction 0.525 166.013 0.058  0.023 0.249  Marim        TD
-    6    0.092       2 Rarefaction 0.525 166.013 0.063 -0.031 0.215  Marim        TD
+    1    0.183       0 Rarefaction 0.500 151.449 0.059  0.066 0.299  Marim        TD
+    2    0.138       1 Rarefaction 0.500 151.449 0.059  0.022 0.254  Marim        TD
+    3    0.094       2 Rarefaction 0.500 151.449 0.058 -0.019 0.207  Marim        TD
+    4    0.179       0 Rarefaction 0.525 166.013 0.060  0.061 0.297  Marim        TD
+    5    0.136       1 Rarefaction 0.525 166.013 0.059  0.020 0.252  Marim        TD
+    6    0.092       2 Rarefaction 0.525 166.013 0.058 -0.022 0.205  Marim        TD
 
     $V
       Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
-    1    0.101       0 Rarefaction 0.500 151.449 0.060 -0.018 0.219  Marim        TD
-    2    0.100       1 Rarefaction 0.500 151.449 0.059 -0.014 0.215  Marim        TD
-    3    0.094       2 Rarefaction 0.500 151.449 0.062 -0.028 0.215  Marim        TD
-    4    0.098       0 Rarefaction 0.525 166.013 0.061 -0.022 0.218  Marim        TD
-    5    0.099       1 Rarefaction 0.525 166.013 0.059 -0.016 0.214  Marim        TD
-    6    0.092       2 Rarefaction 0.525 166.013 0.063 -0.031 0.215  Marim        TD
+    1    0.101       0 Rarefaction 0.500 151.449 0.065 -0.026 0.227  Marim        TD
+    2    0.100       1 Rarefaction 0.500 151.449 0.060 -0.017 0.217  Marim        TD
+    3    0.094       2 Rarefaction 0.500 151.449 0.058 -0.019 0.207  Marim        TD
+    4    0.098       0 Rarefaction 0.525 166.013 0.066 -0.030 0.227  Marim        TD
+    5    0.099       1 Rarefaction 0.525 166.013 0.060 -0.019 0.216  Marim        TD
+    6    0.092       2 Rarefaction 0.525 166.013 0.058 -0.022 0.205  Marim        TD
 
     $S
       Estimate Order.q      Method    SC    Size  s.e.   LCL   UCL Region diversity
-    1    0.183       0 Rarefaction 0.500 151.449 0.055 0.075 0.290  Marim        TD
-    2    0.183       1 Rarefaction 0.500 151.449 0.055 0.075 0.290  Marim        TD
-    3    0.171       2 Rarefaction 0.500 151.449 0.061 0.051 0.292  Marim        TD
-    4    0.179       0 Rarefaction 0.525 166.013 0.055 0.071 0.287  Marim        TD
-    5    0.179       1 Rarefaction 0.525 166.013 0.055 0.073 0.286  Marim        TD
-    6    0.168       2 Rarefaction 0.525 166.013 0.062 0.046 0.290  Marim        TD
+    1    0.183       0 Rarefaction 0.500 151.449 0.059 0.066 0.299  Marim        TD
+    2    0.183       1 Rarefaction 0.500 151.449 0.056 0.072 0.293  Marim        TD
+    3    0.171       2 Rarefaction 0.500 151.449 0.057 0.059 0.284  Marim        TD
+    4    0.179       0 Rarefaction 0.525 166.013 0.060 0.061 0.297  Marim        TD
+    5    0.179       1 Rarefaction 0.525 166.013 0.056 0.069 0.290  Marim        TD
+    6    0.168       2 Rarefaction 0.525 166.013 0.058 0.055 0.281  Marim        TD
 
 The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`,
 `U`, `V`, `S`. For each data frame, it includes the diversity estimate
