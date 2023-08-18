@@ -147,22 +147,26 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                        base = 'coverage', level = NULL, nboot = 20, conf = 0.95, 
                        PDtree = NULL, PDreftime = NULL, PDtype = 'meanPD',
                        FDdistM = NULL, FDtype = 'AUC', FDtau = NULL, FDcut_number = 30) {
+  
   max_alpha_coverage = F
+  
   if (datatype == 'abundance') {
     
-    if( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Region_1 = data)
+    if ( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Region_1 = data)
     
-    if(class(data) == "list"){
-      if(is.null(names(data))) region_names = paste0("Region_", 1:length(data)) else region_names = names(data)
+    if (class(data) == "list"){
+      
+      if (is.null(names(data))) region_names = paste0("Region_", 1:length(data)) else region_names = names(data)
       Ns = sapply(data, ncol)
       data_list = data
+      
     }
     
   }
   
   if (datatype == 'incidence_raw') {
     
-    if(is.null(names(data))) region_names = paste0("Region_", 1:length(data)) else region_names = names(data)
+    if (is.null(names(data))) region_names = paste0("Region_", 1:length(data)) else region_names = names(data)
     Ns = sapply(data, length)
     data_list = data
     
@@ -216,29 +220,37 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   }
   
   if (diversity == 'FD' & FDtype == 'tau_value' & is.null(FDtau) == T) {
+    
     if (datatype == 'abundance') {
+      
       pdata <- sapply(data_list, rowSums) %>% rowSums
       order_sp <- match(names(pdata),rownames(FDdistM))
       FDdistM <- FDdistM[order_sp,order_sp]
       pdata <- matrix(pdata/sum(pdata), ncol = 1)
+      
     } else if (datatype == 'incidence_raw') {
+      
       pdata <- sapply(data_list, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) }) %>% rowSums
       order_sp <- match(names(pdata),rownames(FDdistM))
       FDdistM <- FDdistM[order_sp,order_sp]
       pdata <- matrix(pdata/sum(pdata), ncol = 1)
     }
+    
     FDtau <- sum ( (pdata %*% t(pdata) ) * FDdistM) # dmean
   }
   
   if (diversity == 'PD') {
     
     if (datatype == "abundance") 
+      
       if (length(data_list) > 1) {
+        
         pool.data = data_list[[1]] %>% data.frame %>% rownames_to_column()
         for (i in 2:length(data_list)) 
           pool.data = full_join(pool.data, data_list[[i]] %>% data.frame %>% rownames_to_column(), 'rowname')
         pool.data[is.na(pool.data)] = 0
         pool.data = pool.data %>% column_to_rownames() %>% rowSums
+        
       } else pool.data = do.call(cbind, data_list) %>% rowSums
     
     if (datatype == 'incidence_raw') pool.data = do.call(cbind,lapply(data_list, function(x) do.call(cbind,x)) ) %>% rowSums
@@ -3271,3 +3283,423 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
   })
   matrix(out, ncol = ncol(ai_vi$ai))
 }
+
+
+
+#' Data information for beta diversity 
+#' 
+#' \code{DataInfobeta}: Data information for beta diversity in three dimension
+#' 
+#' @param data (a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
+#' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units. 
+#' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
+#' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).
+#' @param PDtree (required only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
+#' @param PDreftime (required only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).  
+#' @param FDdistM (required only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage. 
+#' @param FDtype (required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.  
+#' @param FDtau (required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy). 
+#' 
+#' @return return a data.frame.
+#' 
+#' @examples
+#' ## Taxonomic diversity for abundance data
+#' data(Brazil_data)
+#' output1 = DataInfobeta(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance')
+#' output1
+#' 
+#' 
+#' ## Taxonomic diversity for incidence data
+#' data(beetle_inc)
+#' output2 = DataInfobeta(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw')
+#' output2
+#' 
+#' 
+#' ## Phylogenetic diversity for abundance data
+#' data(Brazil_PDFD_data)
+#' data(Brazil_tree)
+#' output3 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'PD', datatype = 'abundance', 
+#'                        PDtree = Brazil_tree, PDreftime = NULL)
+#' output3
+#' 
+#' 
+#' ## Phylogenetic diversity for incidence data
+#' data(beetle_inc)
+#' data(beetle_tree)
+#' output4 = DataInfobeta(data = beetle_inc, diversity = 'PD', datatype = 'incidence_raw', 
+#'                        PDtree = beetle_tree, PDreftime = NULL)
+#' output4
+#' 
+#' 
+#' ## Functional diversity for abundance data under single threshold
+#' data(Brazil_PDFD_data)
+#' data(Brazil_distM)
+#' output5 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', datatype = 'abundance', 
+#'                        FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
+#' output5
+#' 
+#' 
+#' ## Functional diversity for incidence data under single threshold
+#' data(beetle_inc)
+#' data(beetle_distM)
+#' output6 = DataInfobeta(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#'                        FDdistM = beetle_distM, FDtype = 'tau_value', FDtau = NULL)
+#' output6
+#' 
+#' 
+#' ## Functional diversity for abundance data with thresholds integrating from 0 to 1
+#' data(Brazil_PDFD_data)
+#' data(Brazil_distM)
+#' output7 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', datatype = 'abundance', 
+#'                        FDdistM = Brazil_distM, FDtype = 'AUC')
+#' output7
+#' 
+#' 
+#' ## Functional diversity for incidence data with thresholds integrating from 0 to 1
+#' data(beetle_inc)
+#' data(beetle_distM)
+#' output8 = DataInfobeta(data = beetle_inc, diversity = 'FD', datatype = 'incidence_raw', 
+#'                        FDdistM = beetle_distM, FDtype = 'AUC')
+#' output8
+#' @export
+DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance', 
+                        PDtree = NULL, PDreftime = NULL, FDdistM = NULL, FDtype = 'AUC', FDtau = NULL) {
+  
+  if (is.null(names(data))) names(data) = paste0("Region_", 1:length(data))
+  
+  if (diversity == "TD") {
+    
+    if (datatype == "abundance") {
+      
+      # Dat = do.call(data.frame, data)
+      # Dat = Dat %>% set_colnames(lapply(1:length(data), function(i) paste(names(data)[i], colnames(data[[i]]), sep = " ")) %>% unlist)
+      # Dat = Dat[, !duplicated(colnames(Dat))]
+      
+      Dat = lapply(data, function(x) list("Gamma assemblage" = rowSums(x),
+                                          "Alpha assemblage" = as.vector(x)))
+      
+      output = lapply(1:length(Dat), function(i) DataInfo3D(Dat[[i]], datatype = "abundance") %>% cbind(Region = names(data)[i],.)) %>% do.call(rbind,.)
+    }
+    
+    if (datatype == "incidence_raw") {
+      
+      # Dat = rbind(sapply(data, function(x) ncol(x[[1]])), lapply(data, function(x) sapply(x, rowSums)) %>% do.call(cbind,.))
+      # if (is.null(colnames(Dat))) colnames(Dat) = paste("Assemblage", 1:ncol(Dat), sep = " ")
+      # Dat = Dat[, !duplicated(colnames(Dat))]
+      
+      Dat = lapply(data, function(x) {
+        
+        data_gamma = Reduce('+', x)
+        data_gamma[data_gamma > 1] = 1
+        
+        data_alpha = do.call(rbind, x)
+        
+        list("Gamma assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+             "Alpha assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha))))
+      })
+      
+      output = lapply(1:length(Dat), function(i) DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% cbind(Region = names(data)[i],.)) %>% do.call(rbind,.)
+    }
+  }
+  
+  if (diversity == "PD") {
+    
+    if(is.null(PDreftime)) PDreftime = get.rooted.tree.height(PDtree) else if (PDreftime <= 0) { 
+      stop("Reference time must be greater than 0. Use NULL to set it to pooled tree height.", call. = FALSE)
+      }
+    
+    
+    if (datatype == "abundance") {
+      
+      output = lapply(data, function(x) {
+        
+        data_gamma = rowSums(x)
+        data_gamma = data_gamma[data_gamma > 0]
+        
+        aL_table_gamma = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = data_gamma, rootExtend = T, refT = PDreftime)
+        aL_table_gamma$treeNabu$branch.length = aL_table_gamma$BLbyT[,1]
+        aL_table_gamma = aL_table_gamma$treeNabu %>% select(branch.abun, branch.length, tgroup)
+        
+        N = ncol(x)
+        aL_table_alpha = c()
+        
+        for (i in 1:N) {
+          
+          y = x[x[,i] > 0, i]
+          names(y) = rownames(x)[x[,i]>0]
+          
+          aL_table = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = y, rootExtend = T, refT = PDreftime)
+          aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
+          aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
+          
+          aL_table_alpha = rbind(aL_table_alpha, aL_table)
+          
+        }
+        
+        output <- sapply(list(aL_table_gamma, aL_table_alpha), function(y){
+          
+          ai = y$branch.abun
+          Li = y$branch.length
+          I1 <- which(ai == 1 & Li > 0)
+          I2 <- which(ai == 2 & Li > 0)
+          S.obs = y[y$branch.abun > 0,] %>% filter(tgroup == "Tip") %>% nrow
+          PD_obs <- sum(Li)
+          f1 <- length(I1)
+          f2 <- length(I2)
+          g1 <- sum(Li[I1])
+          g2 <- sum(Li[I2])
+          c(S.obs, PD_obs, f1, f2, g1, g2)
+          
+        }) %>% t()
+        
+        output <- tibble('Assemblage' = c("Gamma assemblage", "Alpha assemblage"), 
+                         'n' = sum(x), 'S.obs' = output[,1], 'PD.obs' = output[,2],
+                         'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
+                         'Reftime' = PDreftime)
+        
+      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+      }
+    
+    if (datatype == "incidence_raw") {
+      
+      output = lapply(data, function(x) {
+        
+        data_gamma = Reduce('+', x)
+        data_gamma[data_gamma > 1] = 1
+        
+        aL_table_gamma = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = as.matrix(data_gamma), datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
+        aL_table_gamma$treeNabu$branch.length = aL_table_gamma$BLbyT[,1]
+        aL_table_gamma = aL_table_gamma$treeNabu %>% select(branch.abun, branch.length, tgroup)
+        
+        N = length(x)
+        aL_table_alpha = c()
+        
+        for (i in 1:N) {
+          
+          aL_table = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = x[[i]], datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
+          aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
+          aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
+          
+          aL_table_alpha = rbind(aL_table_alpha, aL_table)
+          
+        }
+        
+        output <- sapply(list(aL_table_gamma, aL_table_alpha), function(y){
+          
+          ai = y$branch.abun
+          Li = y$branch.length
+          I1 <- which(ai == 1 & Li > 0)
+          I2 <- which(ai == 2 & Li > 0)
+          S.obs = y[y$branch.abun > 0,] %>% filter(tgroup == "Tip") %>% nrow
+          PD_obs <- sum(Li)
+          f1 <- length(I1)
+          f2 <- length(I2)
+          g1 <- sum(Li[I1])
+          g2 <- sum(Li[I2])
+          c(S.obs, PD_obs, f1, f2, g1, g2)
+          
+        }) %>% t()
+        
+        output <- tibble('Assemblage' = c("Gamma assemblage", "Alpha assemblage"), 
+                         'T' = ncol(x[[1]]), 'S.obs' = output[,1], 'PD.obs' = output[,2],
+                         'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
+                         'Reftime' = PDreftime)
+        
+      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+      
+    }
+    
+  }
+  
+  if (diversity == "FD" & FDtype == "tau_value") {
+    
+    FDdistM = as.matrix(FDdistM)
+    
+    if (is.null(FDtau) == T) {
+      
+      if (datatype == 'abundance') {
+        
+        pdata <- sapply(data, rowSums) %>% rowSums
+        order_sp <- match(names(pdata),rownames(FDdistM))
+        FDdistM <- FDdistM[order_sp,order_sp]
+        pdata <- matrix(pdata/sum(pdata), ncol = 1)
+        
+      } else if (datatype == 'incidence_raw') {
+        
+        pdata <- sapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) }) %>% rowSums
+        order_sp <- match(names(pdata),rownames(FDdistM))
+        FDdistM <- FDdistM[order_sp,order_sp]
+        pdata <- matrix(pdata/sum(pdata), ncol = 1)
+        
+      }
+      
+      FDtau <- sum ( (pdata %*% t(pdata) ) * FDdistM) # dmean
+    }
+    
+    
+    if (datatype == "abundance") {
+      
+      output = lapply(data, function(x) {
+        
+        N = ncol(x)
+        
+        dij = FDdistM
+        dij = dij[rownames(dij) %in% rownames(x), colnames(dij) %in% rownames(x)]
+        order_sp <- match(rownames(x), rownames(dij))
+        dij <- dij[order_sp, order_sp]
+        
+        dij = dij[rowSums(x)>0, rowSums(x)>0]
+        x = x[rowSums(x)>0,]
+        
+        dij[which(dij > FDtau, arr.ind = T)] = FDtau
+        aik = (1 - dij/FDtau) %*% as.matrix(x)
+        positive_id = rowSums(aik) > 0
+        
+        gamma_x = rowSums(x)[positive_id]
+        gamma_a = rowSums(aik)[positive_id]
+        alpha_a = as.vector(aik)
+        
+        out <- iNEXT.3D:::TDinfo(list("Gamma assemblage" = gamma_a,
+                                      "Alpha assemblage" = alpha_a), "abundance")
+        
+        out$SC = sapply(list(rowSums(x), as.vector(x)), function(y) {
+          
+          n = sum(y)
+          f1 = sum(y == 1)
+          f2 = sum(y == 2)
+          f0.hat <- ifelse(f2 == 0, (n-1) / n * f1 * (f1-1) / 2, (n-1) / n * f1^2 / 2 / f2) 
+          A <- ifelse(f1 > 0, n * f0.hat / (n * f0.hat + f1), 1)
+          1 - f1/n * A
+          
+        })
+        out$n = sum(x)
+        
+        colnames(out)[colnames(out) %in% paste0("f", 1:10)] = paste0("a", 1:10, "'")
+        
+        out$Tau = FDtau
+        
+        return(out)
+        
+      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+    }
+    
+    if (datatype == "incidence_raw") {
+      
+      output = lapply(data, function(x) {
+        
+        N = length(x)
+        nT = ncol(x[[1]])
+        
+        data_gamma = Reduce('+', x)
+        data_gamma[data_gamma > 1] = 1
+        data_gamma_freq = rowSums(data_gamma)
+        
+        data_2D = sapply(x, rowSums)
+        
+        dij = FDdistM
+        dij = dij[data_gamma_freq > 0, data_gamma_freq > 0]
+        data_gamma_freq = data_gamma_freq[data_gamma_freq > 0]
+        
+        dij[which(dij > FDtau, arr.ind = T)] = FDtau
+        gamma_a = (1 - dij/FDtau) %*% as.matrix(data_gamma_freq)
+        gamma_a[gamma_a > nT] = nT
+        
+        dij = FDdistM
+        dij = dij[rowSums(data_2D) > 0, rowSums(data_2D) > 0]
+        data_2D = data_2D[rowSums(data_2D) > 0,]
+        
+        dij[which(dij > FDtau, arr.ind = T)] = FDtau
+        alpha_a = (1 - dij/FDtau) %*% as.matrix(data_2D)
+        alpha_a[alpha_a > nT] = nT
+        alpha_a = as.vector(alpha_a)
+        
+        out <- iNEXT.3D:::TDinfo(list("Gamma assemblage" = c(nT, gamma_a),
+                                      "Alpha assemblage" = c(nT, alpha_a)), "incidence_freq")
+        out$SC = sapply(list(data_gamma_freq, data_2D), function(y) {
+          
+          U <- sum(y)
+          Q1 = sum(y == 1)
+          Q2 = sum(y == 2)
+          Q0.hat <- ifelse(Q2 == 0, (nT-1) / nT * Q1 * (Q1-1) / 2, (nT-1) / nT * Q1^2 / 2 / Q2) 
+          A <- ifelse(Q1 > 0, nT * Q0.hat / (nT * Q0.hat + Q1), 1)
+          
+          1 - Q1/U * A
+        })
+        
+        out$U = c(sum(data_gamma_freq), sum(data_2D))
+        
+        colnames(out)[colnames(out) %in% paste0("f", 1:10)] = paste0("a", 1:10, "'")
+        
+        out$Tau = FDtau
+        
+        return(out)
+        
+      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+      
+    }
+    
+    rownames(output) = NULL
+  }
+  
+  if (diversity == "FD" & FDtype == "AUC") {
+    
+    FDdistM = as.matrix(FDdistM)
+    
+    if (datatype == 'abundance') {
+      
+      pdata <- sapply(data, rowSums) %>% rowSums
+      order_sp <- match(names(pdata),rownames(FDdistM))
+      FDdistM <- FDdistM[order_sp,order_sp]
+      pdata <- matrix(pdata/sum(pdata), ncol = 1)
+      
+    } else if (datatype == 'incidence_raw') {
+      
+      pdata <- sapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) }) %>% rowSums
+      order_sp <- match(names(pdata),rownames(FDdistM))
+      FDdistM <- FDdistM[order_sp,order_sp]
+      pdata <- matrix(pdata/sum(pdata), ncol = 1)
+      
+    }
+    
+    dmean <- sum ( (pdata %*% t(pdata) ) * FDdistM) # dmean
+    
+    dmin <- min(FDdistM[FDdistM > 0])
+    dmax <- max(FDdistM[FDdistM > 0])
+    Tau = c(dmin, dmean, dmax)
+    
+    output = lapply(data, function(x) {
+      
+      if (datatype == "abundance") {
+        
+        out <- cbind(iNEXT.3D:::TDinfo(list("Gamma assemblage" = rowSums(x),
+                                            "Alpha assemblage" = as.vector(x)), "abundance")[,1:4], 
+                     matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
+        colnames(out)[5:7] = c("dmin", "dmean", "dmax")
+        
+      }
+      
+      if (datatype == "incidence_raw") {
+        
+        data_gamma = Reduce('+', x)
+        data_gamma[data_gamma > 1] = 1
+        
+        data_alpha = do.call(rbind, x)
+        
+        out <- cbind(iNEXT.3D:::TDinfo(list("Gamma assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+                                            "Alpha assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:5], 
+                     matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
+        colnames(out)[6:8] = c("dmin", "dmean", "dmax")
+        
+      }
+      
+      return(out)
+      
+      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+    
+    rownames(output) = NULL
+    }
+  
+  return(output)
+  
+  }
+
