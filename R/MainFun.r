@@ -3446,7 +3446,13 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
       Dat = lapply(data, function(x) list("Gamma assemblage" = rowSums(x),
                                           "Alpha assemblage" = as.vector(x)))
       
-      output = lapply(1:length(Dat), function(i) DataInfo3D(Dat[[i]], datatype = "abundance") %>% cbind(Region = names(data)[i],.)) %>% do.call(rbind,.)
+      output = lapply(1:length(Dat), function(i) {
+        N = ncol(data[[i]])
+        tmp = DataInfo3D(Dat[[i]], datatype = "abundance") %>% cbind(Region = names(data)[i],.)
+        tmp[2, c(3,4,6:15)] = tmp[2, c(3,4,6:15)] / N
+        
+        tmp
+        }) %>% do.call(rbind,.)
     }
     
     if (datatype == "incidence_raw") {
@@ -3466,7 +3472,13 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
              "Alpha assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha))))
       })
       
-      output = lapply(1:length(Dat), function(i) DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% cbind(Region = names(data)[i],.)) %>% do.call(rbind,.)
+      output = lapply(1:length(Dat), function(i) {
+        N = length(data[[i]])
+        tmp = DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% cbind(Region = names(data)[i],.)
+        tmp[2, c(4,5,7:16)] = tmp[2, c(4,5,7:16)] / N
+        
+        tmp
+        }) %>% do.call(rbind,.)
     }
     
   }
@@ -3536,7 +3548,9 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
                          'n' = sum(x), 'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
                          'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
                          'Reftime' = PDreftime)
+        output[2,c(2,3,5:9)] = output[2,c(2,3,5:9)] / N
         
+        output
       }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
       }
     
@@ -3594,10 +3608,14 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         })
         
         output <- tibble('Assemblage' = c("Gamma assemblage", "Alpha assemblage"), 
-                         'T' = ncol(x[[1]]), 'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
+                         'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
+                         'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
                          'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
                          'Reftime' = PDreftime)
         
+        output[2,c(3,4,6:10)] = output[2,c(3,4,6:10)] / N
+        
+        output
       }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
       
     }
@@ -3690,6 +3708,8 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         out$Tau = FDtau
         
+        out[2,c(2,3,5:14)] = out[2,c(2,3,5:14)] / N
+        
         return(out)
         
       }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
@@ -3755,6 +3775,8 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         out$Tau = FDtau
         
+        out[2,c(3,4,6:15)] = out[2,c(3,4,6:15)] / N
+        
         return(out)
         
       }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
@@ -3817,6 +3839,8 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
                      matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
         colnames(out)[5:7] = c("dmin", "dmean", "dmax")
         
+        N = ncol(x)
+        out[2,2:3] = out[2,2:3] / N
       }
       
       if (datatype == "incidence_raw") {
@@ -3831,6 +3855,8 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
                      matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
         colnames(out)[6:8] = c("dmin", "dmean", "dmax")
         
+        N = length(x)
+        out[2,3:4] = out[2,3:4] / N
       }
       
       return(out)
