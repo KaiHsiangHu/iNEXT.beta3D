@@ -3432,6 +3432,9 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
   
   if (is.null(names(data))) names(data) = paste0("Region_", 1:length(data))
   
+  if (datatype == "abundance") data = lapply(data, as.matrix) else if (datatype == "incidence_raw")
+    data = lapply(data, function(x) lapply(x, as.matrix))
+  
   if (diversity == "TD") {
     
     if (datatype == "abundance") {
