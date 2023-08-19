@@ -223,17 +223,36 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     if (datatype == 'abundance') {
       
-      pdata <- sapply(data_list, rowSums) %>% rowSums
+      tt <- lapply(data_list, rowSums)
+      tt = lapply(tt, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
+      pdata = tt[[1]]
+      for(i in 2:length(tt)){
+        pdata = full_join(pdata, tt[[i]], by = "Species")
+      }
+      pdata[is.na(pdata)] = 0
+      pdata = pdata %>% column_to_rownames("Species")
+      pdata = rowSums(pdata)
+      
       order_sp <- match(names(pdata),rownames(FDdistM))
       FDdistM <- FDdistM[order_sp,order_sp]
       pdata <- matrix(pdata/sum(pdata), ncol = 1)
       
     } else if (datatype == 'incidence_raw') {
       
-      pdata <- sapply(data_list, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) }) %>% rowSums
+      tt <- lapply(data_list, function(x) {tt = Reduce('+', x); tt[tt > 1] = 1; rowSums(tt) })
+      tt = lapply(tt, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
+      pdata = tt[[1]]
+      for(i in 2:length(tt)){
+        pdata = full_join(pdata, tt[[i]], by = "Species")
+      }
+      pdata[is.na(pdata)] = 0
+      pdata = pdata %>% column_to_rownames("Species")
+      pdata = rowSums(pdata)
+      
       order_sp <- match(names(pdata),rownames(FDdistM))
       FDdistM <- FDdistM[order_sp,order_sp]
       pdata <- matrix(pdata/sum(pdata), ncol = 1)
+      
     }
     
     FDtau <- sum ( (pdata %*% t(pdata) ) * FDdistM) # dmean
@@ -265,7 +284,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     } else { reft = PDreftime }
     
   }
-  
+    
   for_each_region = function(data, region_name, N) {
     
     #data
@@ -318,6 +337,12 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       m_gamma = sapply(level, function(i) coverage_to_size(data_gamma_freq, i, datatype='incidence_freq'))
       m_alpha = sapply(level, function(i) coverage_to_size(data_alpha_freq, i, datatype='incidence_freq'))
       
+      # if (sum(m_gamma < 1 | m_alpha < 1) > 0) {
+      #   index = m_gamma < 1 | m_alpha < 1
+      #   level = level[!index]
+      #   m_gamma = m_gamma[!index]
+      #   m_alpha = m_alpha[!index]
+      # }
     }
     
     
@@ -1077,6 +1102,10 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         }
         
         if (datatype == 'incidence_raw') {
+          
+          FDdistM = FDdistM[rownames(FDdistM) %in% names(data_gamma_freq)[-1], colnames(FDdistM) %in% names(data_gamma_freq)[-1]]
+          order_sp <- match(names(data_gamma_freq)[-1],rownames(FDdistM))
+          FDdistM <- FDdistM[order_sp,order_sp]
           
           output = FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, FDtau, level, datatype='incidence_raw', by = 'coverage', m_gamma=m_gamma, m_alpha=m_alpha)
           gamma = output$gamma
@@ -2651,7 +2680,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     list(gamma = gamma, alpha = alpha)
     
   }
-  
+
   if (base == 'coverage') output = lapply(1:length(data_list), function(i) for_each_region(data = data_list[[i]], region_name = region_names[i], N = Ns[i]))
   if (base == 'size') output = lapply(1:length(data_list), function(i) for_each_region.size(data = data_list[[i]], region_name = region_names[i], N = Ns[i], level = level[[i]]))
   names(output) = region_names
@@ -3260,6 +3289,8 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
     if (sum(m < nT) != 0) {
       int.m = sort(unique(c(floor(m[m < nT]), ceiling(m[m < nT]))))
       mRFD = rbind(int.m, sapply(int.m, function(k) iNEXT.3D:::RFD(av, nT, k, q, V_bar)))
+      
+      if (0 %in% int.m) mRFD[,mRFD[1,] == 0] = 0
     }
     
     sapply(m, function(mm) {
@@ -3400,6 +3431,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
       
       output = lapply(1:length(Dat), function(i) DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% cbind(Region = names(data)[i],.)) %>% do.call(rbind,.)
     }
+    
   }
   
   if (diversity == "PD") {
@@ -3452,8 +3484,19 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
           
         }) %>% t()
         
+        Chat = sapply(list(data_gamma, as.vector(x)), function(y) {
+          
+          n = sum(y)
+          f1 = sum(y == 1)
+          f2 = sum(y == 2)
+          f0.hat <- ifelse(f2 == 0, (n-1) / n * f1 * (f1-1) / 2, (n-1) / n * f1^2 / 2 / f2) 
+          A <- ifelse(f1 > 0, n * f0.hat / (n * f0.hat + f1), 1)
+          1 - f1/n * A
+          
+        })
+        
         output <- tibble('Assemblage' = c("Gamma assemblage", "Alpha assemblage"), 
-                         'n' = sum(x), 'S.obs' = output[,1], 'PD.obs' = output[,2],
+                         'n' = sum(x), 'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
                          'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
                          'Reftime' = PDreftime)
         
@@ -3500,8 +3543,21 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
           
         }) %>% t()
         
+        Chat = sapply(list(data_gamma, do.call(rbind,x)), function(y) {
+          
+          nT = ncol(y)
+          y = rowSums(y)
+          U <- sum(y)
+          Q1 = sum(y == 1)
+          Q2 = sum(y == 2)
+          Q0.hat <- ifelse(Q2 == 0, (nT-1) / nT * Q1 * (Q1-1) / 2, (nT-1) / nT * Q1^2 / 2 / Q2) 
+          A <- ifelse(Q1 > 0, nT * Q0.hat / (nT * Q0.hat + Q1), 1)
+          1 - Q1/U * A
+          
+        })
+        
         output <- tibble('Assemblage' = c("Gamma assemblage", "Alpha assemblage"), 
-                         'T' = ncol(x[[1]]), 'S.obs' = output[,1], 'PD.obs' = output[,2],
+                         'T' = ncol(x[[1]]), 'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
                          'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
                          'Reftime' = PDreftime)
         
@@ -3509,6 +3565,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
       
     }
     
+    rownames(output) = NULL
   }
   
   if (diversity == "FD" & FDtype == "tau_value") {
@@ -3519,14 +3576,32 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
       
       if (datatype == 'abundance') {
         
-        pdata <- sapply(data, rowSums) %>% rowSums
+        tmp <- lapply(data, rowSums)
+        tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
+        pdata = tmp[[1]]
+        for(i in 2:length(tmp)){
+          pdata = full_join(pdata, tmp[[i]], by = "Species")
+        }
+        pdata[is.na(pdata)] = 0
+        pdata = pdata %>% column_to_rownames("Species")
+        pdata = rowSums(pdata)
+        
         order_sp <- match(names(pdata),rownames(FDdistM))
         FDdistM <- FDdistM[order_sp,order_sp]
         pdata <- matrix(pdata/sum(pdata), ncol = 1)
         
       } else if (datatype == 'incidence_raw') {
         
-        pdata <- sapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) }) %>% rowSums
+        tmp <- lapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) })
+        tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
+        pdata = tmp[[1]]
+        for(i in 2:length(tmp)){
+          pdata = full_join(pdata, tmp[[i]], by = "Species")
+        }
+        pdata[is.na(pdata)] = 0
+        pdata = pdata %>% column_to_rownames("Species")
+        pdata = rowSums(pdata)
+        
         order_sp <- match(names(pdata),rownames(FDdistM))
         FDdistM <- FDdistM[order_sp,order_sp]
         pdata <- matrix(pdata/sum(pdata), ncol = 1)
@@ -3596,7 +3671,12 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         data_2D = sapply(x, rowSums)
         
+        ##
         dij = FDdistM
+        dij = dij[rownames(dij) %in% names(data_gamma_freq), colnames(dij) %in% names(data_gamma_freq)]
+        order_sp <- match(names(data_gamma_freq), rownames(dij))
+        dij <- dij[order_sp, order_sp]
+        
         dij = dij[data_gamma_freq > 0, data_gamma_freq > 0]
         data_gamma_freq = data_gamma_freq[data_gamma_freq > 0]
         
@@ -3604,7 +3684,13 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         gamma_a = (1 - dij/FDtau) %*% as.matrix(data_gamma_freq)
         gamma_a[gamma_a > nT] = nT
         
+        
+        ##
         dij = FDdistM
+        dij = dij[rownames(dij) %in% rownames(data_2D), colnames(dij) %in% rownames(data_2D)]
+        order_sp <- match(rownames(data_2D), rownames(dij))
+        dij <- dij[order_sp, order_sp]
+        
         dij = dij[rowSums(data_2D) > 0, rowSums(data_2D) > 0]
         data_2D = data_2D[rowSums(data_2D) > 0,]
         
@@ -3647,14 +3733,32 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
     
     if (datatype == 'abundance') {
       
-      pdata <- sapply(data, rowSums) %>% rowSums
+      tmp <- lapply(data, rowSums)
+      tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
+      pdata = tmp[[1]]
+      for(i in 2:length(tmp)){
+        pdata = full_join(pdata, tmp[[i]], by = "Species")
+      }
+      pdata[is.na(pdata)] = 0
+      pdata = pdata %>% column_to_rownames("Species")
+      pdata = rowSums(pdata)
+      
       order_sp <- match(names(pdata),rownames(FDdistM))
       FDdistM <- FDdistM[order_sp,order_sp]
       pdata <- matrix(pdata/sum(pdata), ncol = 1)
       
     } else if (datatype == 'incidence_raw') {
       
-      pdata <- sapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) }) %>% rowSums
+      tmp <- lapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) })
+      tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
+      pdata = tmp[[1]]
+      for(i in 2:length(tmp)){
+        pdata = full_join(pdata, tmp[[i]], by = "Species")
+      }
+      pdata[is.na(pdata)] = 0
+      pdata = pdata %>% column_to_rownames("Species")
+      pdata = rowSums(pdata)
+      
       order_sp <- match(names(pdata),rownames(FDdistM))
       FDdistM <- FDdistM[order_sp,order_sp]
       pdata <- matrix(pdata/sum(pdata), ncol = 1)
