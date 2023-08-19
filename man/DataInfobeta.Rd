@@ -47,8 +47,10 @@ output1
 
 
 ## Taxonomic diversity for incidence data
-data(beetle_inc)
-output2 = DataInfobeta(data = beetle_inc, diversity = 'TD', datatype = 'incidence_raw')
+data(SG_rainforests)
+data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
+            "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+output2 = DataInfobeta(data = data, diversity = 'TD', datatype = 'incidence_raw')
 output2
 
 
