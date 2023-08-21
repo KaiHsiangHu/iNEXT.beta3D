@@ -410,9 +410,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = alpha
       beta$Estimate = gamma$Estimate/alpha$Estimate
-      beta[beta == "Observed"] = "Observed_alpha"
-      beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
-                                     Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+      # beta[beta == "Observed"] = "Observed_alpha"
+      # beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
+      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(1-Order.q) - 1)/(N^(1-Order.q)-1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(Order.q-1) - 1)/(N^(Order.q-1)-1)))
@@ -452,8 +452,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               estimate3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", base = "coverage", level = level[i], nboot = 0)
             }) %>% do.call(rbind,.)
             
-            beta_obs = (AO3D(as.numeric(bootstrap_data_gamma), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Observed") %>% select(qD) / 
-                          (AO3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Observed") %>% select(qD) / N)) %>% unlist()
+            # beta_obs = (AO3D(as.numeric(bootstrap_data_gamma), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Observed") %>% select(qD) / 
+            #               (AO3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Observed") %>% select(qD) / N)) %>% unlist()
             
           }
           
@@ -484,8 +484,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               estimate3D(bootstrap_data_alpha_freq, diversity = 'TD', q = q, datatype = "incidence_freq", base = "coverage", level = level[i], nboot = 0)
             }) %>% do.call(rbind,.)
             
-            beta_obs = (AO3D(as.numeric(bootstrap_data_gamma_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Observed") %>% select(qD) / 
-                          (AO3D(as.numeric(bootstrap_data_alpha_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Observed") %>% select(qD) / N)) %>% unlist()
+            # beta_obs = (AO3D(as.numeric(bootstrap_data_gamma_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Observed") %>% select(qD) / 
+            #               (AO3D(as.numeric(bootstrap_data_alpha_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Observed") %>% select(qD) / N)) %>% unlist()
             
           }
           
@@ -496,11 +496,12 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           beta = gamma/alpha
           
-          gamma = c(gamma, rep(0, length(q)))
-          alpha = c(alpha, rep(0, length(q)))
-          beta = c(beta, beta_obs)
-          
-          Order.q = rep(q, length(level) + 1)[under_max_alpha]
+          # gamma = c(gamma, rep(0, length(q)))
+          # alpha = c(alpha, rep(0, length(q)))
+          # beta = c(beta, beta_obs)
+          # 
+          # Order.q = rep(q, length(level) + 1)[under_max_alpha]
+          Order.q = rep(q, length(level))[under_max_alpha]
           
           beta = data.frame(Estimate=beta, Order.q)
           
@@ -642,9 +643,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = alpha
       beta$Estimate = gamma$Estimate/alpha$Estimate
-      beta[beta == "Observed"] = "Observed_alpha"
-      beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
-                                     Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+      # beta[beta == "Observed"] = "Observed_alpha"
+      # beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
+      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
@@ -793,8 +794,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             
             alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, cal = "PD")/N) %>% t)
             
-            beta_obs = (iNEXT.3D:::PD.Tprofile(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), q = q, nt = n, cal = "PD") / 
-                          (iNEXT.3D:::PD.Tprofile(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), q = q, nt = n, cal = "PD") / N)) %>% unlist()
+            # beta_obs = (iNEXT.3D:::PD.Tprofile(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), q = q, nt = n, cal = "PD") / 
+            #               (iNEXT.3D:::PD.Tprofile(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), q = q, nt = n, cal = "PD") / N)) %>% unlist()
           }
           
           if (datatype == 'incidence_raw') {
@@ -927,8 +928,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             
             alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q=q, nt = n, cal = "PD")/N) %>% t)
             
-            beta_obs = (iNEXT.3D:::PD.Tprofile(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), q = q, nt = n, cal = "PD") / 
-                          (iNEXT.3D:::PD.Tprofile(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), q = q, nt = n, cal = "PD") / N)) %>% unlist()
+            # beta_obs = (iNEXT.3D:::PD.Tprofile(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), q = q, nt = n, cal = "PD") / 
+            #               (iNEXT.3D:::PD.Tprofile(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), q = q, nt = n, cal = "PD") / N)) %>% unlist()
           }
           
           gamma = gamma[under_max_alpha]
@@ -942,11 +943,12 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           beta = gamma/alpha
           
-          gamma = c(gamma, rep(0, length(q)))
-          alpha = c(alpha, rep(0, length(q)))
-          beta = c(beta, beta_obs)
-          
-          Order.q = rep(q, each = length(level) + 1)[under_max_alpha]
+          # gamma = c(gamma, rep(0, length(q)))
+          # alpha = c(alpha, rep(0, length(q)))
+          # beta = c(beta, beta_obs)
+          # 
+          # Order.q = rep(q, each = length(level) + 1)[under_max_alpha]
+          Order.q = rep(q, each = length(level))[under_max_alpha]
           
           beta = data.frame(Estimate = beta, Order.q)
           
@@ -1106,10 +1108,10 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           beta$alpha = gamma$gamma/alpha$alpha
           
           ## Observed Beta ##
-          output_obs = FD_by_tau(data, FDdistM, FDtau, level, datatype = 'abundance', by = 'size', m_gamma = sum(data), m_alpha = sum(data))
-          gamma_obs = output_obs$gamma
-          alpha_obs = output_obs$alpha
-          obs_beta = gamma_obs/alpha_obs
+          # output_obs = FD_by_tau(data, FDdistM, FDtau, level, datatype = 'abundance', by = 'size', m_gamma = sum(data), m_alpha = sum(data))
+          # gamma_obs = output_obs$gamma
+          # alpha_obs = output_obs$alpha
+          # obs_beta = gamma_obs/alpha_obs
           
         }
         
@@ -1135,10 +1137,10 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           beta$alpha = gamma$gamma/alpha$alpha
           
           ## Observed Beta ##
-          output_obs = FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, FDtau, level, datatype = 'incidence_raw', by = 'size', m_gamma = data_gamma_freq[1], m_alpha = data_gamma_freq[1])
-          gamma_obs = output_obs$gamma
-          alpha_obs = output_obs$alpha
-          obs_beta = gamma_obs/alpha_obs
+          # output_obs = FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, FDtau, level, datatype = 'incidence_raw', by = 'size', m_gamma = data_gamma_freq[1], m_alpha = data_gamma_freq[1])
+          # gamma_obs = output_obs$gamma
+          # alpha_obs = output_obs$alpha
+          # obs_beta = gamma_obs/alpha_obs
           
         }
         
@@ -1195,17 +1197,17 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           ## Observed Beta ##
-          obs_gamma_alpha_over_tau = lapply(cut, function(tau) {
-            
-            FD_by_tau(data, FDdistM, tau, level, datatype = 'abundance', by = 'size', m_gamma = sum(data), m_alpha = sum(data))
-            
-          })
-          
-          obs_beta_over_tau = sapply(obs_gamma_alpha_over_tau, function(x) x$gamma) / sapply(obs_gamma_alpha_over_tau, function(x) x$alpha)
-          
-          if (length(q) == 1) obs_beta_over_tau = matrix(obs_beta_over_tau, nrow = 1)
-          
-          obs_beta = colSums( (apply(obs_beta_over_tau, 1, function(x) x[-FDcut_number]*width) + apply(obs_beta_over_tau, 1, function(x) x[-1]*width) ) / 2)
+          # obs_gamma_alpha_over_tau = lapply(cut, function(tau) {
+          #   
+          #   FD_by_tau(data, FDdistM, tau, level, datatype = 'abundance', by = 'size', m_gamma = sum(data), m_alpha = sum(data))
+          #   
+          # })
+          # 
+          # obs_beta_over_tau = sapply(obs_gamma_alpha_over_tau, function(x) x$gamma) / sapply(obs_gamma_alpha_over_tau, function(x) x$alpha)
+          # 
+          # if (length(q) == 1) obs_beta_over_tau = matrix(obs_beta_over_tau, nrow = 1)
+          # 
+          # obs_beta = colSums( (apply(obs_beta_over_tau, 1, function(x) x[-FDcut_number]*width) + apply(obs_beta_over_tau, 1, function(x) x[-1]*width) ) / 2)
           
         }
         
@@ -1255,17 +1257,17 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                    Order.q = rep(q, each = length(SC)/length(q)), Size = rep(m_alpha, length(q)))
           
           ## Observed Beta ##
-          obs_gamma_alpha_over_tau = lapply(cut, function(tau) {
-            
-            FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, tau, level, datatype = 'incidence_raw', by = 'size', m_gamma = data_gamma_freq[1], m_alpha = data_alpha_freq[1])
-            
-          })
-          
-          obs_beta_over_tau = sapply(obs_gamma_alpha_over_tau, function(x) x$gamma) / sapply(obs_gamma_alpha_over_tau, function(x) x$alpha)
-          
-          if (length(q) == 1) obs_beta_over_tau = matrix(obs_beta_over_tau, nrow = 1)
-          
-          obs_beta = colSums( (apply(obs_beta_over_tau, 1, function(x) x[-FDcut_number]*width) + apply(obs_beta_over_tau, 1, function(x) x[-1]*width) ) / 2)
+          # obs_gamma_alpha_over_tau = lapply(cut, function(tau) {
+          #   
+          #   FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, tau, level, datatype = 'incidence_raw', by = 'size', m_gamma = data_gamma_freq[1], m_alpha = data_alpha_freq[1])
+          #   
+          # })
+          # 
+          # obs_beta_over_tau = sapply(obs_gamma_alpha_over_tau, function(x) x$gamma) / sapply(obs_gamma_alpha_over_tau, function(x) x$alpha)
+          # 
+          # if (length(q) == 1) obs_beta_over_tau = matrix(obs_beta_over_tau, nrow = 1)
+          # 
+          # obs_beta = colSums( (apply(obs_beta_over_tau, 1, function(x) x[-FDcut_number]*width) + apply(obs_beta_over_tau, 1, function(x) x[-1]*width) ) / 2)
           
         }
         
@@ -1285,9 +1287,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = beta[under_max_alpha,]
       
-      beta[beta == "Observed"] = "Observed_alpha"
-      beta = beta %>% 
-        rbind(., data.frame(Estimate = obs_beta, Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+      # beta[beta == "Observed"] = "Observed_alpha"
+      # beta = beta %>% 
+      #   rbind(., data.frame(Estimate = obs_beta, Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
@@ -1334,10 +1336,10 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               beta=gamma/alpha
               
               ## Observed Beta ##
-              output_obs = FD_by_tau(data_bt, distance_matrix_bt, FDtau, level, datatype = 'abundance', by = 'size', m_gamma = sum(data_bt), m_alpha = sum(data_bt))
-              gamma_obs = output_obs$gamma
-              alpha_obs = output_obs$alpha
-              beta_obs = gamma_obs/alpha_obs
+              # output_obs = FD_by_tau(data_bt, distance_matrix_bt, FDtau, level, datatype = 'abundance', by = 'size', m_gamma = sum(data_bt), m_alpha = sum(data_bt))
+              # gamma_obs = output_obs$gamma
+              # alpha_obs = output_obs$alpha
+              # beta_obs = gamma_obs/alpha_obs
               
             }
             
@@ -1374,24 +1376,24 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               beta = colSums((left_limit + right_limit)/2)
               
               ## Observed Beta ##
-              gamma_alpha_over_tau = lapply(cut, function(tau) {
-                
-                FD_by_tau(data_bt, distance_matrix_bt, tau, level, datatype = 'abundance', by = 'size', m_gamma = sum(data_bt), m_alpha = sum(data_bt))
-                
-              })
-              
-              gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
-              
-              alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
-              
-              beta_over_tau = gamma_over_tau/alpha_over_tau
-              
-              if (length(q) == 1) beta_over_tau = matrix(beta_over_tau, nrow = 1)
-              
-              left_limit  = apply(beta_over_tau, 1, function(x) x[-FDcut_number]*width)
-              right_limit = apply(beta_over_tau, 1, function(x) x[-1]*width)
-              
-              beta_obs = colSums((left_limit + right_limit)/2)
+              # gamma_alpha_over_tau = lapply(cut, function(tau) {
+              #   
+              #   FD_by_tau(data_bt, distance_matrix_bt, tau, level, datatype = 'abundance', by = 'size', m_gamma = sum(data_bt), m_alpha = sum(data_bt))
+              #   
+              # })
+              # 
+              # gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+              # 
+              # alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+              # 
+              # beta_over_tau = gamma_over_tau/alpha_over_tau
+              # 
+              # if (length(q) == 1) beta_over_tau = matrix(beta_over_tau, nrow = 1)
+              # 
+              # left_limit  = apply(beta_over_tau, 1, function(x) x[-FDcut_number]*width)
+              # right_limit = apply(beta_over_tau, 1, function(x) x[-1]*width)
+              # 
+              # beta_obs = colSums((left_limit + right_limit)/2)
               
             }
             
@@ -1436,10 +1438,10 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               beta = gamma/alpha
               
               ## Observed Beta ##
-              output_obs = FD_by_tau(list(data_gamma_freq = data_gamma_freq_bt, data_2D = data_2D_bt), distance_matrix_bt, FDtau, level, datatype = 'incidence_raw', by = 'size', m_gamma = data_gamma_freq_bt[1], m_alpha = data_gamma_freq_bt[1])
-              gamma_obs = output_obs$gamma
-              alpha_obs = output_obs$alpha
-              beta_obs = gamma_obs/alpha_obs
+              # output_obs = FD_by_tau(list(data_gamma_freq = data_gamma_freq_bt, data_2D = data_2D_bt), distance_matrix_bt, FDtau, level, datatype = 'incidence_raw', by = 'size', m_gamma = data_gamma_freq_bt[1], m_alpha = data_gamma_freq_bt[1])
+              # gamma_obs = output_obs$gamma
+              # alpha_obs = output_obs$alpha
+              # beta_obs = gamma_obs/alpha_obs
               
             }
             
@@ -1476,24 +1478,24 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               beta = colSums((left_limit + right_limit)/2)
               
               ## Observed Beta ##
-              gamma_alpha_over_tau = lapply(cut, function(tau) {
-                
-                FD_by_tau(list(data_gamma_freq = data_gamma_freq_bt, data_2D = data_2D_bt), distance_matrix_bt, tau, level, datatype = 'incidence_raw', by = 'size', m_gamma = data_gamma_freq_bt[1], m_alpha = data_gamma_freq_bt[1])
-                
-              })
-              
-              gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
-              
-              alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
-              
-              beta_over_tau = gamma_over_tau/alpha_over_tau
-              
-              if (length(q) == 1) beta_over_tau = matrix(beta_over_tau, nrow = 1)
-              
-              left_limit  = apply(beta_over_tau, 1, function(x) x[-FDcut_number]*width)
-              right_limit = apply(beta_over_tau, 1, function(x) x[-1]*width)
-              
-              beta_obs = colSums((left_limit + right_limit)/2)
+              # gamma_alpha_over_tau = lapply(cut, function(tau) {
+              #   
+              #   FD_by_tau(list(data_gamma_freq = data_gamma_freq_bt, data_2D = data_2D_bt), distance_matrix_bt, tau, level, datatype = 'incidence_raw', by = 'size', m_gamma = data_gamma_freq_bt[1], m_alpha = data_gamma_freq_bt[1])
+              #   
+              # })
+              # 
+              # gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+              # 
+              # alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+              # 
+              # beta_over_tau = gamma_over_tau/alpha_over_tau
+              # 
+              # if (length(q) == 1) beta_over_tau = matrix(beta_over_tau, nrow = 1)
+              # 
+              # left_limit  = apply(beta_over_tau, 1, function(x) x[-FDcut_number]*width)
+              # right_limit = apply(beta_over_tau, 1, function(x) x[-1]*width)
+              # 
+              # beta_obs = colSums((left_limit + right_limit)/2)
               
             }
             
@@ -1505,11 +1507,12 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           beta = gamma/alpha
           
-          gamma = c(gamma, rep(0, length(q)))
-          alpha = c(alpha, rep(0, length(q)))
-          beta = c(beta, beta_obs)
-          
-          Order.q = rep(q, each=length(level) + 1)[under_max_alpha]
+          # gamma = c(gamma, rep(0, length(q)))
+          # alpha = c(alpha, rep(0, length(q)))
+          # beta = c(beta, beta_obs)
+          # 
+          # Order.q = rep(q, each=length(level) + 1)[under_max_alpha]
+          Order.q = rep(q, each=length(level))[under_max_alpha]
           
           beta = data.frame(Estimate = beta, Order.q)
           
@@ -1549,16 +1552,16 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     if (diversity == "FD" & FDtype == "tau_value") index = "FD_tau"
     if (diversity == "FD" & FDtype == "AUC") index = "FD_AUC"
     
-    gamma = gamma %>% mutate(s.e. = se$gamma[1:(nrow(se) - length(q))],
-                             LCL = Estimate - tmp * se$gamma[1:(nrow(se) - length(q))],
-                             UCL = Estimate + tmp * se$gamma[1:(nrow(se) - length(q))],
+    gamma = gamma %>% mutate(s.e. = se$gamma,
+                             LCL = Estimate - tmp * se$gamma,
+                             UCL = Estimate + tmp * se$gamma,
                              Dataset = dataset_name,
                              Diversity = index) %>% 
       arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
-    alpha = alpha %>% mutate(s.e. = se$alpha[1:(nrow(se) - length(q))],
-                             LCL = Estimate - tmp * se$alpha[1:(nrow(se) - length(q))],
-                             UCL = Estimate + tmp * se$alpha[1:(nrow(se) - length(q))],
+    alpha = alpha %>% mutate(s.e. = se$alpha,
+                             LCL = Estimate - tmp * se$alpha,
+                             UCL = Estimate + tmp * se$alpha,
                              Dataset = dataset_name,
                              Diversity = index) %>% 
       arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
@@ -1599,6 +1602,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                              Diversity = index) %>% 
       arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
+    
     if (trunc) {
       
       gamma = gamma %>% filter(!(Order.q==0 & round(Size)>2*n))
@@ -1616,6 +1620,58 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       S    =  S    %>% filter(!(Order.q==0 & round(Size)>2*n))
       
     }
+    
+    
+    if (diversity == "FD" & FDtype == "tau_value") {
+      
+      gamma = gamma %>% mutate(Tau = FDtau)
+      
+      alpha = alpha %>% mutate(Tau = FDtau)
+      
+      beta  = beta  %>% mutate(Tau = FDtau)
+      
+      C    =  C    %>% mutate(Tau = FDtau)
+      
+      U    =  U    %>% mutate(Tau = FDtau)
+      
+      V    =  V    %>% mutate(Tau = FDtau)
+      
+      S    =  S    %>% mutate(Tau = FDtau)
+      
+    }
+    
+    
+    # gamma$Method[gamma$SC == ref_gamma_max] = "C(2n)"
+    # 
+    # alpha$Method[alpha$SC == ref_alpha_max] = "C(2n)"
+    
+    beta$Method[beta$SC == ref_alpha_max] = "C(2n)"
+    
+    C$Method[C$SC == ref_alpha_max] = "C(2n)"
+    
+    U$Method[U$SC == ref_alpha_max] = "C(2n)"
+    
+    V$Method[V$SC == ref_alpha_max] = "C(2n)"
+    
+    S$Method[S$SC == ref_alpha_max] = "C(2n)"
+    
+    
+    # gamma$Method[gamma$SC == ref_gamma] = "Observed"
+    # 
+    # alpha$Method[alpha$SC == ref_alpha] = "Observed"
+    
+    beta$Method[beta$SC == ref_alpha] = "Observed_alpha"
+    
+    C$Method[C$SC == ref_alpha] = "Observed_alpha"
+    
+    U$Method[U$SC == ref_alpha] = "Observed_alpha"
+    
+    V$Method[V$SC == ref_alpha] = "Observed_alpha"
+    
+    S$Method[S$SC == ref_alpha] = "Observed_alpha"
+    
+    
+    
     
     list(gamma = gamma, alpha = alpha, beta = beta, C = C, U = U, V = V, S = S)
     
@@ -2714,6 +2770,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       colnames(alpha)[colnames(alpha) == 'Size'] = 'nT'
     }
     
+    if (diversity == "FD" & FDtype == "tau_value") {
+      
+      gamma = gamma %>% mutate(Tau = FDtau)
+      
+      alpha = alpha %>% mutate(Tau = FDtau)
+    }
+    
     list(gamma = gamma, alpha = alpha)
     
   }
@@ -2766,7 +2829,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
 #'             "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 #' output2c = iNEXTbeta3D(data = data, diversity = 'TD', datatype = 'incidence_raw', 
-#'                        level = NULL, nboot = 10, conf = 0.95)
+#'                        level = NULL, nboot = 20, conf = 0.95)
 #' ggiNEXTbeta3D(output2c, type = 'B', scale = 'free')
 #' ggiNEXTbeta3D(output2c, type = 'D', scale = 'free')
 #' 
@@ -2776,7 +2839,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
 #'             "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 #' output2s = iNEXTbeta3D(data = data, diversity = 'TD', datatype = 'incidence_raw', 
-#'                        base = "size", level = NULL, nboot = 10, conf = 0.95)
+#'                        base = "size", level = NULL, nboot = 30, conf = 0.95)
 #' ggiNEXTbeta3D(output2s, scale = 'free')
 #' 
 #' 
@@ -2895,8 +2958,10 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
       gamma = lapply(output, function(y) y[["gamma"]]) %>% do.call(rbind,.) %>% mutate(div_type = "Gamma") %>% as_tibble()
       alpha = lapply(output, function(y) y[["alpha"]]) %>% do.call(rbind,.) %>% mutate(div_type = "Alpha") %>% as_tibble()
       beta =  lapply(output, function(y) y[["beta"]])  %>% do.call(rbind,.) %>% mutate(div_type = "Beta")  %>% as_tibble()
-      beta = beta %>% filter(Method != 'Observed')
+      # beta = beta %>% filter(Method != 'Observed')
       beta[beta == 'Observed_alpha'] = 'Observed'
+      beta[beta == 'C(2n)'] = 'Extrapolation'
+      
       
       # # Dropping out the points extrapolated over double reference size
       # gamma1 = data.frame() ; alpha1 = data.frame() ; beta1 = data.frame()
@@ -2944,11 +3009,12 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
       U = lapply(output, function(y) y[["U"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-UqN") %>% as_tibble()
       V = lapply(output, function(y) y[["V"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-VqN") %>% as_tibble()
       S = lapply(output, function(y) y[["S"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-SqN") %>% as_tibble()
-      C = C %>% filter(Method != 'Observed')
-      U = U %>% filter(Method != 'Observed')
-      V = V %>% filter(Method != 'Observed')
-      S = S %>% filter(Method != 'Observed')
+      # C = C %>% filter(Method != 'Observed')
+      # U = U %>% filter(Method != 'Observed')
+      # V = V %>% filter(Method != 'Observed')
+      # S = S %>% filter(Method != 'Observed')
       C[C == 'Observed_alpha'] = U[U == 'Observed_alpha'] = V[V == 'Observed_alpha'] = S[S == 'Observed_alpha'] = 'Observed'
+      C[C == 'C(2n)'] = U[U == 'C(2n)'] = V[V == 'C(2n)'] = S[S == 'C(2n)'] = 'Extrapolation'
       
       # # Dropping out the points extrapolated over double reference size
       # c1 = data.frame() ; u1 = data.frame() ; v1 = data.frame() ; s1 = data.frame()
@@ -3460,14 +3526,17 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
       # Dat = Dat[, !duplicated(colnames(Dat))]
       
       Dat = lapply(data, function(x) list("Pooled assemblage" = rowSums(x),
-                                          "Meta assemblage" = as.vector(x)))
+                                          "Joint assemblage" = as.vector(x)))
       
       output = lapply(1:length(Dat), function(i) {
-        N = ncol(data[[i]])
-        tmp = DataInfo3D(Dat[[i]], datatype = "abundance") %>% cbind(Dataset = names(data)[i],.)
-        tmp[2, c(3,4,6:15)] = tmp[2, c(3,4,6:15)] / N
         
-        tmp
+        if (is.null(colnames(data[[i]]))) colnames(data[[i]]) = paste('Assemblage_', 1:ncol(data[[i]]), sep = "")
+        
+        multiple = DataInfo3D(Dat[[i]], datatype = "abundance")
+        single = DataInfo3D(data[[i]], datatype = "abundance")
+        
+        return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
+        
         }) %>% do.call(rbind,.)
     }
     
@@ -3485,15 +3554,18 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         data_alpha = do.call(rbind, x)
         
         list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
-             "Meta assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha))))
+             "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha))))
       })
       
       output = lapply(1:length(Dat), function(i) {
-        N = length(data[[i]])
-        tmp = DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% cbind(Dataset = names(data)[i],.)
-        tmp[2, c(4,5,7:16)] = tmp[2, c(4,5,7:16)] / N
         
-        tmp
+        if (is.null(names(data[[i]]))) names(data[[i]]) = paste('Assemblage_', 1:length(x), sep = "")
+        
+        multiple = DataInfo3D(Dat[[i]], datatype = "incidence_freq")
+        single = DataInfo3D(data[[i]], datatype = "incidence_raw")
+        
+        return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
+        
         }) %>% do.call(rbind,.)
     }
     
@@ -3508,7 +3580,10 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
     
     if (datatype == "abundance") {
       
-      output = lapply(data, function(x) {
+      output = lapply(1:length(data), function(i) {
+        
+        x = data[[i]]
+        if (is.null(colnames(x))) colnames(x) = paste('Assemblage_', 1:ncol(data[[i]]), sep = "")
         
         data_gamma = rowSums(x)
         data_gamma = data_gamma[data_gamma > 0]
@@ -3560,19 +3635,24 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
           
         })
         
-        output <- tibble('Assemblage' = c("Pooled assemblage", "Meta assemblage"), 
-                         'n' = sum(x), 'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
-                         'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
-                         'Reftime' = PDreftime)
-        output[2,c(2,3,5:9)] = output[2,c(2,3,5:9)] / N
+        multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                          'n' = sum(x), 'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
+                          'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
+                          'Reftime' = PDreftime)
         
-        output
-      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
+        single = DataInfo3D(x, diversity = "PD", datatype = "abundance", PDtree = PDtree, PDreftime = PDreftime)
+        
+        return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
+        
+      }) %>% do.call(rbind,.)
       }
     
     if (datatype == "incidence_raw") {
       
-      output = lapply(data, function(x) {
+      output = lapply(1:length(data), function(i) {
+        
+        x = data[[i]]
+        if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
         
         data_gamma = Reduce('+', x)
         data_gamma[data_gamma > 1] = 1
@@ -3608,7 +3688,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
           g2 <- sum(Li[I2])
           c(S.obs, PD_obs, f1, f2, g1, g2)
           
-        }) %>% t()
+          }) %>% t()
         
         Chat = sapply(list(data_gamma, do.call(rbind,x)), function(y) {
           
@@ -3623,16 +3703,17 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
           
         })
         
-        output <- tibble('Assemblage' = c("Pooled assemblage", "Meta assemblage"), 
-                         'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
-                         'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
-                         'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
-                         'Reftime' = PDreftime)
+        multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                          'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
+                          'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
+                          'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
+                          'Reftime' = PDreftime)
         
-        output[2,c(3,4,6:10)] = output[2,c(3,4,6:10)] / N
+        single = DataInfo3D(x, diversity = "PD", datatype = "incidence_raw", PDtree = PDtree, PDreftime = PDreftime)
         
-        output
-      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
+        return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
+        
+      }) %>% do.call(rbind,.)
       
     }
     
@@ -3685,9 +3766,10 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
     
     if (datatype == "abundance") {
       
-      output = lapply(data, function(x) {
+      output = lapply(1:length(data), function(i) {
         
-        N = ncol(x)
+        x = data[[i]]
+        if (is.null(colnames(x))) colnames(x) = paste('Assemblage_', 1:ncol(data[[i]]), sep = "")
         
         dij = FDdistM
         dij = dij[rownames(dij) %in% rownames(x), colnames(dij) %in% rownames(x)]
@@ -3706,7 +3788,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         alpha_a = as.vector(aik)
         
         out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = gamma_a,
-                                      "Meta assemblage" = alpha_a), "abundance")
+                                      "Joint assemblage" = alpha_a), "abundance")
         
         out$SC = sapply(list(rowSums(x), as.vector(x)), function(y) {
           
@@ -3724,18 +3806,20 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         out$Tau = FDtau
         
-        out[2,c(2,3,5:14)] = out[2,c(2,3,5:14)] / N
+        single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
         
-        return(out)
+        return(rbind(single, out) %>% cbind(Dataset = names(data)[i],.))
         
-      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
+      }) %>% do.call(rbind,.)
     }
     
     if (datatype == "incidence_raw") {
       
-      output = lapply(data, function(x) {
+      output = lapply(1:length(data), function(i) {
         
-        N = length(x)
+        x = data[[i]]
+        if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
+        
         nT = ncol(x[[1]])
         
         data_gamma = Reduce('+', x)
@@ -3773,7 +3857,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         alpha_a = as.vector(alpha_a)
         
         out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(nT, gamma_a),
-                                      "Meta assemblage" = c(nT, alpha_a)), "incidence_freq")
+                                      "Joint assemblage" = c(nT, alpha_a)), "incidence_freq")
         out$SC = sapply(list(data_gamma_freq, data_2D), function(y) {
           
           U <- sum(y)
@@ -3791,11 +3875,11 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         out$Tau = FDtau
         
-        out[2,c(3,4,6:15)] = out[2,c(3,4,6:15)] / N
+        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
         
-        return(out)
+        return(rbind(single, out) %>% cbind(Dataset = names(data)[i],.))
         
-      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
+      }) %>% do.call(rbind,.)
       
     }
     
@@ -3846,38 +3930,46 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
     dmax <- max(FDdistM[FDdistM > 0])
     Tau = c(dmin, dmean, dmax)
     
-    output = lapply(data, function(x) {
+    output = lapply(1:length(data), function(i) {
+      
+      x = data[[i]]
       
       if (datatype == "abundance") {
         
-        out <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = rowSums(x),
-                                            "Meta assemblage" = as.vector(x)), "abundance")[,1:4], 
-                     matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
-        colnames(out)[5:7] = c("dmin", "dmean", "dmax")
+        if (is.null(colnames(x))) colnames(x) = paste('Assemblage_', 1:ncol(data[[i]]), sep = "")
         
-        N = ncol(x)
-        out[2,2:3] = out[2,2:3] / N
+        multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = rowSums(x),
+                                            "Joint assemblage" = as.vector(x)), "abundance")[,1:4], 
+                     matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
+        colnames(multiple)[5:7] = c("dmin", "dmean", "dmax")
+        
+        single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "AUC", FDdistM = FDdistM)
+        
+        out = rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.)
       }
       
       if (datatype == "incidence_raw") {
+        
+        if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
         
         data_gamma = Reduce('+', x)
         data_gamma[data_gamma > 1] = 1
         
         data_alpha = do.call(rbind, x)
         
-        out <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
-                                            "Meta assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:5], 
+        multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+                                            "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:5], 
                      matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
-        colnames(out)[6:8] = c("dmin", "dmean", "dmax")
+        colnames(multiple)[6:8] = c("dmin", "dmean", "dmax")
         
-        N = length(x)
-        out[2,3:4] = out[2,3:4] / N
+        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM)
+        
+        out = rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.)
       }
       
       return(out)
       
-      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
+      }) %>% do.call(rbind,.)
     
     rownames(output) = NULL
     }
