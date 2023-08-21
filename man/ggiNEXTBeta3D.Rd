@@ -44,9 +44,9 @@ ggiNEXTbeta3D(output1s, scale = 'free')
 
 ## Taxonomic diversity for incidence data
 # Coverage-based
-data(SG_rainforests)
-data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
-            "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+data(SG_forests)
+data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
+            "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 output2c = iNEXTbeta3D(data = data, diversity = 'TD', datatype = 'incidence_raw', 
                        level = NULL, nboot = 10, conf = 0.95)
 ggiNEXTbeta3D(output2c, type = 'B', scale = 'free')
@@ -54,9 +54,9 @@ ggiNEXTbeta3D(output2c, type = 'D', scale = 'free')
 
 
 # Size-based
-data(SG_rainforests)
-data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
-            "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+data(SG_forests)
+data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
+            "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 output2s = iNEXTbeta3D(data = data, diversity = 'TD', datatype = 'incidence_raw', 
                        base = "size", level = NULL, nboot = 10, conf = 0.95)
 ggiNEXTbeta3D(output2s, scale = 'free')

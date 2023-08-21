@@ -3,7 +3,7 @@
 #' \code{iNEXTbeta3D}: Interpolation and extrapolation of beta diversity with order q
 #' 
 #' @param data (a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
-#' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units. 
+#' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a dataset) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units. 
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
 #' @param q a numerical vector specifying the diversity orders. Default is c(0, 1, 2).
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).
@@ -57,18 +57,18 @@
 #' 
 #' ## Taxonomic diversity for incidence data
 #' # Coverage-based
-#' data(SG_rainforests)
-#' data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
-#'             "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+#' data(SG_forests)
+#' data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
+#'             "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 #' output2c = iNEXTbeta3D(data = data, diversity = 'TD', datatype = 'incidence_raw', 
 #'                        level = NULL, nboot = 10, conf = 0.95)
 #' output2c
 #' 
 #' 
 #' # Size-based
-#' data(SG_rainforests)
-#' data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
-#'             "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+#' data(SG_forests)
+#' data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
+#'             "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 #' output2s = iNEXTbeta3D(data = data, diversity = 'TD', datatype = 'incidence_raw', 
 #'                        base = "size", level = NULL, nboot = 10, conf = 0.95)
 #' output2s
@@ -164,11 +164,11 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   
   if (datatype == 'abundance') {
     
-    if ( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Region_1 = data)
+    if ( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Dataset_1 = data)
     
     if (class(data) == "list"){
       
-      if (is.null(names(data))) region_names = paste0("Region_", 1:length(data)) else region_names = names(data)
+      if (is.null(names(data))) dataset_names = paste0("Dataset_", 1:length(data)) else dataset_names = names(data)
       Ns = sapply(data, ncol)
       data_list = data
       
@@ -178,7 +178,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   
   if (datatype == 'incidence_raw') {
     
-    if (is.null(names(data))) region_names = paste0("Region_", 1:length(data)) else region_names = names(data)
+    if (is.null(names(data))) dataset_names = paste0("Dataset_", 1:length(data)) else dataset_names = names(data)
     Ns = sapply(data, length)
     data_list = data
     
@@ -297,7 +297,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
   }
     
-  for_each_region = function(data, region_name, N) {
+  for_each_dataset = function(data, dataset_name, N) {
     
     #data
     if (datatype == 'abundance') {
@@ -323,7 +323,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     if (datatype == 'incidence_raw') {
       
       sampling_units = sapply(data, ncol)
-      if (length(unique(sampling_units)) > 1) stop("unsupported data structure: the sampling units of all regions must be the same.")
+      if (length(unique(sampling_units)) > 1) stop("unsupported data structure: the sampling units of all datasets must be the same.")
       if (length(unique(sampling_units)) == 1) n = unique(sampling_units)
       
       gamma = Reduce('+', data)
@@ -1552,52 +1552,52 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     gamma = gamma %>% mutate(s.e. = se$gamma[1:(nrow(se) - length(q))],
                              LCL = Estimate - tmp * se$gamma[1:(nrow(se) - length(q))],
                              UCL = Estimate + tmp * se$gamma[1:(nrow(se) - length(q))],
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, SC) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     alpha = alpha %>% mutate(s.e. = se$alpha[1:(nrow(se) - length(q))],
                              LCL = Estimate - tmp * se$alpha[1:(nrow(se) - length(q))],
                              UCL = Estimate + tmp * se$alpha[1:(nrow(se) - length(q))],
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, SC) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     beta = beta %>% mutate(  s.e. = se$beta,
                              LCL = Estimate - tmp * se$beta,
                              UCL = Estimate + tmp * se$beta,
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, SC) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     C = C %>% mutate(        s.e. = se$C,
                              LCL = Estimate - tmp * se$C,
                              UCL = Estimate + tmp * se$C,
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, SC) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     
     U = U %>% mutate(        s.e. = se$U,
                              LCL = Estimate - tmp * se$U,
                              UCL = Estimate + tmp * se$U,
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, SC) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     V = V %>% mutate(        s.e. = se$V,
                              LCL = Estimate - tmp * se$V,
                              UCL = Estimate + tmp * se$V,
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, SC) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     S = S %>% mutate(        s.e. = se$S,
                              LCL = Estimate - tmp * se$S,
                              UCL = Estimate + tmp * se$S,
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, SC) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, SC) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     if (trunc) {
       
@@ -1621,7 +1621,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
   }
   
-  for_each_region.size = function(data, region_name, N, level) {
+  for_each_dataset.size = function(data, dataset_name, N, level) {
     
     #data
     if (datatype == 'abundance') {
@@ -1639,7 +1639,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     if (datatype == 'incidence_raw') {
       
       sampling_units = sapply(data, ncol)
-      if (length(unique(sampling_units)) > 1) stop("unsupported data structure: the sampling units of all regions must be the same.")
+      if (length(unique(sampling_units)) > 1) stop("unsupported data structure: the sampling units of all datasets must be the same.")
       if (length(unique(sampling_units)) == 1) n = unique(sampling_units)
       
       gamma = Reduce('+', data)
@@ -2665,47 +2665,47 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     gamma = gamma %>% mutate(s.e. = se$gamma,
                              LCL = Estimate - tmp * se$gamma,
                              UCL = Estimate + tmp * se$gamma,
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, Size) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, Size) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     alpha = alpha %>% mutate(s.e. = se$alpha,
                              LCL = Estimate - tmp * se$alpha,
                              UCL = Estimate + tmp * se$alpha,
-                             Region = region_name,
-                             diversity = index) %>% 
-      arrange(Order.q, Size) %>% .[,c(2, 1, 3:ncol(.))]
+                             Dataset = dataset_name,
+                             Diversity = index) %>% 
+      arrange(Order.q, Size) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)]
     
     # beta = beta %>% mutate(  s.e. = se$beta,
     #                          LCL = Estimate - tmp * se$beta,
     #                          UCL = Estimate + tmp * se$beta,
-    #                          Region = region_name,
-    #                          diversity = index)
+    #                          Dataset = dataset_name,
+    #                          Diversity = index)
     # 
     # C = C %>% mutate(        s.e. = se$C,
     #                          LCL = Estimate - tmp * se$C,
     #                          UCL = Estimate + tmp * se$C,
-    #                          Region = region_name,
-    #                          diversity = index)
+    #                          Dataset = dataset_name,
+    #                          Diversity = index)
     # 
     # 
     # U = U %>% mutate(        s.e. = se$U,
     #                          LCL = Estimate - tmp * se$U,
     #                          UCL = Estimate + tmp * se$U,
-    #                          Region = region_name,
-    #                          diversity = index)
+    #                          Dataset = dataset_name,
+    #                          Diversity = index)
     # 
     # V = V %>% mutate(        s.e. = se$V,
     #                          LCL = Estimate - tmp * se$V,
     #                          UCL = Estimate + tmp * se$V,
-    #                          Region = region_name,
-    #                          diversity = index)
+    #                          Dataset = dataset_name,
+    #                          Diversity = index)
     # 
     # S = S %>% mutate(        s.e. = se$S,
     #                          LCL = Estimate - tmp * se$S,
     #                          UCL = Estimate + tmp * se$S,
-    #                          Region = region_name,
-    #                          diversity = index)
+    #                          Dataset = dataset_name,
+    #                          Diversity = index)
     # 
     # list(gamma = gamma, alpha = alpha, beta = beta, C = C, U = U, V = V, S = S)
     
@@ -2718,9 +2718,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
   }
 
-  if (base == 'coverage') output = lapply(1:length(data_list), function(i) for_each_region(data = data_list[[i]], region_name = region_names[i], N = Ns[i]))
-  if (base == 'size') output = lapply(1:length(data_list), function(i) for_each_region.size(data = data_list[[i]], region_name = region_names[i], N = Ns[i], level = level[[i]]))
-  names(output) = region_names
+  if (base == 'coverage') output = lapply(1:length(data_list), function(i) for_each_dataset(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i]))
+  if (base == 'size') output = lapply(1:length(data_list), function(i) for_each_dataset.size(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i], level = level[[i]]))
+  names(output) = dataset_names
   
   return(output)
   
@@ -2762,9 +2762,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' ## Taxonomic diversity for incidence data
 #' # Coverage-based
-#' data(SG_rainforests)
-#' data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
-#'             "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+#' data(SG_forests)
+#' data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
+#'             "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 #' output2c = iNEXTbeta3D(data = data, diversity = 'TD', datatype = 'incidence_raw', 
 #'                        level = NULL, nboot = 10, conf = 0.95)
 #' ggiNEXTbeta3D(output2c, type = 'B', scale = 'free')
@@ -2772,9 +2772,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' 
 #' # Size-based
-#' data(SG_rainforests)
-#' data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
-#'             "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+#' data(SG_forests)
+#' data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
+#'             "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 #' output2s = iNEXTbeta3D(data = data, diversity = 'TD', datatype = 'incidence_raw', 
 #'                        base = "size", level = NULL, nboot = 10, conf = 0.95)
 #' ggiNEXTbeta3D(output2s, scale = 'free')
@@ -2883,11 +2883,11 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
   cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                      "#330066", "#CC79A7", "#0072B2", "#D55E00"))
   
-  if (unique(output[[1]]$gamma$diversity) == 'TD') { ylab = "Taxonomic diversity" }
-  if (unique(output[[1]]$gamma$diversity) == 'PD') { ylab = "Phylogenetic diversity" }
-  if (unique(output[[1]]$gamma$diversity) == 'meanPD') { ylab = "Phylogenetic Hill number" }
-  if (unique(output[[1]]$gamma$diversity) == 'FD_tau') { ylab = "Functional diversity (given tau)" }
-  if (unique(output[[1]]$gamma$diversity) == 'FD_AUC') { ylab = "Functional diversity (AUC)" }
+  if (unique(output[[1]]$gamma$Diversity) == 'TD') { ylab = "Taxonomic diversity" }
+  if (unique(output[[1]]$gamma$Diversity) == 'PD') { ylab = "Phylogenetic diversity" }
+  if (unique(output[[1]]$gamma$Diversity) == 'meanPD') { ylab = "Phylogenetic Hill number" }
+  if (unique(output[[1]]$gamma$Diversity) == 'FD_tau') { ylab = "Functional diversity (given tau)" }
+  if (unique(output[[1]]$gamma$Diversity) == 'FD_AUC') { ylab = "Functional diversity (AUC)" }
   
   if (length(output[[1]]) == 7) {
     if (type == 'B'){
@@ -2901,13 +2901,13 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
       # # Dropping out the points extrapolated over double reference size
       # gamma1 = data.frame() ; alpha1 = data.frame() ; beta1 = data.frame()
       # 
-      # for(i in 1:length(unique(gamma$Region))){
+      # for(i in 1:length(unique(gamma$Dataset))){
       #   
-      #   Gamma <- gamma %>% filter(Region==unique(gamma$Region)[i]) ; ref_size = unique(Gamma[Gamma$Method=="Observed",]$Size)
+      #   Gamma <- gamma %>% filter(Dataset==unique(gamma$Dataset)[i]) ; ref_size = unique(Gamma[Gamma$Method=="Observed",]$Size)
       #   Gamma = Gamma %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
       #   
-      #   Alpha <- alpha %>% filter(Region==unique(gamma$Region)[i]) ; Alpha = Alpha %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
-      #   Beta <- beta %>% filter(Region==unique(gamma$Region)[i]) ; Beta = Beta %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
+      #   Alpha <- alpha %>% filter(Dataset==unique(gamma$Dataset)[i]) ; Alpha = Alpha %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
+      #   Beta <- beta %>% filter(Dataset==unique(gamma$Dataset)[i]) ; Beta = Beta %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
       #   
       #   gamma1 = rbind(gamma1,Gamma) ; alpha1 = rbind(alpha1,Alpha) ; beta1 = rbind(beta1,Beta)
       #   
@@ -2953,14 +2953,14 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
       # # Dropping out the points extrapolated over double reference size
       # c1 = data.frame() ; u1 = data.frame() ; v1 = data.frame() ; s1 = data.frame()
       # 
-      # for(i in 1:length(unique(C$Region))){
+      # for(i in 1:length(unique(C$Dataset))){
       #   
-      #   CC <- C %>% filter(Region==unique(C$Region)[i]) ; ref_size = unique(CC[CC$Method=="Observed",]$Size)
+      #   CC <- C %>% filter(Dataset==unique(C$Dataset)[i]) ; ref_size = unique(CC[CC$Method=="Observed",]$Size)
       #   CC = CC %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
       #   
-      #   UU <- U %>% filter(Region==unique(C$Region)[i]) ; UU = UU %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
-      #   VV <- V %>% filter(Region==unique(C$Region)[i]) ; VV = VV %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
-      #   SS <- S %>% filter(Region==unique(C$Region)[i]) ; SS = SS %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
+      #   UU <- U %>% filter(Dataset==unique(C$Dataset)[i]) ; UU = UU %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
+      #   VV <- V %>% filter(Dataset==unique(C$Dataset)[i]) ; VV = VV %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
+      #   SS <- S %>% filter(Dataset==unique(C$Dataset)[i]) ; SS = SS %>% filter(!(Order.q==0 & round(Size)>2*ref_size))
       #   
       #   c1 = rbind(c1,CC) ; u1 = rbind(u1,UU) ; v1 = rbind(v1,VV) ; s1 = rbind(s1,SS)
       #   
@@ -2998,8 +2998,8 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
     double_size = unique(df[df$Method == "Observed",]$Size)*2
     double_extrapolation = df %>% filter(Method == "Extrapolation" & round(Size) %in% double_size)
     
-    ggplot(data = df, aes(x = SC, y = Estimate, col = Region)) +
-      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = transp) + 
+    ggplot(data = df, aes(x = SC, y = Estimate, col = Dataset)) +
+      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Dataset, col = NULL), alpha = transp) + 
       geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       # geom_line(lty=2) + 
       geom_point(data = subset(df, Method == 'Observed' & div_type == "Gamma"), shape = 19, size = 3) + 
@@ -3065,8 +3065,8 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
     double_size = unique(df[df$Method == "Observed",]$Size)*2
     double_extrapolation = df %>% filter(Method == "Extrapolation" & round(Size) %in% double_size)
     
-    ggplot(data = df, aes(x = Size, y = Estimate, col = Region)) +
-      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Region, col = NULL), alpha = transp) + 
+    ggplot(data = df, aes(x = Size, y = Estimate, col = Dataset)) +
+      geom_ribbon(aes(ymin = LCL, ymax = UCL, fill = Dataset, col = NULL), alpha = transp) + 
       geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       geom_point(data = subset(df, Method == 'Observed' & div_type == "Gamma"), shape = 19, size = 3) + 
       geom_point(data = subset(df, Method == 'Observed' & div_type != "Gamma"), shape = 1, size = 3, stroke = 1.5) +
@@ -3370,7 +3370,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' \code{DataInfobeta}: Data information for beta diversity in three dimension
 #' 
 #' @param data (a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
-#' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units. 
+#' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a dataset) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units. 
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).
 #' @param PDtree (required only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
@@ -3389,9 +3389,9 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' 
 #' 
 #' ## Taxonomic diversity for incidence data
-#' data(SG_rainforests)
-#' data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
-#'             "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+#' data(SG_forests)
+#' data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
+#'             "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 #' output2 = DataInfobeta(data = data, diversity = 'TD', datatype = 'incidence_raw')
 #' output2
 #' 
@@ -3446,7 +3446,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance', 
                         PDtree = NULL, PDreftime = NULL, FDdistM = NULL, FDtype = 'AUC', FDtau = NULL) {
   
-  if (is.null(names(data))) names(data) = paste0("Region_", 1:length(data))
+  if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
   
   if (datatype == "abundance") data = lapply(data, as.matrix) else if (datatype == "incidence_raw")
     data = lapply(data, function(x) lapply(x, as.matrix))
@@ -3459,12 +3459,12 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
       # Dat = Dat %>% set_colnames(lapply(1:length(data), function(i) paste(names(data)[i], colnames(data[[i]]), sep = " ")) %>% unlist)
       # Dat = Dat[, !duplicated(colnames(Dat))]
       
-      Dat = lapply(data, function(x) list("Gamma assemblage" = rowSums(x),
-                                          "Alpha assemblage" = as.vector(x)))
+      Dat = lapply(data, function(x) list("Pooled assemblage" = rowSums(x),
+                                          "Meta assemblage" = as.vector(x)))
       
       output = lapply(1:length(Dat), function(i) {
         N = ncol(data[[i]])
-        tmp = DataInfo3D(Dat[[i]], datatype = "abundance") %>% cbind(Region = names(data)[i],.)
+        tmp = DataInfo3D(Dat[[i]], datatype = "abundance") %>% cbind(Dataset = names(data)[i],.)
         tmp[2, c(3,4,6:15)] = tmp[2, c(3,4,6:15)] / N
         
         tmp
@@ -3484,13 +3484,13 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         data_alpha = do.call(rbind, x)
         
-        list("Gamma assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
-             "Alpha assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha))))
+        list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+             "Meta assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha))))
       })
       
       output = lapply(1:length(Dat), function(i) {
         N = length(data[[i]])
-        tmp = DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% cbind(Region = names(data)[i],.)
+        tmp = DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% cbind(Dataset = names(data)[i],.)
         tmp[2, c(4,5,7:16)] = tmp[2, c(4,5,7:16)] / N
         
         tmp
@@ -3560,14 +3560,14 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
           
         })
         
-        output <- tibble('Assemblage' = c("Gamma assemblage", "Alpha assemblage"), 
+        output <- tibble('Assemblage' = c("Pooled assemblage", "Meta assemblage"), 
                          'n' = sum(x), 'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
                          'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
                          'Reftime' = PDreftime)
         output[2,c(2,3,5:9)] = output[2,c(2,3,5:9)] / N
         
         output
-      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
       }
     
     if (datatype == "incidence_raw") {
@@ -3623,7 +3623,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
           
         })
         
-        output <- tibble('Assemblage' = c("Gamma assemblage", "Alpha assemblage"), 
+        output <- tibble('Assemblage' = c("Pooled assemblage", "Meta assemblage"), 
                          'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
                          'S.obs' = output[,1], 'SC' = Chat, 'PD.obs' = output[,2],
                          'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
@@ -3632,7 +3632,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         output[2,c(3,4,6:10)] = output[2,c(3,4,6:10)] / N
         
         output
-      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
       
     }
     
@@ -3705,8 +3705,8 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         gamma_a = rowSums(aik)[positive_id]
         alpha_a = as.vector(aik)
         
-        out <- iNEXT.3D:::TDinfo(list("Gamma assemblage" = gamma_a,
-                                      "Alpha assemblage" = alpha_a), "abundance")
+        out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = gamma_a,
+                                      "Meta assemblage" = alpha_a), "abundance")
         
         out$SC = sapply(list(rowSums(x), as.vector(x)), function(y) {
           
@@ -3728,7 +3728,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         return(out)
         
-      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
     }
     
     if (datatype == "incidence_raw") {
@@ -3772,8 +3772,8 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         alpha_a[alpha_a > nT] = nT
         alpha_a = as.vector(alpha_a)
         
-        out <- iNEXT.3D:::TDinfo(list("Gamma assemblage" = c(nT, gamma_a),
-                                      "Alpha assemblage" = c(nT, alpha_a)), "incidence_freq")
+        out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(nT, gamma_a),
+                                      "Meta assemblage" = c(nT, alpha_a)), "incidence_freq")
         out$SC = sapply(list(data_gamma_freq, data_2D), function(y) {
           
           U <- sum(y)
@@ -3795,7 +3795,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         return(out)
         
-      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
       
     }
     
@@ -3850,8 +3850,8 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
       
       if (datatype == "abundance") {
         
-        out <- cbind(iNEXT.3D:::TDinfo(list("Gamma assemblage" = rowSums(x),
-                                            "Alpha assemblage" = as.vector(x)), "abundance")[,1:4], 
+        out <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = rowSums(x),
+                                            "Meta assemblage" = as.vector(x)), "abundance")[,1:4], 
                      matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
         colnames(out)[5:7] = c("dmin", "dmean", "dmax")
         
@@ -3866,8 +3866,8 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         data_alpha = do.call(rbind, x)
         
-        out <- cbind(iNEXT.3D:::TDinfo(list("Gamma assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
-                                            "Alpha assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:5], 
+        out <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+                                            "Meta assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:5], 
                      matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
         colnames(out)[6:8] = c("dmin", "dmean", "dmax")
         
@@ -3877,7 +3877,7 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
       
       return(out)
       
-      }) %>% do.call(rbind,.) %>% cbind(Region = rep(names(data), each = 2),.)
+      }) %>% do.call(rbind,.) %>% cbind(Dataset = rep(names(data), each = 2),.)
     
     rownames(output) = NULL
     }

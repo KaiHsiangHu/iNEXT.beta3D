@@ -17,7 +17,7 @@ DataInfobeta(
 }
 \arguments{
 \item{data}{(a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
-(b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a region) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units.}
+(b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a dataset) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units.}
 
 \item{diversity}{selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.}
 
@@ -47,9 +47,9 @@ output1
 
 
 ## Taxonomic diversity for incidence data
-data(SG_rainforests)
-data = list("Cuatro_Rios 2005 v.s. 2017" = SG_rainforests$Cuatro_Rios$Year_2005_and_2017,
-            "Juan_Enriquez 2005 v.s. 2017" = SG_rainforests$Juan_Enriquez$Year_2005_and_2017)
+data(SG_forests)
+data = list("CR 2005 vs. 2017" = SG_forests$CR$Year_2005_and_2017,
+            "JE 2005 vs. 2017" = SG_forests$JE$Year_2005_and_2017)
 output2 = DataInfobeta(data = data, diversity = 'TD', datatype = 'incidence_raw')
 output2
 
