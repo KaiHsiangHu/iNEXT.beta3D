@@ -67,14 +67,14 @@ If \code{base = "coverage"}, return a list of seven matrices with three diversit
 ## Taxonomic diversity for abundance data
 # Coverage-based
 data(Brazil_data)
-output1c = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance', 
+output1c = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = 'abundance', 
                        base = "coverage", nboot = 30, conf = 0.95)
 output1c
 
 
 # Size-based
 data(Brazil_data)
-output1s = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance', 
+output1s = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = 'abundance', 
                        base = "size", nboot = 30, conf = 0.95)
 output1s
 
@@ -102,7 +102,7 @@ output2s
 # Coverage-based
 data(Brazil_PDFD_data)
 data(Brazil_tree)
-output3c = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'PD', datatype = 'abundance', 
+output3c = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'PD', datatype = 'abundance', 
                        base = "coverage", nboot = 10, conf = 0.95, 
                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
 output3c
@@ -110,7 +110,7 @@ output3c
 # Size-based
 data(Brazil_PDFD_data)
 data(Brazil_tree)
-output3s = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'PD', datatype = 'abundance', 
+output3s = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'PD', datatype = 'abundance', 
                        base = "size", nboot = 20, conf = 0.95, 
                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
 output3s
@@ -129,7 +129,7 @@ output4
 # Coverage-based
 data(Brazil_PDFD_data)
 data(Brazil_distM)
-output5c = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', datatype = 'abundance', 
+output5c = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', datatype = 'abundance', 
                        base = "coverage", nboot = 30, conf = 0.95, 
                        FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
 output5c
@@ -137,7 +137,7 @@ output5c
 # Size-based
 data(Brazil_PDFD_data)
 data(Brazil_distM)
-output5s = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', datatype = 'abundance', 
+output5s = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', datatype = 'abundance', 
                        base = "size", nboot = 30, conf = 0.95, 
                        FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
 output5s
@@ -156,7 +156,7 @@ output6
 # Coverage-based
 data(Brazil_PDFD_data)
 data(Brazil_distM)
-output7c = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', datatype = 'abundance', 
+output7c = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', datatype = 'abundance', 
                        base = "coverage", nboot = 0, conf = 0.95, 
                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 output7c
@@ -165,7 +165,7 @@ output7c
 # Size-based
 data(Brazil_PDFD_data)
 data(Brazil_distM)
-output7s = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', datatype = 'abundance', 
+output7s = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', datatype = 'abundance', 
                        base = "size", nboot = 10, conf = 0.95, 
                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 output7s
