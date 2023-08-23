@@ -3890,49 +3890,73 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
     
     FDdistM = as.matrix(FDdistM)
     
-    if (datatype == 'abundance') {
-      
-      tmp <- lapply(data, rowSums)
-      tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
-      pdata = tmp[[1]]
-      for(i in 2:length(tmp)){
-        pdata = full_join(pdata, tmp[[i]], by = "Species")
-      }
-      pdata[is.na(pdata)] = 0
-      pdata = pdata %>% column_to_rownames("Species")
-      pdata = rowSums(pdata)
-      
-      order_sp <- match(names(pdata),rownames(FDdistM))
-      FDdistM <- FDdistM[order_sp,order_sp]
-      pdata <- matrix(pdata/sum(pdata), ncol = 1)
-      
-    } else if (datatype == 'incidence_raw') {
-      
-      tmp <- lapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) })
-      tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
-      pdata = tmp[[1]]
-      for(i in 2:length(tmp)){
-        pdata = full_join(pdata, tmp[[i]], by = "Species")
-      }
-      pdata[is.na(pdata)] = 0
-      pdata = pdata %>% column_to_rownames("Species")
-      pdata = rowSums(pdata)
-      
-      order_sp <- match(names(pdata),rownames(FDdistM))
-      FDdistM <- FDdistM[order_sp,order_sp]
-      pdata <- matrix(pdata/sum(pdata), ncol = 1)
-      
-    }
-    
-    dmean <- sum ( (pdata %*% t(pdata) ) * FDdistM) # dmean
-    
-    dmin <- min(FDdistM[FDdistM > 0])
-    dmax <- max(FDdistM[FDdistM > 0])
-    Tau = c(dmin, dmean, dmax)
+    # if (datatype == 'abundance') {
+    #   
+    #   tmp <- lapply(data, rowSums)
+    #   tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
+    #   pdata = tmp[[1]]
+    #   for(i in 2:length(tmp)){
+    #     pdata = full_join(pdata, tmp[[i]], by = "Species")
+    #   }
+    #   pdata[is.na(pdata)] = 0
+    #   pdata = pdata %>% column_to_rownames("Species")
+    #   pdata = rowSums(pdata)
+    #   
+    #   order_sp <- match(names(pdata),rownames(FDdistM))
+    #   FDdistM <- FDdistM[order_sp,order_sp]
+    #   pdata <- matrix(pdata/sum(pdata), ncol = 1)
+    #   
+    # } else if (datatype == 'incidence_raw') {
+    #   
+    #   tmp <- lapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) })
+    #   tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
+    #   pdata = tmp[[1]]
+    #   for(i in 2:length(tmp)){
+    #     pdata = full_join(pdata, tmp[[i]], by = "Species")
+    #   }
+    #   pdata[is.na(pdata)] = 0
+    #   pdata = pdata %>% column_to_rownames("Species")
+    #   pdata = rowSums(pdata)
+    #   
+    #   order_sp <- match(names(pdata),rownames(FDdistM))
+    #   FDdistM <- FDdistM[order_sp,order_sp]
+    #   pdata <- matrix(pdata/sum(pdata), ncol = 1)
+    #   
+    # }
+    # 
+    # dmin <- min(FDdistM[FDdistM > 0])
+    # dmean <- sum ( (pdata %*% t(pdata) ) * FDdistM) # dmean
+    # dmax <- max(FDdistM[FDdistM > 0])
+    # Tau = c(dmin, dmean, dmax)
     
     output = lapply(1:length(data), function(i) {
       
       x = data[[i]]
+      
+      if (datatype == 'abundance') {
+        
+        pdata = data.frame(rowSums(x))
+        
+        order_sp <- match(rownames(pdata),rownames(FDdistM))
+        FDdistM <- FDdistM[order_sp,order_sp]
+        pdata <- pdata/sum(pdata)
+        
+      } else if (datatype == 'incidence_raw') {
+        
+        tmp = Reduce('+', x)
+        tmp[tmp > 1] = 1
+        pdata = data.frame(rowSums(tmp))
+        
+        order_sp <- match(rownames(pdata),rownames(FDdistM))
+        FDdistM <- FDdistM[order_sp,order_sp]
+        pdata <- pdata/sum(pdata)
+        
+      }
+      
+      dmean <- sum ( (as.matrix(pdata) %*% t(as.matrix(pdata)) ) * FDdistM) # dmean
+      
+      dmin <- min(FDdistM[FDdistM > 0])
+      dmax <- max(FDdistM[FDdistM > 0])
       
       if (datatype == "abundance") {
         
@@ -3940,8 +3964,9 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = rowSums(x),
                                             "Joint assemblage" = as.vector(x)), "abundance")[,1:4], 
-                     matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
-        colnames(multiple)[5:7] = c("dmin", "dmean", "dmax")
+                          "dmin" = dmin,
+                          "dmean" = dmean,
+                          "dmax" = dmax)
         
         single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "AUC", FDdistM = FDdistM)
         
@@ -3959,8 +3984,9 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         
         multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
                                             "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:5], 
-                     matrix(rep(Tau, each = 2), nrow = 2, ncol = 3))
-        colnames(multiple)[6:8] = c("dmin", "dmean", "dmax")
+                          "dmin" = dmin,
+                          "dmean" = dmean,
+                          "dmax" = dmax)
         
         single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM)
         
