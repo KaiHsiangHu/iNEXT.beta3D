@@ -2948,7 +2948,7 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
   
   if (unique(output[[1]]$gamma$Diversity) == 'TD') { ylab = "Taxonomic diversity" }
   if (unique(output[[1]]$gamma$Diversity) == 'PD') { ylab = "Phylogenetic diversity" }
-  if (unique(output[[1]]$gamma$Diversity) == 'meanPD') { ylab = "Phylogenetic Hill number" }
+  if (unique(output[[1]]$gamma$Diversity) == 'meanPD') { ylab = "Mean phylogenetic diversity" }
   if (unique(output[[1]]$gamma$Diversity) == 'FD_tau') { ylab = "Functional diversity (given tau)" }
   if (unique(output[[1]]$gamma$Diversity) == 'FD_AUC') { ylab = "Functional diversity (AUC)" }
   
