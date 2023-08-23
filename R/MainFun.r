@@ -3595,10 +3595,10 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         N = ncol(x)
         aL_table_alpha = c()
         
-        for (i in 1:N) {
+        for (j in 1:N) {
           
-          y = x[x[,i] > 0, i]
-          names(y) = rownames(x)[x[,i]>0]
+          y = x[x[,j] > 0, j]
+          names(y) = rownames(x)[x[,j]>0]
           
           aL_table = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = y, rootExtend = T, refT = PDreftime)
           aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
@@ -3664,9 +3664,9 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         N = length(x)
         aL_table_alpha = c()
         
-        for (i in 1:N) {
+        for (j in 1:N) {
           
-          aL_table = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = x[[i]], datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
+          aL_table = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = x[[j]], datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
           aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
           aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
           
