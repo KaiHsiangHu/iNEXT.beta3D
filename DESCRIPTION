@@ -5,6 +5,7 @@ Version: 1.0.1
 Author: Anne Chao, K.S. Hu, Y.S. Kao and Z.C. Szu-tu
 Maintainer: K. S. Hu <river19951224@gmail.com>
 Description: iNEXT.beta3D features non-asymptotic analyses for taxonomic, phylogenetic, and functional diversity based on Hill numbers family: It computes the estimated diversities for standardized samples with a common sample size or sample completeness (sample coverages). This approach aims to compare gamma, alpha, and beta diversity estimates for equally-large (with a common sample size) or equally-complete (with a common sample coverage) samples; it is based on the seamless rarefaction and extrapolation (R/E) sampling curves of Hill numbers family.
+License: GPL (>= 3)
 Depends: R (>= 4.0)
 Imports: tidyverse,
          magrittr,
