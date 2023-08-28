@@ -410,9 +410,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = alpha
       beta$Estimate = gamma$Estimate/alpha$Estimate
-      # beta[beta == "Observed"] = "Observed_alpha"
+      # beta[beta == "Observed"] = "Observed_C(n, alpha)"
       # beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
-      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_C(n, alpha)", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(1-Order.q) - 1)/(N^(1-Order.q)-1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(Order.q-1) - 1)/(N^(Order.q-1)-1)))
@@ -643,9 +643,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = alpha
       beta$Estimate = gamma$Estimate/alpha$Estimate
-      # beta[beta == "Observed"] = "Observed_alpha"
+      # beta[beta == "Observed"] = "Observed_C(n, alpha)"
       # beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
-      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_C(n, alpha)", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
@@ -1287,9 +1287,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = beta[under_max_alpha,]
       
-      # beta[beta == "Observed"] = "Observed_alpha"
+      # beta[beta == "Observed"] = "Observed_C(n, alpha)"
       # beta = beta %>% 
-      #   rbind(., data.frame(Estimate = obs_beta, Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_alpha", 'Size']))
+      #   rbind(., data.frame(Estimate = obs_beta, Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_C(n, alpha)", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
@@ -1641,34 +1641,34 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     }
     
     
-    # gamma$Method[gamma$SC == ref_gamma_max] = "C(2n)"
+    # gamma$Method[gamma$SC == ref_gamma_max] = "Extrap_C(2n)"
     # 
-    # alpha$Method[alpha$SC == ref_alpha_max] = "C(2n)"
+    # alpha$Method[alpha$SC == ref_alpha_max] = "Extrap_C(2n)"
     
-    beta$Method[beta$SC == ref_alpha_max] = "C(2n)"
+    beta$Method[beta$SC == ref_alpha_max] = "Extrap_C(2n)"
     
-    C$Method[C$SC == ref_alpha_max] = "C(2n)"
+    C$Method[C$SC == ref_alpha_max] = "Extrap_C(2n)"
     
-    U$Method[U$SC == ref_alpha_max] = "C(2n)"
+    U$Method[U$SC == ref_alpha_max] = "Extrap_C(2n)"
     
-    V$Method[V$SC == ref_alpha_max] = "C(2n)"
+    V$Method[V$SC == ref_alpha_max] = "Extrap_C(2n)"
     
-    S$Method[S$SC == ref_alpha_max] = "C(2n)"
+    S$Method[S$SC == ref_alpha_max] = "Extrap_C(2n)"
     
     
     # gamma$Method[gamma$SC == ref_gamma] = "Observed"
     # 
     # alpha$Method[alpha$SC == ref_alpha] = "Observed"
     
-    beta$Method[beta$SC == ref_alpha] = "Observed_alpha"
+    beta$Method[beta$SC == ref_alpha] = "Observed_C(n, alpha)"
     
-    C$Method[C$SC == ref_alpha] = "Observed_alpha"
+    C$Method[C$SC == ref_alpha] = "Observed_C(n, alpha)"
     
-    U$Method[U$SC == ref_alpha] = "Observed_alpha"
+    U$Method[U$SC == ref_alpha] = "Observed_C(n, alpha)"
     
-    V$Method[V$SC == ref_alpha] = "Observed_alpha"
+    V$Method[V$SC == ref_alpha] = "Observed_C(n, alpha)"
     
-    S$Method[S$SC == ref_alpha] = "Observed_alpha"
+    S$Method[S$SC == ref_alpha] = "Observed_C(n, alpha)"
     
     
     
@@ -2959,8 +2959,8 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
       alpha = lapply(output, function(y) y[["alpha"]]) %>% do.call(rbind,.) %>% mutate(div_type = "Alpha") %>% as_tibble()
       beta =  lapply(output, function(y) y[["beta"]])  %>% do.call(rbind,.) %>% mutate(div_type = "Beta")  %>% as_tibble()
       # beta = beta %>% filter(Method != 'Observed')
-      beta[beta == 'Observed_alpha'] = 'Observed'
-      beta[beta == 'C(2n)'] = 'Extrapolation'
+      beta[beta == 'Observed_C(n, alpha)'] = 'Observed'
+      beta[beta == 'Extrap_C(2n)'] = 'Extrapolation'
       
       
       # # Dropping out the points extrapolated over double reference size
@@ -3013,8 +3013,8 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
       # U = U %>% filter(Method != 'Observed')
       # V = V %>% filter(Method != 'Observed')
       # S = S %>% filter(Method != 'Observed')
-      C[C == 'Observed_alpha'] = U[U == 'Observed_alpha'] = V[V == 'Observed_alpha'] = S[S == 'Observed_alpha'] = 'Observed'
-      C[C == 'C(2n)'] = U[U == 'C(2n)'] = V[V == 'C(2n)'] = S[S == 'C(2n)'] = 'Extrapolation'
+      C[C == 'Observed_C(n, alpha)'] = U[U == 'Observed_C(n, alpha)'] = V[V == 'Observed_C(n, alpha)'] = S[S == 'Observed_C(n, alpha)'] = 'Observed'
+      C[C == 'Extrap_C(2n)'] = U[U == 'Extrap_C(2n)'] = V[V == 'Extrap_C(2n)'] = S[S == 'Extrap_C(2n)'] = 'Extrapolation'
       
       # # Dropping out the points extrapolated over double reference size
       # c1 = data.frame() ; u1 = data.frame() ; v1 = data.frame() ; s1 = data.frame()
