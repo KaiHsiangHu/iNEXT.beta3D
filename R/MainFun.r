@@ -1673,7 +1673,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     
     
-    list(gamma = gamma, alpha = alpha, beta = beta, C = C, U = U, V = V, S = S)
+    list(gamma = gamma, alpha = alpha, beta = beta, `1-C` = C, `1-U` = U, `1-V` = V, `1-S` = S)
     
   }
   
@@ -3005,10 +3005,10 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free', transp = 0.4){
     
     if (type == 'D'){
       
-      C = lapply(output, function(y) y[["C"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-CqN") %>% as_tibble()
-      U = lapply(output, function(y) y[["U"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-UqN") %>% as_tibble()
-      V = lapply(output, function(y) y[["V"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-VqN") %>% as_tibble()
-      S = lapply(output, function(y) y[["S"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-SqN") %>% as_tibble()
+      C = lapply(output, function(y) y[["1-C"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-CqN") %>% as_tibble()
+      U = lapply(output, function(y) y[["1-U"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-UqN") %>% as_tibble()
+      V = lapply(output, function(y) y[["1-V"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-VqN") %>% as_tibble()
+      S = lapply(output, function(y) y[["1-S"]]) %>% do.call(rbind,.) %>% mutate(div_type = "1-SqN") %>% as_tibble()
       # C = C %>% filter(Method != 'Observed')
       # U = U %>% filter(Method != 'Observed')
       # V = V %>% filter(Method != 'Observed')
