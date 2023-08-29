@@ -23,7 +23,7 @@ https://chao.shinyapps.io/iNEXT_beta3D/. \cr
 In the detailed Online iNEXT.beta3D User's Guide, we illustrate all the running procedures in an easily
 accessible way through numerical examples with proper interpretations of portions of the output.
 All the data of those illustrative examples are included in this package. \cr\cr
-
+}
 \author{
 Anne Chao, K.H. Hu \cr
 
