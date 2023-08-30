@@ -238,9 +238,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       tt <- lapply(data_list, rowSums)
       tt = lapply(tt, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
       pdata = tt[[1]]
-      for(i in 2:length(tt)){
-        pdata = full_join(pdata, tt[[i]], by = "Species")
+      
+      if (length(tt) > 1) {
+        for(i in 2:length(tt)){
+          pdata = full_join(pdata, tt[[i]], by = "Species")
+        }
       }
+      
       pdata[is.na(pdata)] = 0
       pdata = pdata %>% column_to_rownames("Species")
       pdata = rowSums(pdata)
@@ -254,9 +258,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       tt <- lapply(data_list, function(x) {tt = Reduce('+', x); tt[tt > 1] = 1; rowSums(tt) })
       tt = lapply(tt, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
       pdata = tt[[1]]
-      for(i in 2:length(tt)){
-        pdata = full_join(pdata, tt[[i]], by = "Species")
+      
+      if (length(tt) > 1) {
+        for(i in 2:length(tt)){
+          pdata = full_join(pdata, tt[[i]], by = "Species")
+        }
       }
+      
       pdata[is.na(pdata)] = 0
       pdata = pdata %>% column_to_rownames("Species")
       pdata = rowSums(pdata)
