@@ -3,7 +3,7 @@
 # iNEXT.beta3D (R package)
 
 <h5 align="right">
-Latest version: 2023-08-05
+Latest version: 2023-08-31
 </h5>
 <font color="394CAE">
 <h3 color="394CAE" style="font-weight: bold">
@@ -120,7 +120,7 @@ dissimilarity-turnover indices estimates up to one (for q = 1, 2) or up
 to the coverage of double the reference sample size (for q = 0).
 <font color=#FF6781>If</font> <code>base = “size”</code> and <code>level
 = NULL</code>, then this function computes the gamma and alpha diversity
-estimates up to double the reference sample size in each region.
+estimates up to double the reference sample size in each dataset.
 
 <table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
 <thead>
@@ -144,7 +144,7 @@ data
     (species by assemblages), or a list of matrices/data.frames, each
     matrix represents species-by-assemblages abundance matrix.
 2.  For datatype = ‘incidence_raw’ data can be input as a list (a
-    region) with several lists (assemblages) of matrices/data.frames,
+    dataset) with several lists (assemblages) of matrices/data.frames,
     each matrix represents species-by-sampling units.
     </td>
     </tr>
@@ -323,18 +323,18 @@ below.
 Two types of data are supported:
 
 1.  Individual-based abundance data (`datatype = "abundance"`): Input
-    data for each region with several assemblages/sites include samples
+    data for each dataset with several assemblages/sites include samples
     species abundances in an empirical sample of n individuals
-    (“reference sample”). When there are N assemblages in a region,
+    (“reference sample”). When there are N assemblages in a dataset,
     input data consist of a list with an S by N abundance matrix; For M
-    regions consisting N assemblages, input data should be
+    datasets consisting N assemblages, input data should be
     <font color=#FF6781>a list of M S by N abundance matrices</font>.
 
 2.  Sampling-unit-based incidence raw data
     (`datatype = "incidence_raw"`): Input data for a reference sample
     consist of a species-by-sampling-unit matrix; The number of sampling
-    units and species for each assemblages in a region should be the
-    same. For M regions consisting N assemblages, input data should be
+    units and species for each assemblages in a dataset should be the
+    same. For M datasets consisting N assemblages, input data should be
     <font color=#FF6781>a list of M lists each consists of N
     species-by-sampling-unit matrices</font>.
 
@@ -425,7 +425,7 @@ Brazil_data
     Alchornea sidifolia Klotzch.                                  0        0
     Allophylus petiolulatus Radlk.                                6        0
 
-    $`Rebio 1`
+    $Rebio1
                                                                Edge Interior
     Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
     Acacia glomerosa Benth.                                       5        1
@@ -438,7 +438,7 @@ Brazil_data
     Alchornea sidifolia Klotzch.                                  0        0
     Allophylus petiolulatus Radlk.                                4        1
 
-    $`Rebio 2`
+    $Rebio2
                                                                Edge Interior
     Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
     Acacia glomerosa Benth.                                       0        0
@@ -451,7 +451,7 @@ Brazil_data
     Alchornea sidifolia Klotzch.                                  0        0
     Allophylus petiolulatus Radlk.                                3        3
 
-    $`Rebio 3`
+    $Rebio3
                                                                Edge Interior
     Abarema cochliacarpos (B.A.Gomes) Barneby & J.W.Grimes        0        0
     Acacia glomerosa Benth.                                       0        0
@@ -584,7 +584,7 @@ beetle_abu
 #### Output of iNEXTbeta3D()
 
 When `base = 'coverage'`, the `iNEXTbeta3D()` function returns the
-`"iNEXTbeta3D"` object including seven data frames for each regions:
+`"iNEXTbeta3D"` object including seven data frames for each datasets:
 
 -   gamma ( gamma diversity )
 -   alpha ( alpha diversity )
@@ -595,7 +595,7 @@ When `base = 'coverage'`, the `iNEXTbeta3D()` function returns the
 -   S ( Jaccard-type turnover )
 
 When `base = 'size'`, the `iNEXTbeta3D()` function returns the
-`"iNEXTbeta3D"` object including two data frames for each regions:
+`"iNEXTbeta3D"` object including two data frames for each datasets:
 
 -   gamma ( gamma diversity )
 -   alpha ( alpha diversity )
@@ -605,79 +605,79 @@ When `base = 'size'`, the `iNEXTbeta3D()` function returns the
 First, we run the `iNEXTbeta3D()` function with Brazil rain-forests
 abundance data to compute standardized gamma, alpha, beta diversity, and
 four dissimilarities under `base = 'coverage'`. (Here we only show the
-first six outputs for each output in region “Marim”)
+first six outputs for each output in dataset “Marim”)
 
 ``` r
 data("Brazil_data")
 
 # Taxonomic diversity
-Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = "abundance", 
+Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = "abundance", 
                            base = 'coverage', nboot = 100)
 Abundance_TD
 ```
 
     $gamma
-      Estimate Order.q      Method    SC   Size  s.e.    LCL    UCL Region diversity
-    1   58.408       0 Rarefaction 0.500 83.059 3.262 52.015 64.801  Marim        TD
-    2   51.347       1 Rarefaction 0.500 83.059 2.971 45.524 57.169  Marim        TD
-    3   43.332       2 Rarefaction 0.500 83.059 2.775 37.892 48.772  Marim        TD
-    4   62.187       0 Rarefaction 0.525 90.787 3.417 55.490 68.883  Marim        TD
-    5   54.203       1 Rarefaction 0.525 90.787 3.092 48.143 60.262  Marim        TD
-    6   45.322       2 Rarefaction 0.525 90.787 2.893 39.652 50.992  Marim        TD
+      Dataset Order.q    SC    Size Estimate      Method  s.e.    LCL    UCL Diversity
+    1   Marim       0 0.500  83.059   58.408 Rarefaction 3.468 51.612 65.205        TD
+    2   Marim       0 0.525  90.787   62.187 Rarefaction 3.635 55.062 69.311        TD
+    3   Marim       0 0.550  99.142   66.062 Rarefaction 3.806 58.602 73.522        TD
+    4   Marim       0 0.575 108.207   70.039 Rarefaction 3.982 62.235 77.843        TD
+    5   Marim       0 0.600 118.079   74.122 Rarefaction 4.163 65.962 82.282        TD
+    6   Marim       0 0.625 128.879   78.317 Rarefaction 4.352 69.788 86.847        TD
 
     $alpha
-      Estimate Order.q      Method    SC    Size  s.e.    LCL    UCL Region diversity
-    1   53.071       0 Rarefaction 0.500 151.449 3.202 46.795 59.346  Marim        TD
-    2   46.661       1 Rarefaction 0.500 151.449 2.917 40.943 52.379  Marim        TD
-    3   39.619       2 Rarefaction 0.500 151.449 2.709 34.310 44.928  Marim        TD
-    4   56.626       0 Rarefaction 0.525 166.013 3.359 50.041 63.210  Marim        TD
-    5   49.339       1 Rarefaction 0.525 166.013 3.036 43.388 55.290  Marim        TD
-    6   41.513       2 Rarefaction 0.525 166.013 2.821 35.984 47.041  Marim        TD
+      Dataset Order.q    SC    Size Estimate      Method  s.e.    LCL    UCL Diversity
+    1   Marim       0 0.500 151.449   53.071 Rarefaction 3.658 45.901 60.240        TD
+    2   Marim       0 0.525 166.013   56.626 Rarefaction 3.899 48.983 64.268        TD
+    3   Marim       0 0.550 181.855   60.294 Rarefaction 4.159 52.142 68.446        TD
+    4   Marim       0 0.575 199.132   64.078 Rarefaction 4.440 55.375 72.781        TD
+    5   Marim       0 0.600 218.033   67.981 Rarefaction 4.747 58.677 77.285        TD
+    6   Marim       0 0.625 238.779   72.005 Rarefaction 5.084 62.040 81.969        TD
 
     $beta
-      Estimate Order.q      Method    SC    Size  s.e.   LCL   UCL Region diversity
-    1    1.101       0 Rarefaction 0.500 151.449 0.065 0.974 1.227  Marim        TD
-    2    1.100       1 Rarefaction 0.500 151.449 0.060 0.983 1.217  Marim        TD
-    3    1.094       2 Rarefaction 0.500 151.449 0.058 0.981 1.207  Marim        TD
-    4    1.098       0 Rarefaction 0.525 166.013 0.066 0.970 1.227  Marim        TD
-    5    1.099       1 Rarefaction 0.525 166.013 0.060 0.981 1.216  Marim        TD
-    6    1.092       2 Rarefaction 0.525 166.013 0.058 0.978 1.205  Marim        TD
+      Dataset Order.q    SC    Size Estimate      Method  s.e.   LCL   UCL Diversity
+    1   Marim       0 0.500 151.449    1.101 Rarefaction 0.065 0.973 1.229        TD
+    2   Marim       0 0.525 166.013    1.098 Rarefaction 0.066 0.970 1.227        TD
+    3   Marim       0 0.550 181.855    1.096 Rarefaction 0.066 0.966 1.225        TD
+    4   Marim       0 0.575 199.132    1.093 Rarefaction 0.066 0.963 1.223        TD
+    5   Marim       0 0.600 218.033    1.090 Rarefaction 0.067 0.959 1.222        TD
+    6   Marim       0 0.625 238.779    1.088 Rarefaction 0.068 0.954 1.221        TD
 
-    $C
-      Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
-    1    0.101       0 Rarefaction 0.500 151.449 0.065 -0.026 0.227  Marim        TD
-    2    0.138       1 Rarefaction 0.500 151.449 0.059  0.022 0.254  Marim        TD
-    3    0.171       2 Rarefaction 0.500 151.449 0.057  0.059 0.284  Marim        TD
-    4    0.098       0 Rarefaction 0.525 166.013 0.066 -0.030 0.227  Marim        TD
-    5    0.136       1 Rarefaction 0.525 166.013 0.059  0.020 0.252  Marim        TD
-    6    0.168       2 Rarefaction 0.525 166.013 0.058  0.055 0.281  Marim        TD
+    $`1-C`
+      Dataset Order.q    SC    Size Estimate      Method  s.e.    LCL   UCL Diversity
+    1   Marim       0 0.500 151.449    0.101 Rarefaction 0.065 -0.027 0.229        TD
+    2   Marim       0 0.525 166.013    0.098 Rarefaction 0.066 -0.030 0.227        TD
+    3   Marim       0 0.550 181.855    0.096 Rarefaction 0.066 -0.034 0.225        TD
+    4   Marim       0 0.575 199.132    0.093 Rarefaction 0.066 -0.037 0.223        TD
+    5   Marim       0 0.600 218.033    0.090 Rarefaction 0.067 -0.041 0.222        TD
+    6   Marim       0 0.625 238.779    0.088 Rarefaction 0.068 -0.046 0.221        TD
 
-    $U
-      Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
-    1    0.183       0 Rarefaction 0.500 151.449 0.059  0.066 0.299  Marim        TD
-    2    0.138       1 Rarefaction 0.500 151.449 0.059  0.022 0.254  Marim        TD
-    3    0.094       2 Rarefaction 0.500 151.449 0.058 -0.019 0.207  Marim        TD
-    4    0.179       0 Rarefaction 0.525 166.013 0.060  0.061 0.297  Marim        TD
-    5    0.136       1 Rarefaction 0.525 166.013 0.059  0.020 0.252  Marim        TD
-    6    0.092       2 Rarefaction 0.525 166.013 0.058 -0.022 0.205  Marim        TD
+    $`1-U`
+      Dataset Order.q    SC    Size Estimate      Method  s.e.   LCL   UCL Diversity
+    1   Marim       0 0.500 151.449    0.183 Rarefaction 0.060 0.064 0.301        TD
+    2   Marim       0 0.525 166.013    0.179 Rarefaction 0.060 0.060 0.297        TD
+    3   Marim       0 0.550 181.855    0.175 Rarefaction 0.061 0.056 0.293        TD
+    4   Marim       0 0.575 199.132    0.170 Rarefaction 0.061 0.051 0.290        TD
+    5   Marim       0 0.600 218.033    0.166 Rarefaction 0.061 0.046 0.286        TD
+    6   Marim       0 0.625 238.779    0.161 Rarefaction 0.062 0.040 0.283        TD
 
-    $V
-      Estimate Order.q      Method    SC    Size  s.e.    LCL   UCL Region diversity
-    1    0.101       0 Rarefaction 0.500 151.449 0.065 -0.026 0.227  Marim        TD
-    2    0.100       1 Rarefaction 0.500 151.449 0.060 -0.017 0.217  Marim        TD
-    3    0.094       2 Rarefaction 0.500 151.449 0.058 -0.019 0.207  Marim        TD
-    4    0.098       0 Rarefaction 0.525 166.013 0.066 -0.030 0.227  Marim        TD
-    5    0.099       1 Rarefaction 0.525 166.013 0.060 -0.019 0.216  Marim        TD
-    6    0.092       2 Rarefaction 0.525 166.013 0.058 -0.022 0.205  Marim        TD
+    $`1-V`
+      Dataset Order.q    SC    Size Estimate      Method  s.e.    LCL   UCL Diversity
+    1   Marim       0 0.500 151.449    0.101 Rarefaction 0.065 -0.027 0.229        TD
+    2   Marim       0 0.525 166.013    0.098 Rarefaction 0.066 -0.030 0.227        TD
+    3   Marim       0 0.550 181.855    0.096 Rarefaction 0.066 -0.034 0.225        TD
+    4   Marim       0 0.575 199.132    0.093 Rarefaction 0.066 -0.037 0.223        TD
+    5   Marim       0 0.600 218.033    0.090 Rarefaction 0.067 -0.041 0.222        TD
+    6   Marim       0 0.625 238.779    0.088 Rarefaction 0.068 -0.046 0.221        TD
 
-    $S
-      Estimate Order.q      Method    SC    Size  s.e.   LCL   UCL Region diversity
-    1    0.183       0 Rarefaction 0.500 151.449 0.059 0.066 0.299  Marim        TD
-    2    0.183       1 Rarefaction 0.500 151.449 0.056 0.072 0.293  Marim        TD
-    3    0.171       2 Rarefaction 0.500 151.449 0.057 0.059 0.284  Marim        TD
-    4    0.179       0 Rarefaction 0.525 166.013 0.060 0.061 0.297  Marim        TD
-    5    0.179       1 Rarefaction 0.525 166.013 0.056 0.069 0.290  Marim        TD
-    6    0.168       2 Rarefaction 0.525 166.013 0.058 0.055 0.281  Marim        TD
+    $`1-S`
+      Dataset Order.q    SC    Size Estimate      Method  s.e.   LCL   UCL Diversity
+    1   Marim       0 0.500 151.449    0.183 Rarefaction 0.060 0.064 0.301        TD
+    2   Marim       0 0.525 166.013    0.179 Rarefaction 0.060 0.060 0.297        TD
+    3   Marim       0 0.550 181.855    0.175 Rarefaction 0.061 0.056 0.293        TD
+    4   Marim       0 0.575 199.132    0.170 Rarefaction 0.061 0.051 0.290        TD
+    5   Marim       0 0.600 218.033    0.166 Rarefaction 0.061 0.046 0.286        TD
+    6   Marim       0 0.625 238.779    0.161 Rarefaction 0.062 0.040 0.283        TD
 
 The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`,
 `U`, `V`, `S`. For each data frame, it includes the diversity estimate
@@ -686,7 +686,7 @@ Observed, or Extrapolated, depending on whether the size `m` is less
 than, equal to, or greater than the reference sample size), the sample
 coverage estimate (`SC`), the sample size (`Size`), the standard error
 from bootstrap replications (`s.e.`), the 95% lower and upper confidence
-limits of diversity (`LCL`, `UCL`), and the name of region (`Region`).
+limits of diversity (`LCL`, `UCL`), and the name of dataset (`Dataset`).
 These diversity estimates with confidence intervals are used for
 plotting the diversity curve.
 
@@ -720,7 +720,7 @@ root of PDtree. (Here we don’t show the output)
 data("Brazil_PDFD_data")
 data("Brazil_tree")
 
-Abundance_PD = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'PD', datatype = "abundance", 
+Abundance_PD = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'PD', datatype = "abundance", 
                            base = 'coverage', nboot = 10, PDtree = Brazil_tree)
 Abundance_PD
 
@@ -754,7 +754,7 @@ don’t show the output)
 data("Brazil_PDFD_data")
 data("Brazil_distM")
 
-Abundance_FDtau = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', 
+Abundance_FDtau = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', 
                               datatype = "abundance", base = 'coverage', nboot = 30, 
                               FDdistM = Brazil_distM, FDtype = 'tau_value')
 Abundance_FDtau
@@ -773,7 +773,7 @@ Incidence_FDtau
 
 ## Functional diversity - area under curve (integrates all threshold values between zero and one)
 # Abundance data
-Abundance_FDAUC = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', 
+Abundance_FDAUC = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', 
                               datatype = "abundance", base = 'coverage', nboot = 30, 
                               FDdistM = Brazil_distM, FDtype = 'AUC')
 Abundance_FDAUC
@@ -853,7 +853,7 @@ tools. Users can visualize the output of beta diversity or four
 dissimilarities by setting the parameter <code>**type**</code>:
 
 ``` r
-Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance', 
+Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = 'abundance', 
                            base = "coverage", nboot = 30, conf = 0.95)
 ggiNEXTbeta3D(Abundance_TD, type = 'B')
 ```
@@ -870,7 +870,7 @@ The following commands return the size-based R/E sampling curves for
 gamma and alpha taxonomic diversity:
 
 ``` r
-output = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance', 
+output = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = 'abundance', 
                      base = "size", nboot = 30, conf = 0.95)
 ggiNEXTbeta3D(output)
 ```

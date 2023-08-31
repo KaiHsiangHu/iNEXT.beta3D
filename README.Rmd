@@ -86,7 +86,7 @@ iNEXTbeta3D(data, diversity = "TD", q = c(0, 1, 2), datatype = "abundance",
             FDdistM = NULL, FDtype = "AUC", FDtau = NULL, FDcut_number = 30)
 ```
 
-The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes gamma, alpha and beta diversity estimates of order q at specified sample coverage or sample size and measures of dissimilarity. <font color=#FF6781>By default of</font> <code>base = "coverage"</code> and <code>level = NULL</code>, then this function computes the gamma, alpha, beta diversity, and four dissimilarity-turnover indices estimates up to one (for q = 1, 2) or up to the coverage of double the reference sample size (for q = 0). <font color=#FF6781>If</font> <code>base = "size"</code> and <code>level = NULL</code>, then this function computes the gamma and alpha diversity estimates up to double the reference sample size in each region. 
+The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes gamma, alpha and beta diversity estimates of order q at specified sample coverage or sample size and measures of dissimilarity. <font color=#FF6781>By default of</font> <code>base = "coverage"</code> and <code>level = NULL</code>, then this function computes the gamma, alpha, beta diversity, and four dissimilarity-turnover indices estimates up to one (for q = 1, 2) or up to the coverage of double the reference sample size (for q = 0). <font color=#FF6781>If</font> <code>base = "size"</code> and <code>level = NULL</code>, then this function computes the gamma and alpha diversity estimates up to double the reference sample size in each dataset.
 
 ```{r setup, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(comment="", message=FALSE, warning=FALSE)
@@ -96,7 +96,7 @@ library(ggplot2)
 
 ```{r, echo=FALSE,warning=FALSE}
 Des <- c("data","(a) For datatype = 'abundance', data can be input as a matrix/data.frame (species by assemblages), or a list of matrices/data.frames, each matrix represents species-by-assemblages abundance matrix.
-(b) For datatype = 'incidence_raw' data can be input as a list (a region) with several lists (assemblages) of matrices/data.frames, each matrix represents species-by-sampling units.",
+(b) For datatype = 'incidence_raw' data can be input as a list (a dataset) with several lists (assemblages) of matrices/data.frames, each matrix represents species-by-sampling units.",
 "diversity"," selection of diversity type: 'TD' = Taxonomic diversity, 'PD' = Phylogenetic diversity, and 'FD' = Functional diversity.",
 "q","	a numerical vector specifying the diversity orders. Default is c(0, 1, 2).",
 "datatype","data type of input data: individual-based abundance data (datatype = 'abundance'), sampling-unit-based incidence frequencies data (datatype = 'incidence_freq'), or species by sampling-units incidence matrix (datatype = 'incidence_raw') with all entries being 0 (non-detection) or 1 (detection).", 
@@ -131,11 +131,11 @@ This function returns an `"iNEXTbeta3D"` object which can be further used to mak
 Two types of data are supported:
 
 1. Individual-based abundance data (`datatype = "abundance"`):
-Input data for each region with several assemblages/sites include samples species abundances in an empirical sample of n individuals (“reference sample"). When there are N assemblages in a region, input data consist of a list with an S by N abundance matrix; For M regions consisting N assemblages, input data should be <font color=#FF6781>a list of M S by N abundance matrices</font>.
+Input data for each dataset with several assemblages/sites include samples species abundances in an empirical sample of n individuals (“reference sample"). When there are N assemblages in a dataset, input data consist of a list with an S by N abundance matrix; For M datasets consisting N assemblages, input data should be <font color=#FF6781>a list of M S by N abundance matrices</font>.
 
 2. Sampling-unit-based incidence raw data (`datatype = "incidence_raw"`):
-Input data for a reference sample consist of a species-by-sampling-unit matrix; The number of sampling units and species for each assemblages in a region should be the same.
-For M regions consisting N assemblages, input data should be 
+Input data for a reference sample consist of a species-by-sampling-unit matrix; The number of sampling units and species for each assemblages in a dataset should be the same.
+For M datasets consisting N assemblages, input data should be 
 <font color=#FF6781>a list of M lists each consists of N species-by-sampling-unit matrices</font>.
 
 
@@ -170,7 +170,7 @@ lapply(beetle_inc, function(x) lapply(x, function(y) y[1:10,1:6]))
 
 #### Output of iNEXTbeta3D()
 
-When `base = 'coverage'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D"` object including seven data frames for each regions: 
+When `base = 'coverage'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D"` object including seven data frames for each datasets: 
 
 - gamma ( gamma diversity )
 - alpha ( alpha diversity )
@@ -180,7 +180,7 @@ When `base = 'coverage'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D
 - V ( Sorensen-type turnover )
 - S ( Jaccard-type  turnover )
 
-When `base = 'size'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D"` object including two data frames for each regions: 
+When `base = 'size'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D"` object including two data frames for each datasets: 
 
 - gamma ( gamma diversity )
 - alpha ( alpha diversity )
@@ -188,20 +188,20 @@ When `base = 'size'`, the `iNEXTbeta3D()` function returns the `"iNEXTbeta3D"` o
 
 ## Taxonomic Diversity ##
 
-First, we run the `iNEXTbeta3D()` function with Brazil rain-forests abundance data to compute standardized gamma, alpha, beta diversity, and four dissimilarities under `base = 'coverage'`. (Here we only show the first six outputs for each output in region "Marim")
+First, we run the `iNEXTbeta3D()` function with Brazil rain-forests abundance data to compute standardized gamma, alpha, beta diversity, and four dissimilarities under `base = 'coverage'`. (Here we only show the first six outputs for each output in dataset "Marim")
 
 ```{r eval=FALSE}
 data("Brazil_data")
 
 # Taxonomic diversity
-Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = "abundance", 
+Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = "abundance", 
                            base = 'coverage', nboot = 100)
 Abundance_TD
 ```
 
 
 ```{r echo=FALSE}
-Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = "abundance", 
+Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = "abundance", 
                            base = 'coverage', nboot = 100)
 lapply(Abundance_TD$Marim, function(x) {
     tmp = x[1:6,]
@@ -210,7 +210,7 @@ lapply(Abundance_TD$Marim, function(x) {
 })
 ```
 
-The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`, `U`, `V`, `S`. For each data frame, it includes the diversity estimate (`Estimate`), the diversity order (`Order.q`), `Method` (Interpolated, Observed, or Extrapolated, depending on whether the size `m` is less than, equal to, or greater than the reference sample size), the sample coverage estimate (`SC`), the sample size (`Size`), the standard error from bootstrap replications (`s.e.`), the 95% lower and upper confidence limits of diversity (`LCL`, `UCL`), and the name of region (`Region`). These diversity estimates with confidence intervals are used for plotting the diversity curve.
+The output contains seven data frames: `gamma`, `alpha`, `beta`, `C`, `U`, `V`, `S`. For each data frame, it includes the diversity estimate (`Estimate`), the diversity order (`Order.q`), `Method` (Interpolated, Observed, or Extrapolated, depending on whether the size `m` is less than, equal to, or greater than the reference sample size), the sample coverage estimate (`SC`), the sample size (`Size`), the standard error from bootstrap replications (`s.e.`), the 95% lower and upper confidence limits of diversity (`LCL`, `UCL`), and the name of dataset (`Dataset`). These diversity estimates with confidence intervals are used for plotting the diversity curve.
 
 
 Then, we can also use beetles incidence raw data to compute standardized gamma, alpha, beta diversity, and four dissimilarities under `base = 'coverage'`. (Here we don't show the output)
@@ -234,7 +234,7 @@ We can compute standardized gamma, alpha, beta diversity under phylogenetic leve
 data("Brazil_PDFD_data")
 data("Brazil_tree")
 
-Abundance_PD = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'PD', datatype = "abundance", 
+Abundance_PD = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'PD', datatype = "abundance", 
                            base = 'coverage', nboot = 10, PDtree = Brazil_tree)
 Abundance_PD
 
@@ -258,7 +258,7 @@ We can compute standardized gamma, alpha, beta diversity under functional level 
 data("Brazil_PDFD_data")
 data("Brazil_distM")
 
-Abundance_FDtau = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', 
+Abundance_FDtau = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', 
                               datatype = "abundance", base = 'coverage', nboot = 30, 
                               FDdistM = Brazil_distM, FDtype = 'tau_value')
 Abundance_FDtau
@@ -277,7 +277,7 @@ Incidence_FDtau
 
 ## Functional diversity - area under curve (integrates all threshold values between zero and one)
 # Abundance data
-Abundance_FDAUC = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio 2')], diversity = 'FD', 
+Abundance_FDAUC = iNEXTbeta3D(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', 
                               datatype = "abundance", base = 'coverage', nboot = 30, 
                               FDdistM = Brazil_distM, FDtype = 'AUC')
 Abundance_FDAUC
@@ -318,7 +318,7 @@ htmlTable(output,
 The `ggiNEXTbeta3D()` function is a wrapper around the `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so it can be manipulated using the `ggplot2` tools. Users can visualize the output of beta diversity or four dissimilarities by setting the parameter <code>**type**</code>:
 
 ```{r, fig.align='center', fig.height=6, fig.width=6}
-Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance', 
+Abundance_TD = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = 'abundance', 
                            base = "coverage", nboot = 30, conf = 0.95)
 ggiNEXTbeta3D(Abundance_TD, type = 'B')
 ```
@@ -332,7 +332,7 @@ ggiNEXTbeta3D(Abundance_TD, type = 'D')
 The following commands return the size-based R/E sampling curves for gamma and alpha taxonomic diversity:
 
 ```{r, fig.align='center', fig.height=4, fig.width=6}
-output = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio 2')], diversity = 'TD', datatype = 'abundance', 
+output = iNEXTbeta3D(data = Brazil_data[c('Marim', 'Rebio2')], diversity = 'TD', datatype = 'abundance', 
                      base = "size", nboot = 30, conf = 0.95)
 ggiNEXTbeta3D(output)
 ```
