@@ -57,8 +57,8 @@ output2
 ## Phylogenetic diversity for abundance data
 data(Brazil_PDFD_data)
 data(Brazil_tree)
-output3 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'PD', datatype = 'abundance', 
-                       PDtree = Brazil_tree, PDreftime = NULL)
+output3 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'PD', 
+                       datatype = 'abundance', PDtree = Brazil_tree, PDreftime = NULL)
 output3
 
 
@@ -73,8 +73,8 @@ output4
 ## Functional diversity for abundance data under single threshold
 data(Brazil_PDFD_data)
 data(Brazil_distM)
-output5 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', datatype = 'abundance', 
-                       FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
+output5 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', 
+                       datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
 output5
 
 
@@ -89,8 +89,8 @@ output6
 ## Functional diversity for abundance data with thresholds integrating from 0 to 1
 data(Brazil_PDFD_data)
 data(Brazil_distM)
-output7 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', datatype = 'abundance', 
-                       FDdistM = Brazil_distM, FDtype = 'AUC')
+output7 = DataInfobeta(data = Brazil_PDFD_data[c('Marim', 'Rebio2')], diversity = 'FD', 
+                       datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'AUC')
 output7
 
 

@@ -32,6 +32,6 @@ Maintainer: K.H. Hu <river19951224@gmail.com>
 \references{
 Chao, A., Chiu, C.-H., Hu, K.-H., and Zeleny, D. (2023a). Revisiting Alwyn H. Gentry's forest transect data: a statistical sampling-model-based approach. Japanese Journal of Statistics and Data Science. https://doi.org/10.1007/s42081-023-00214-1 \cr\cr
 Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zeleny, D., Colwell, R. K., and Magurran, A. E. (2023b). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. Ecological Monographs, 94, e1588. https://doi.org/10.1002/ecm.1588 \cr\cr
-Chao, A. and Hu, K.-H. (2023). iNEXT.beta3D Online: interpolation and extrapolation with beta diversity for three dimensions of diversity. Code and user's guide available from http://chao.stat.nthu.edu.tw/wordpress/software_download/inext-beta3d/  \cr\cr
+Chao, A. and Hu, K.-H. (2023). iNEXT.beta3D Online: interpolation and extrapolation with beta diversity for three dimensions of diversity. Code and user's guide available from \cr http://chao.stat.nthu.edu.tw/wordpress/software_download/inext-beta3d/  \cr\cr
 }
 \keyword{ package }
