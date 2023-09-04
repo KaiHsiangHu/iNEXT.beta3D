@@ -12,7 +12,7 @@
 #' If \code{base = "size"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to double the reference sample size. \cr 
 #' If \code{base = "coverage"} and \code{level = NULL}, then this function computes the gamma and alpha diversity estimates up to one (for \code{q = 1, 2}) or up to the coverage of double the reference sample size (for \code{q = 0});
 #' the corresponding beta diversity is computed up to the same maximum coverage as the alpha diversity.
-#' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{20}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).
+#' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{10}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
 #' @param PDtree (required only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
 #' @param PDreftime (required only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).  
@@ -156,7 +156,7 @@
 #' output8
 #' @export
 iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abundance', 
-                       base = 'coverage', level = NULL, nboot = 20, conf = 0.95, 
+                       base = 'coverage', level = NULL, nboot = 10, conf = 0.95, 
                        PDtree = NULL, PDreftime = NULL, PDtype = 'meanPD',
                        FDdistM = NULL, FDtype = 'AUC', FDtau = NULL, FDcut_number = 30) {
   
