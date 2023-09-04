@@ -1001,8 +1001,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           dij = distM
           dij = dij[rowSums(data)>0, rowSums(data)>0]
           
-          dij[which(dij>tau, arr.ind = T)] = tau
-          aik = (1 - dij/tau) %*% as.matrix(zik)
+          
+          if (tau == 0) {
+            dij[dij > 0] <- 1
+            aik = (1 - dij/1) %*% as.matrix(zik)
+          } else {
+            dij[which(dij>tau, arr.ind = T)] = tau
+            aik = (1 - dij/tau) %*% as.matrix(zik)
+          }
           positive_id = rowSums(aik)>0
           
           
@@ -1047,10 +1053,16 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           dij = dij[gamma_Y > 0, gamma_Y > 0]
           gamma_Y = gamma_Y[gamma_Y > 0]
           
-          dij[which(dij>tau, arr.ind = T)] = tau
-          gamma_a = (1 - dij/tau) %*% as.matrix(gamma_Y)
-          gamma_a[gamma_a > n] = n
           
+          if (tau == 0) {
+            dij[dij > 0] <- 1
+            gamma_a = (1 - dij/1) %*% as.matrix(gamma_Y)
+          } else {
+            dij[which(dij>tau, arr.ind = T)] = tau
+            gamma_a = (1 - dij/tau) %*% as.matrix(gamma_Y)
+          }
+          
+          gamma_a[gamma_a > n] = n
           gamma_v = gamma_Y/gamma_a
           
           # gamma_a = ifelse(gamma_a < 1, 1, round(gamma_a))
@@ -1068,8 +1080,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           dij = dij[rowSums(data_2D[-1,]) > 0, rowSums(data_2D[-1,])>0]
           alpha_Y = alpha_Y[rowSums(data_2D[-1,])>0,]
           
-          dij[which(dij>tau, arr.ind = T)] = tau
-          alpha_a = (1 - dij/tau) %*% as.matrix(alpha_Y)
+          
+          if (tau == 0) {
+            dij[dij > 0] <- 1
+            alpha_a = (1 - dij/1) %*% as.matrix(alpha_Y)
+          } else {
+            dij[which(dij>tau, arr.ind = T)] = tau
+            alpha_a = (1 - dij/tau) %*% as.matrix(alpha_Y)
+          }
           
           # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           alpha_a[alpha_a > n] = n
@@ -1156,7 +1174,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       if (FDtype == 'AUC'){
         
-        cut = seq(0.00000001, 1, length.out = FDcut_number)
+        # cut = seq(0.00000001, 1, length.out = FDcut_number)
+        cut = seq(0, 1, length.out = FDcut_number)
         width = diff(cut)
         
         if (datatype == 'abundance') {
@@ -2290,8 +2309,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           dij = distM
           dij = dij[rowSums(data)>0, rowSums(data)>0]
           
-          dij[which(dij>tau, arr.ind = T)] = tau
-          aik = (1 - dij/tau) %*% as.matrix(zik)
+          if (tau == 0) {
+            dij[dij > 0] <- 1
+            aik = (1 - dij/1) %*% as.matrix(zik)
+          } else {
+            dij[which(dij>tau, arr.ind = T)] = tau
+            aik = (1 - dij/tau) %*% as.matrix(zik)
+          }
           positive_id = rowSums(aik)>0
           
           
@@ -2333,10 +2357,15 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           dij = dij[gamma_Y > 0, gamma_Y > 0]
           gamma_Y = gamma_Y[gamma_Y > 0]
           
-          dij[which(dij>tau, arr.ind = T)] = tau
-          gamma_a = (1 - dij/tau) %*% as.matrix(gamma_Y)
-          gamma_a[gamma_a > n] = n
+          if (tau == 0) {
+            dij[dij > 0] <- 1
+            gamma_a = (1 - dij/1) %*% as.matrix(gamma_Y)
+          } else {
+            dij[which(dij>tau, arr.ind = T)] = tau
+            gamma_a = (1 - dij/tau) %*% as.matrix(gamma_Y)
+          }
           
+          gamma_a[gamma_a > n] = n
           gamma_v = gamma_Y/gamma_a
           
           # gamma_a = ifelse(gamma_a < 1, 1, round(gamma_a))
@@ -2354,8 +2383,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           dij = dij[rowSums(data_2D[-1,]) > 0, rowSums(data_2D[-1,])>0]
           alpha_Y = alpha_Y[rowSums(data_2D[-1,])>0,]
           
-          dij[which(dij>tau, arr.ind = T)] = tau
-          alpha_a = (1 - dij/tau) %*% as.matrix(alpha_Y)
+          
+          if (tau == 0) {
+            dij[dij > 0] <- 1
+            alpha_a = (1 - dij/1) %*% as.matrix(alpha_Y)
+          } else {
+            dij[which(dij>tau, arr.ind = T)] = tau
+            alpha_a = (1 - dij/tau) %*% as.matrix(alpha_Y)
+          }
           
           # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           alpha_a[alpha_a > n] = n
@@ -3788,18 +3823,27 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         dij = dij[rowSums(x)>0, rowSums(x)>0]
         x = x[rowSums(x)>0,]
         
-        dij[which(dij > FDtau, arr.ind = T)] = FDtau
-        aik = (1 - dij/FDtau) %*% as.matrix(x)
+        
+        if (FDtau == 0) {
+          dij[dij > 0] <- 1
+          aik = (1 - dij/1) %*% as.matrix(x)
+        } else {
+          dij[which(dij > FDtau, arr.ind = T)] = FDtau
+          aik = (1 - dij/FDtau) %*% as.matrix(x)
+        }
+        
         positive_id = rowSums(aik) > 0
+        
         
         gamma_x = rowSums(x)[positive_id]
         gamma_a = rowSums(aik)[positive_id]
+        gamma_v = gamma_x/gamma_a
+        
         alpha_a = as.vector(aik)
+        alpha_v = rep(gamma_v, ncol(x))
         
-        out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = gamma_a,
-                                      "Joint assemblage" = alpha_a), "abundance")
         
-        out$SC = sapply(list(rowSums(x), as.vector(x)), function(y) {
+        Chat = sapply(list(rowSums(x), as.vector(x)), function(y) {
           
           n = sum(y)
           f1 = sum(y == 1)
@@ -3809,15 +3853,41 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
           1 - f1/n * A
           
         })
-        out$n = sum(x)
         
-        colnames(out)[colnames(out) %in% paste0("f", 1:10)] = paste0("a", 1:10, "'")
         
-        out$Tau = FDtau
+        multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                          'n' = sum(x), 
+                          'S.obs' = c(sum(rowSums(x) > 0), sum(as.vector(x) > 0)), 
+                          'SC' = Chat, 
+                          'a1*' = c(sum(gamma_a == 1), sum(alpha_a == 1)), 
+                          'a2*' = c(sum(gamma_a == 2), sum(alpha_a == 2)), 
+                          'h1' = c(sum(gamma_v[gamma_a == 1]), sum(alpha_v[alpha_a == 1])), 
+                          'h2' = c(sum(gamma_v[gamma_a == 2]), sum(alpha_v[alpha_a == 2])),
+                          'Tau' = FDtau)
+        
+        
+        # out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = gamma_a,
+        #                               "Joint assemblage" = alpha_a), "abundance")
+        # 
+        # out$SC = sapply(list(rowSums(x), as.vector(x)), function(y) {
+        #   
+        #   n = sum(y)
+        #   f1 = sum(y == 1)
+        #   f2 = sum(y == 2)
+        #   f0.hat <- ifelse(f2 == 0, (n-1) / n * f1 * (f1-1) / 2, (n-1) / n * f1^2 / 2 / f2) 
+        #   A <- ifelse(f1 > 0, n * f0.hat / (n * f0.hat + f1), 1)
+        #   1 - f1/n * A
+        #   
+        # })
+        # out$n = sum(x)
+        # 
+        # colnames(out)[colnames(out) %in% paste0("f", 1:10)] = paste0("a", 1:10, "'")
+        # 
+        # out$Tau = FDtau
         
         single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
         
-        return(rbind(single, out) %>% cbind(Dataset = names(data)[i],.))
+        return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
       }) %>% do.call(rbind,.)
     }
@@ -3846,9 +3916,17 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         dij = dij[data_gamma_freq > 0, data_gamma_freq > 0]
         data_gamma_freq = data_gamma_freq[data_gamma_freq > 0]
         
-        dij[which(dij > FDtau, arr.ind = T)] = FDtau
-        gamma_a = (1 - dij/FDtau) %*% as.matrix(data_gamma_freq)
+        
+        if (FDtau == 0) {
+          dij[dij > 0] <- 1
+          gamma_a = (1 - dij/1) %*% as.matrix(data_gamma_freq)
+        } else {
+          dij[which(dij > FDtau, arr.ind = T)] = FDtau
+          gamma_a = (1 - dij/FDtau) %*% as.matrix(data_gamma_freq)
+        }
+        
         gamma_a[gamma_a > nT] = nT
+        gamma_v = data_gamma_freq/gamma_a
         
         
         ##
@@ -3860,33 +3938,66 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
         dij = dij[rowSums(data_2D) > 0, rowSums(data_2D) > 0]
         data_2D = data_2D[rowSums(data_2D) > 0,]
         
-        dij[which(dij > FDtau, arr.ind = T)] = FDtau
-        alpha_a = (1 - dij/FDtau) %*% as.matrix(data_2D)
+        
+        if (FDtau == 0) {
+          dij[dij > 0] <- 1
+          alpha_a = (1 - dij/1) %*% as.matrix(data_2D)
+        } else {
+          dij[which(dij > FDtau, arr.ind = T)] = FDtau
+          alpha_a = (1 - dij/FDtau) %*% as.matrix(data_2D)
+        }
+        
         alpha_a[alpha_a > nT] = nT
         alpha_a = as.vector(alpha_a)
+        alpha_v = rep(gamma_v, length(x))
         
-        out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(nT, gamma_a),
-                                      "Joint assemblage" = c(nT, alpha_a)), "incidence_freq")
-        out$SC = sapply(list(data_gamma_freq, data_2D), function(y) {
+        
+        Chat = sapply(list(data_gamma_freq, data_2D), function(y) {
           
           U <- sum(y)
           Q1 = sum(y == 1)
           Q2 = sum(y == 2)
-          Q0.hat <- ifelse(Q2 == 0, (nT-1) / nT * Q1 * (Q1-1) / 2, (nT-1) / nT * Q1^2 / 2 / Q2) 
+          Q0.hat <- ifelse(Q2 == 0, (nT-1) / nT * Q1 * (Q1-1) / 2, (nT-1) / nT * Q1^2 / 2 / Q2)
           A <- ifelse(Q1 > 0, nT * Q0.hat / (nT * Q0.hat + Q1), 1)
           
           1 - Q1/U * A
         })
         
-        out$U = c(sum(data_gamma_freq), sum(data_2D))
         
-        colnames(out)[colnames(out) %in% paste0("f", 1:10)] = paste0("a", 1:10, "'")
+        multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                          'T' = rep(ncol(data_gamma), 2), 
+                          'U' = c(sum(data_gamma_freq), sum(data_2D)),
+                          'S.obs' = c(sum(rowSums(data_gamma) > 0), sum(data_2D > 0)), 
+                          'SC' = Chat, 
+                          'a1*' = c(sum(gamma_a == 1), sum(alpha_a == 1)), 
+                          'a2*' = c(sum(gamma_a == 2), sum(alpha_a == 2)), 
+                          'h1' = c(sum(gamma_v[gamma_a == 1]), sum(alpha_v[alpha_a == 1])), 
+                          'h2' = c(sum(gamma_v[gamma_a == 2]), sum(alpha_v[alpha_a == 2])),
+                          'Tau' = FDtau)
         
-        out$Tau = FDtau
+        
+        # out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(nT, gamma_a),
+        #                               "Joint assemblage" = c(nT, alpha_a)), "incidence_freq")
+        # out$SC = sapply(list(data_gamma_freq, data_2D), function(y) {
+        #   
+        #   U <- sum(y)
+        #   Q1 = sum(y == 1)
+        #   Q2 = sum(y == 2)
+        #   Q0.hat <- ifelse(Q2 == 0, (nT-1) / nT * Q1 * (Q1-1) / 2, (nT-1) / nT * Q1^2 / 2 / Q2) 
+        #   A <- ifelse(Q1 > 0, nT * Q0.hat / (nT * Q0.hat + Q1), 1)
+        #   
+        #   1 - Q1/U * A
+        # })
+        # 
+        # out$U = c(sum(data_gamma_freq), sum(data_2D))
+        # 
+        # colnames(out)[colnames(out) %in% paste0("f", 1:10)] = paste0("a", 1:10, "'")
+        # 
+        # out$Tau = FDtau
         
         single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
         
-        return(rbind(single, out) %>% cbind(Dataset = names(data)[i],.))
+        return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
       }) %>% do.call(rbind,.)
       
@@ -4012,3 +4123,6 @@ DataInfobeta = function(data, diversity = 'TD', datatype = 'abundance',
   return(output)
   
   }
+
+
+
