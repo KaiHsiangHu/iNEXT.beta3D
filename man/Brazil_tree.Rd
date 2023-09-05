@@ -5,7 +5,7 @@
 Phylogenetic tree for Brazil abundance data
 }
 \description{
-Brazil_tree is a phylogenetic tree, which contains all species collected from eight rainforest fragments in Brazil data. It is used as example for computing phylogenetic diversity. \cr
+Brazil_tree is a phylogenetic tree, which contains all species collected from rainforest fragments in Brazil_rainforests. It is used as example for computing phylogenetic diversity. \cr
 }
 \usage{data(Brazil_tree)}
 \format{
@@ -18,9 +18,9 @@ Brazil_tree is a phylogenetic tree, which contains all species collected from ei
  $ tip.label  : chr [1:425] "Carpotroche_brasiliensis" "Casearia_ulmifolia" "Casearia_sp4", ... \cr
  }
 \references{
-Magnago, L. F. S., Edwards, D. P., Edwards, F. A., Magrach, A., Martins, S. V., & Laurance, W. F. 2014. Functional attributes change but functional richness is unchanged after fragmentation of Brazilian Atlantic forests. Journal of Ecology 102: 475-485. \cr
-Magnago, L. F. S., Magrach, A., Barlow, J., Schaefer, C. E. G. R., Laurance, W. F., Martins, S. V., & Edwards, D. P. 2017. Do fragment size and edge effects predict carbon stocks in trees and lianas in tropical forests? Functional Ecology 31: 542-552. \cr
-Magnago, L. F. S., Rocha, M. F., Meyer, L., Martins, S. v., & Meira-Neto, J. A. A. 2015. Microclimatic conditions at forest edges have significant impacts on vegetation structure in large Atlantic forest fragments. Biodiversity and Conservation 24: 2305-2318. 
+Magnago, L. F. S., Edwards, D. P., Edwards, F. A., Magrach, A., Martins, S. V., & Laurance, W. F. 2014. Functional attributes change but functional richness is unchanged after fragmentation of Brazilian Atlantic forests. Journal of Ecology 102: 475-485. \cr\cr
+Magnago, L. F. S., Magrach, A., Barlow, J., Schaefer, C. E. G. R., Laurance, W. F., Martins, S. V., & Edwards, D. P. 2017. Do fragment size and edge effects predict carbon stocks in trees and lianas in tropical forests? Functional Ecology 31: 542-552. \cr\cr
+Magnago, L. F. S., Rocha, M. F., Meyer, L., Martins, S. v., & Meira-Neto, J. A. A. 2015. Microclimatic conditions at forest edges have significant impacts on vegetation structure in large Atlantic forest fragments. Biodiversity and Conservation 24: 2305-2318. \cr\cr
 }
 
 \keyword{datasets}
