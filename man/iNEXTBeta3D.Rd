@@ -58,7 +58,17 @@ the corresponding beta diversity is computed up to the same maximum coverage as 
 \item{FDcut_number}{(required only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to split zero to one into several equal-spaced length. Default is 30.}
 }
 \value{
-If \code{base = "coverage"}, return a list of seven matrices with three diversity (gamma, alpha, and beta diversity) and four dissimilarity indices. If \code{base = "size"}, return a list of two matrices with two diversity (gamma and alpha diversity).
+If \code{base = "coverage"}, return a list of seven matrices with three diversity (gamma, alpha, and beta diversity) and four dissimilarity measures. If \code{base = "size"}, return a list of two matrices with two diversity (gamma and alpha diversity). The argument of each column see below:\cr\cr
+'Dataset' = the datasets you selected in the 'Data setting' on the left-hand side of the screen.\cr\cr
+'Order.q' = the diversity order of q.\cr\cr
+'SC' = the target standardized coverage value (or the sample coverage values specified by users in “General Setting”). The observed coverage and extrapolation limit for beta diversity are defined the same as those for alpha diversity. For q = 0, the extrapolation can be extended to a maximum coverage value C(2n, alpha) = coverage value of twice the alpha reference sample size; for q = 1 and 2, target coverage can be extended to 1 (complete coverage) if data are not sparse. \cr\cr
+'Size' = the corresponding sample size for the standardized coverage value. \cr\cr
+'Alpha/Beta/Gamma/Dissimilarity' = the estimated diversity or dissimilarity of order q for the target coverage value. The estimate for complete coverage (or size = infinity) represents the estimated asymptotic diversity. \cr\cr
+'Method' = Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample. (For beta diversity, observed coverage is defined as the coverage of the alpha reference sample).\cr\cr
+'s.e.' = standard error of diversity estimate.\cr\cr
+'LCL', 'UCL' = the bootstrap lower and upper confidence limits for the diversity of order q at the specified level in the setting (with a default value of 0.95).\cr\cr
+'Diversity' = "TD" (taxonomic diversity), "PD" (phylogenetic diversity of effective total branch length), "meanPD" (phylogenetic diversity of effective number of equally divergent lineages), "FD_tau" (functional diversity under a single tau), "FD_AUC" (functional diversity by integrating all threshold values between zero and one.\cr\cr
+'Tau' = the threshold of functional distinctiveness between any two species.\cr
 }
 \description{
 \code{iNEXTbeta3D}: Interpolation and extrapolation of beta diversity with order q

@@ -5,7 +5,7 @@
 Phylogenetic tree for Brazil abundance data
 }
 \description{
-Brazil_tree is a phylogenetic tree, which contains all species collected from rainforest fragments in Brazil_rainforests. It is used as example for computing phylogenetic diversity. \cr
+Brazil_tree is a phylogenetic tree, which contains all species collected from rainforest fragments in Brazil. It is used as example for computing phylogenetic diversity. \cr
 }
 \usage{data(Brazil_tree)}
 \format{

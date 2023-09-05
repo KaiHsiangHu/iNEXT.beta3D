@@ -2,12 +2,11 @@
 \alias{Brazil_rainforests}
 \docType{data}
 \title{
-Brazil data (datatype = "abundance" for taxonomic, phylogenetic, and functional diversity)
+Brazil rainforests data (datatype = "abundance" for TD, PD, and FD)
 }
 \description{
 Brazil_rainforests is the tree species data collected by Magnago and colleagues between 2011 and 2012 from rain-forest fragments in Espirito Santo State, Brazil (Magnago et al., 2014). Fragmentation of tropical rain forests is one of the major drivers to the loss of global biodiversity. Thus, it is important to understand how species composition changes between fragment edges and interiors. We selected 4 transects (2 Edge transects and the corresponding 2 Interior transects) from fragments. \cr
-Each transect comprised ten 10 x 10 m plots at 20-m intervals. Each Edge transect was placed about 5 m inside the fragment and parallel to the forest edge, and the corresponding Interior transect was located at least 300 m from the nearest edge. Within each transect, every living tree with a diameter at breast height (DBH) > 4.8 cm and 1.3 m height was recorded and identified to species. The goal here is to assesss how beta diversity between the Edge habitat and the Interior habitat varies with fragment area/size. \cr
-Brazil_rainforests is used to run examples for taxonomic diversity.
+Each transect comprised ten 10 x 10 m plots at 20-m intervals. Each Edge transect was placed about 5 m inside the fragment and parallel to the forest edge, and the corresponding Interior transect was located at least 300 m from the nearest edge. Within each transect, every living tree with a diameter at breast height (DBH) > 4.8 cm and 1.3 m height was recorded and identified to species. \cr
 }
 \usage{data(Brazil_rainforests)}
 \format{

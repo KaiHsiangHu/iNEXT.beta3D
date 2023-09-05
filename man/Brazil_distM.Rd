@@ -5,9 +5,9 @@
 Gower distance for Brazil abundance data
 }
 \description{
-Brazil_distM is a species-by-species pairwise, symmetric data, which contains all species collected from eight rainforest fragments in Brazil_rainforests data. It is used as example for computing functional diversity. \cr
+Brazil_distM is a species-by-species pairwise, symmetric data, which contains all species collected from rainforest fragments in Brazil. It is used as example for computing functional diversity. \cr
 }
-\usage{data(Brazil_tree)}
+\usage{data(Brazil_distM)}
 \format{
   Brazil_distM is a 425 x 425 (species by species) symmetric data.frame. The value of Brazil_distM is between zero (identical) and one.  \cr
  $ Carpotroche_brasiliensis      : num  0 0.522 0.522 0.253 0.263 ... \cr

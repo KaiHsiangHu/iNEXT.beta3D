@@ -5,16 +5,16 @@
 Second-growth forests data (datatype = "incidence_raw" for taxonomic diversity)
 }
 \description{
-Second_growth_forests data is a yearly tree species data collected from six 1-ha (50 m x 200 m) second-growth rainforests in Costa Rica. The six forests, with their abbreviated names and ages in 2005 (the selected reference time; see below) are: Finca el Bejuco (FEB, 10 years), Juan Enriquez (JE, 10 years), Lindero Sur (LSUR, 20 years), Tirimbina (TIR, 23 years), Lindero el Peje (LEP, 28 years), and Cuatro Rios (CR, 33 years). The species abundance data for all stems larger or equal than 5 cm in DBH were recorded annually from 2005 to 2017; see Chazdon et al. (2022) for sampling details and summary statistics. All data are available through Dryad (Chazdon, 2021).
+Second_growth_forests data is a yearly tree species data collected from six 1-ha (50 m x 200 m) second-growth rainforests in Costa Rica. The two forests, with their abbreviated names and ages in 2005 are: Juan Enriquez (JE, 10 years) and Cuatro Rios (CR, 33 years). The species abundance data for all stems larger or equal than 5 cm in DBH were recorded annually from 2005 to 2017; see Chazdon et al. (2022) for sampling details and summary statistics. Here we use year 2005 and 2017 in JE and CR forests to compute iNEXT beta. All data are available through Dryad (Chazdon, 2021).
 }
 \usage{data(Second_growth_forests)}
 \format{
-  Second_growth_forests is a list with six forests. The input format for each forests is a list of several lists incidence raw. In each forest, it has twelve lists: "Year_2005_and_2006", "Year_2005_and_2007", ...,and "Year_2005_and_2017" in it and each lists has two species-by-sampling-units matrices ("Year_2005" and "Year_2006" in "Year_2005_and_2006" as example). Each matrix record the species as 0 (undetect) or 1 (detect) in each sampling units. \cr
- A list of 6  \cr
- $ CR 2005 vs. 2017 :List of 2 \cr
+  Second_growth_forests is a list with two forests. The input format for each forests is a list with two species-by-sampling-units matrices ("Year_2005" and "Year_2017"). Each matrix record the species as 0 (undetect) or 1 (detect) in each sampling units. \cr
+ A list of 2  \cr
+ $ CR 2005 vs. 2017 :A list of 2 \cr
  .. ..$ Year_2005 (168 (species) x 100 (quadrats)) \cr
  .. ..$ Year_2017 (168 (species) x 100 (quadrats)) \cr 
- $ JE 2005 vs. 2017 :List of 2 \cr
+ $ JE 2005 vs. 2017 :A list of 2 \cr
  .. ..$ Year_2005 (109 (species) x 100 (quadrats)) \cr
  .. ..$ Year_2017 (109 (species) x 100 (quadrats)) \cr 
  }

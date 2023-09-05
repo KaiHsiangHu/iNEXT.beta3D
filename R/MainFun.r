@@ -37,7 +37,18 @@
 #' @import tidyr
 #' @import tibble
 #' 
-#' @return If \code{base = "coverage"}, return a list of seven matrices with three diversity (gamma, alpha, and beta diversity) and four dissimilarity indices. If \code{base = "size"}, return a list of two matrices with two diversity (gamma and alpha diversity).
+#' @return If \code{base = "coverage"}, return a list of seven matrices with three diversity (gamma, alpha, and beta diversity) and four dissimilarity measures. If \code{base = "size"}, return a list of two matrices with two diversity (gamma and alpha diversity). The argument of each column see below:\cr\cr
+#' 'Dataset' = the datasets you selected in the 'Data setting' on the left-hand side of the screen.\cr\cr
+#' 'Order.q' = the diversity order of q.\cr\cr
+#' 'SC' = the target standardized coverage value (or the sample coverage values specified by users in “General Setting”). The observed coverage and extrapolation limit for beta diversity are defined the same as those for alpha diversity. For q = 0, the extrapolation can be extended to a maximum coverage value C(2n, alpha) = coverage value of twice the alpha reference sample size; for q = 1 and 2, target coverage can be extended to 1 (complete coverage) if data are not sparse. \cr\cr
+#' 'Size' = the corresponding sample size for the standardized coverage value. \cr\cr
+#' 'Alpha/Beta/Gamma/Dissimilarity' = the estimated diversity or dissimilarity of order q for the target coverage value. The estimate for complete coverage (or size = infinity) represents the estimated asymptotic diversity. \cr\cr
+#' 'Method' = Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample. (For beta diversity, observed coverage is defined as the coverage of the alpha reference sample).\cr\cr
+#' 's.e.' = standard error of diversity estimate.\cr\cr
+#' 'LCL', 'UCL' = the bootstrap lower and upper confidence limits for the diversity of order q at the specified level in the setting (with a default value of 0.95).\cr\cr
+#' 'Diversity' = "TD" (taxonomic diversity), "PD" (phylogenetic diversity of effective total branch length), "meanPD" (phylogenetic diversity of effective number of equally divergent lineages), "FD_tau" (functional diversity under a single tau), "FD_AUC" (functional diversity by integrating all threshold values between zero and one.\cr\cr
+#' 'Tau' = the threshold of functional distinctiveness between any two species.\cr
+#' 
 #' 
 #' @examples
 #' ## Taxonomic diversity for abundance data
@@ -2800,7 +2811,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   if (base == 'size') output = lapply(1:length(data_list), function(i) for_each_dataset.size(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i], level = level[[i]]))
   names(output) = dataset_names
   
-  class(output) <- c("iNEXT.beta3D")
+  class(output) <- c("iNEXTbeta3D")
   return(output)
   
 }
@@ -2811,14 +2822,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' \code{ggiNEXTbeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTbeta3D}} object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 #' 
-#' @param output the output from iNEXTbeta3D
+#' @param output the output from function iNEXTbeta3D
 #' @param type (required only when \code{base = "coverage"}), selection of plot type : \cr
 #' \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 #' \code{type = 'D'} for plotting 4 turnover dissimilarities.
 #' @param scale Are scales shared across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.
 # @param transp a value between 0 and 1 controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.
 #' 
-#' @return a figure for Beta diversity or dissimilarity index.
+#' @return a figure for gamma, alpha, and beta diversity or four dissimilarity measures.
 #' 
 #' @examples
 #' ## Taxonomic diversity for abundance data
@@ -3417,7 +3428,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 
 #' Data information for beta diversity 
 #' 
-#' \code{DataInfobeta3D}: Data information for beta diversity in three dimension
+#' \code{DataInfobeta3D}: Data information for individual assemblages, pool assemblage, and joint assemblage in three dimension
 #' 
 #' @param data (a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
 #' (b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a dataset) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units. 
@@ -3429,7 +3440,12 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' @param FDtype (required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.  
 #' @param FDtau (required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy). 
 #' 
-#' @return return a data.frame.
+#' @return a data.frame of basic data information including dataset name (Dataset), assemblage name (Assemblage), sample size (n) or total sampling units (T), total incidences (U), observed species richness (S.obs), sample coverage estimate (SC).\cr\cr
+#' Besides, show the first ten species abundance (or incidence) frequency counts in the reference sample in TD. (f1-f10 or Q1-Q10)\cr\cr
+#' In PD, show the the observed total branch length in the phylogenetic tree (PD.obs), the number of singletons and doubletons in the node/branch set (f1*-f2*), the total branch length of those singletons/doubletons in the node/branch set (g1-g2), reference time (Reftime).\cr\cr
+#' In FD (FDtype = "tau_value"), show the number of singletons and doubletons in the functional group (a1*-a2*), the total contribution of those singletons/doubletons in the functional group (h1-h2), the threshold of functional distinctiveness between any two species (Tau).\cr\cr
+#' In FD (FDtype = "AUC"), show the the minimum distance among all non-zero elements in the distance matrix (dmin), the mean distance between any two individuals randomly selected from the pooled data (dmean), the maximum distance among all elements in the distance matrix (dmax).\cr
+#' 
 #' 
 #' @examples
 #' ## Taxonomic diversity for abundance data
@@ -4043,13 +4059,13 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
 
 
 
-#' Printing iNEXT.beta3D object
+#' Printing iNEXTbeta3D object
 #' 
-#' \code{print.iNEXT.beta3D}: Print method for objects inheriting from class "iNEXT.beta3D"
+#' \code{print.iNEXTbeta3D}: Print method for objects inheriting from class "iNEXTbeta3D"
 #' @param x an \code{iNEXT.beta3D} object computed by \code{\link{iNEXTbeta3D}}.
 #' @param ... additional arguments.
 #' @export
-print.iNEXT.beta3D <- function(x, ...){
+print.iNEXTbeta3D <- function(x, ...){
   
   res <- lapply(x, function(y) {
     

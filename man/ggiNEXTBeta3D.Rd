@@ -7,7 +7,7 @@
 ggiNEXTbeta3D(output, type = "B", scale = "free")
 }
 \arguments{
-\item{output}{the output from iNEXTbeta3D}
+\item{output}{the output from function iNEXTbeta3D}
 
 \item{type}{(required only when \code{base = "coverage"}), selection of plot type : \cr
 \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
@@ -16,7 +16,7 @@ ggiNEXTbeta3D(output, type = "B", scale = "free")
 \item{scale}{Are scales shared across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.}
 }
 \value{
-a figure for Beta diversity or dissimilarity index.
+a figure for gamma, alpha, and beta diversity or four dissimilarity measures.
 }
 \description{
 \code{ggiNEXTbeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTbeta3D}} object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
