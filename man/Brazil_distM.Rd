@@ -9,10 +9,10 @@ Brazil_distM is a species-by-species pairwise, symmetric data, which contains al
 }
 \usage{data(Brazil_distM)}
 \format{
-  Brazil_distM is a 425 x 425 (species by species) symmetric data.frame. The value of Brazil_distM is between zero (identical) and one.  \cr
- $ Carpotroche_brasiliensis      : num  0 0.522 0.522 0.253 0.263 ... \cr
- $ Astronium_concinnum           : num  0.522 0 0 0.525 0.509 ... \cr
- $ Astronium_graveolens          : num  0.522 0 0 0.525 0.509 ... \cr
+  Brazil_distM is a 185 x 185 (species by species) symmetric data.frame. The value of Brazil_distM is between zero (identical) and one.  \cr
+ $ Carpotroche_brasiliensis      : num  0 0.522 0.522 0.253 0.0.396 ... \cr
+ $ Astronium_concinnum           : num  0.522 0 0 0.525 0.0.625 ... \cr
+ $ Astronium_graveolens          : num  0.522 0 0 0.525 0.0.625 ... \cr
  ....... \cr
  }
 \references{

@@ -11,11 +11,11 @@ Brazil_tree is a phylogenetic tree, which contains all species collected from ra
 \format{
   Brazil_tree is a list (phylo tree) with five informations: \cr
  A list of 5: \cr
- $ edge       : int [1:629, 1:2] 426 427 428 429 430 431 432 433 434 434 ... \cr
- $ edge.length: num [1:629] 75 146 8 6 4 14 10 10 127 6 ... \cr
- $ Nnode      : int 205 \cr
- $ node.label : chr [1:205] "magnoliales_to_asterales" "poales_to_asterales", ... \cr
- $ tip.label  : chr [1:425] "Carpotroche_brasiliensis" "Casearia_ulmifolia" "Casearia_sp4", ... \cr
+ $ edge       : int [1:301, 1:2] 186 187 188 189 190 191 192 193 193 194 ... \cr
+ $ edge.length: num [1:301] 75 146 8 6 18 10 10 127 6 23 ... \cr
+ $ Nnode      : int 117 \cr
+ $ node.label : chr [1:117] "magnoliales_to_asterales" "poales_to_asterales" ... \cr
+ $ tip.label  : chr [1:185] "Carpotroche_brasiliensis" "Casearia_ulmifolia" "Casearia_sp2" ... \cr
  }
 \references{
 Magnago, L. F. S., Edwards, D. P., Edwards, F. A., Magrach, A., Martins, S. V., & Laurance, W. F. 2014. Functional attributes change but functional richness is unchanged after fragmentation of Brazilian Atlantic forests. Journal of Ecology 102: 475-485. \cr\cr
