@@ -377,7 +377,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         
       }
       
-      gamma = (cbind(SC = rep(level, each=length(q)), gamma[,-c(1,2,7,8,9)]) %>% 
+      gamma = (cbind(SC = rep(level, each=length(q)), gamma[,-c(1,5,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Rarefaction'))
       )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
@@ -387,7 +387,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       
       
-      alpha = (cbind(SC = rep(level, each = length(q)), alpha[,-c(1,2,7,8,9)]) %>% 
+      alpha = (cbind(SC = rep(level, each = length(q)), alpha[,-c(1,5,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Rarefaction'))
       )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
