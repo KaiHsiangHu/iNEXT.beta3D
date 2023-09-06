@@ -2828,7 +2828,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' @param type (required only when \code{base = "coverage"}), selection of plot type : \cr
 #' \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 #' \code{type = 'D'} for plotting 4 turnover dissimilarities.
-#' @param scale Are scales shared across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.
+# @param scale Are scales shared across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.
 # @param transp a value between 0 and 1 controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.
 #' 
 #' @return a figure for gamma, alpha, and beta diversity or four dissimilarity measures.
@@ -2840,8 +2840,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' output1c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
 #'                        datatype = 'abundance', base = "coverage", nboot = 30, conf = 0.95)
 #' 
-#' ggiNEXTbeta3D(output1c, type = 'B', scale = 'free')
-#' ggiNEXTbeta3D(output1c, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output1c, type = 'B')
+#' ggiNEXTbeta3D(output1c, type = 'D')
 #'  
 #' 
 #' # Size-based
@@ -2849,7 +2849,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' output1s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
 #'                        datatype = 'abundance', base = "size", nboot = 30, conf = 0.95)
 #' 
-#' ggiNEXTbeta3D(output1s, scale = 'free')
+#' ggiNEXTbeta3D(output1s)
 #' 
 #' 
 #' ## Phylogenetic diversity for abundance data
@@ -2860,8 +2860,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                        datatype = 'abundance', base = "coverage", nboot = 10, conf = 0.95, 
 #'                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
 #' 
-#' ggiNEXTbeta3D(output2c, type = 'B', scale = 'free')
-#' ggiNEXTbeta3D(output2c, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output2c, type = 'B')
+#' ggiNEXTbeta3D(output2c, type = 'D')
 #' 
 #' 
 #' # Size-based
@@ -2871,7 +2871,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                        datatype = 'abundance', base = "size", nboot = 10, conf = 0.95, 
 #'                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
 #' 
-#' ggiNEXTbeta3D(output2s, scale = 'free')
+#' ggiNEXTbeta3D(output2s)
 #' 
 #' 
 #' ## Functional diversity for abundance data under single threshold
@@ -2882,8 +2882,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                        datatype = 'abundance', base = "coverage", nboot = 30, conf = 0.95, 
 #'                        FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
 #' 
-#' ggiNEXTbeta3D(output3c, type = 'B', scale = 'free')
-#' ggiNEXTbeta3D(output3c, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output3c, type = 'B')
+#' ggiNEXTbeta3D(output3c, type = 'D')
 #' 
 #' 
 #' # Size-based
@@ -2893,7 +2893,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                        datatype = 'abundance', base = "size", nboot = 30, conf = 0.95, 
 #'                        FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
 #' 
-#' ggiNEXTbeta3D(output3s, scale = 'free')
+#' ggiNEXTbeta3D(output3s)
 #' 
 #' 
 #' ## Functional diversity for abundance data with thresholds integrating from 0 to 1
@@ -2904,8 +2904,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                        datatype = 'abundance', base = "coverage", nboot = 0, conf = 0.95, 
 #'                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
-#' ggiNEXTbeta3D(output4c, type = 'B', scale = 'free')
-#' ggiNEXTbeta3D(output4c, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output4c, type = 'B')
+#' ggiNEXTbeta3D(output4c, type = 'D')
 #' 
 #' 
 #' # Size-based
@@ -2915,7 +2915,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                        datatype = 'abundance', base = "size", nboot = 10, conf = 0.95, 
 #'                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
-#' ggiNEXTbeta3D(output4s, scale = 'free')
+#' ggiNEXTbeta3D(output4s)
 #' 
 #' 
 #' ## Taxonomic diversity for incidence data
@@ -2924,8 +2924,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' output5c = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
 #'                        level = NULL, nboot = 20, conf = 0.95)
 #' 
-#' ggiNEXTbeta3D(output5c, type = 'B', scale = 'free')
-#' ggiNEXTbeta3D(output5c, type = 'D', scale = 'free')
+#' ggiNEXTbeta3D(output5c, type = 'B')
+#' ggiNEXTbeta3D(output5c, type = 'D')
 #' 
 #' 
 #' # Size-based
@@ -2933,13 +2933,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' output5s = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
 #'                        base = "size", level = NULL, nboot = 30, conf = 0.95)
 #' 
-#' ggiNEXTbeta3D(output5s, scale = 'free')
+#' ggiNEXTbeta3D(output5s)
 #' 
 #' 
 #' @references
 #' Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zelený, D., Colwell, R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. To appear in Ecological Monographs.
 #' @export
-ggiNEXTbeta3D = function(output, type = 'B', scale = 'free'){
+ggiNEXTbeta3D = function(output, type = 'B'){
   
   transp = 0.4
   cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
@@ -3073,7 +3073,7 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free'){
       geom_point(data = subset(double_extrapolation, div_type != "Gamma"), shape = 2, size = 3, stroke = 1.5) + 
       scale_colour_manual(values = cbPalette) + 
       scale_fill_manual(values = cbPalette) + 
-      facet_grid(div_type ~ Order.q, scales = scale) +
+      facet_grid(div_type ~ Order.q, scales = 'free') +
       theme_bw() + 
       theme(legend.position = "bottom", 
             legend.title = element_blank(),
@@ -3139,7 +3139,7 @@ ggiNEXTbeta3D = function(output, type = 'B', scale = 'free'){
       geom_point(data = subset(double_extrapolation, div_type != "Gamma"), shape = 2, size = 3, stroke = 1.5) + 
       scale_colour_manual(values = cbPalette) + 
       scale_fill_manual(values = cbPalette) + 
-      facet_grid(div_type ~ Order.q, scales = scale) +
+      facet_grid(div_type ~ Order.q, scales = 'free') +
       theme_bw() + 
       theme(legend.position = "bottom", 
             legend.title = element_blank(),

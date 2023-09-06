@@ -4,7 +4,7 @@
 \alias{ggiNEXTbeta3D}
 \title{ggplot2 extension for an iNEXTbeta3D object}
 \usage{
-ggiNEXTbeta3D(output, type = "B", scale = "free")
+ggiNEXTbeta3D(output, type = "B")
 }
 \arguments{
 \item{output}{the output from function iNEXTbeta3D}
@@ -12,8 +12,6 @@ ggiNEXTbeta3D(output, type = "B", scale = "free")
 \item{type}{(required only when \code{base = "coverage"}), selection of plot type : \cr
 \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 \code{type = 'D'} for plotting 4 turnover dissimilarities.}
-
-\item{scale}{Are scales shared across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.}
 }
 \value{
 a figure for gamma, alpha, and beta diversity or four dissimilarity measures.
@@ -28,8 +26,8 @@ data(Brazil_rainforests)
 output1c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
                        datatype = 'abundance', base = "coverage", nboot = 30, conf = 0.95)
 
-ggiNEXTbeta3D(output1c, type = 'B', scale = 'free')
-ggiNEXTbeta3D(output1c, type = 'D', scale = 'free')
+ggiNEXTbeta3D(output1c, type = 'B')
+ggiNEXTbeta3D(output1c, type = 'D')
  
 
 # Size-based
@@ -37,7 +35,7 @@ data(Brazil_rainforests)
 output1s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
                        datatype = 'abundance', base = "size", nboot = 30, conf = 0.95)
 
-ggiNEXTbeta3D(output1s, scale = 'free')
+ggiNEXTbeta3D(output1s)
 
 
 ## Phylogenetic diversity for abundance data
@@ -48,8 +46,8 @@ output2c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD',
                        datatype = 'abundance', base = "coverage", nboot = 10, conf = 0.95, 
                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
 
-ggiNEXTbeta3D(output2c, type = 'B', scale = 'free')
-ggiNEXTbeta3D(output2c, type = 'D', scale = 'free')
+ggiNEXTbeta3D(output2c, type = 'B')
+ggiNEXTbeta3D(output2c, type = 'D')
 
 
 # Size-based
@@ -59,7 +57,7 @@ output2s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD',
                        datatype = 'abundance', base = "size", nboot = 10, conf = 0.95, 
                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
 
-ggiNEXTbeta3D(output2s, scale = 'free')
+ggiNEXTbeta3D(output2s)
 
 
 ## Functional diversity for abundance data under single threshold
@@ -70,8 +68,8 @@ output3c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD',
                        datatype = 'abundance', base = "coverage", nboot = 30, conf = 0.95, 
                        FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
 
-ggiNEXTbeta3D(output3c, type = 'B', scale = 'free')
-ggiNEXTbeta3D(output3c, type = 'D', scale = 'free')
+ggiNEXTbeta3D(output3c, type = 'B')
+ggiNEXTbeta3D(output3c, type = 'D')
 
 
 # Size-based
@@ -81,7 +79,7 @@ output3s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD',
                        datatype = 'abundance', base = "size", nboot = 30, conf = 0.95, 
                        FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
 
-ggiNEXTbeta3D(output3s, scale = 'free')
+ggiNEXTbeta3D(output3s)
 
 
 ## Functional diversity for abundance data with thresholds integrating from 0 to 1
@@ -92,8 +90,8 @@ output4c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD',
                        datatype = 'abundance', base = "coverage", nboot = 0, conf = 0.95, 
                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 
-ggiNEXTbeta3D(output4c, type = 'B', scale = 'free')
-ggiNEXTbeta3D(output4c, type = 'D', scale = 'free')
+ggiNEXTbeta3D(output4c, type = 'B')
+ggiNEXTbeta3D(output4c, type = 'D')
 
 
 # Size-based
@@ -103,7 +101,7 @@ output4s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD',
                        datatype = 'abundance', base = "size", nboot = 10, conf = 0.95, 
                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 
-ggiNEXTbeta3D(output4s, scale = 'free')
+ggiNEXTbeta3D(output4s)
 
 
 ## Taxonomic diversity for incidence data
@@ -112,8 +110,8 @@ data(Second_growth_forests)
 output5c = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
                        level = NULL, nboot = 20, conf = 0.95)
 
-ggiNEXTbeta3D(output5c, type = 'B', scale = 'free')
-ggiNEXTbeta3D(output5c, type = 'D', scale = 'free')
+ggiNEXTbeta3D(output5c, type = 'B')
+ggiNEXTbeta3D(output5c, type = 'D')
 
 
 # Size-based
@@ -121,7 +119,7 @@ data(Second_growth_forests)
 output5s = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
                        base = "size", level = NULL, nboot = 30, conf = 0.95)
 
-ggiNEXTbeta3D(output5s, scale = 'free')
+ggiNEXTbeta3D(output5s)
 
 
 }
