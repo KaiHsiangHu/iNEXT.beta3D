@@ -3457,7 +3457,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' @return a data.frame of basic data information including dataset name (Dataset), assemblage name (Assemblage), sample size (n) or total sampling units (T), total incidences (U), observed species richness (S.obs), sample coverage estimate (SC).\cr\cr
 #' Besides, show the first ten species abundance (or incidence) frequency counts in the reference sample in TD. (f1-f10 or Q1-Q10)\cr\cr
 #' In PD, show the the observed total branch length in the phylogenetic tree (PD.obs), the number of singletons and doubletons in the node/branch set (f1*-f2*), the total branch length of those singletons/doubletons in the node/branch set (g1-g2), reference time (Reftime).\cr\cr
-#' In FD (FDtype = "tau_value"), show the number of singletons and doubletons in the functional group (a1*-a2*), the total contribution of those singletons/doubletons in the functional group (h1-h2), the threshold of functional distinctiveness between any two species (Tau).\cr\cr
+#' In FD (FDtype = "tau_value"), show the number of singletons and doubletons of species abundance frequency counts in the functionally indistinct set (a1*-a2*), the total contribution of singletons and doubletons of species abundance frequency counts in the functionally indistinct set (h1-h2), the specified threshold level. Default is dmean. (the mean distance between any two individuals randomly selected from the pooled data (Tau).\cr\cr
 #' In FD (FDtype = "AUC"), show the the minimum distance among all non-zero elements in the distance matrix (dmin), the mean distance between any two individuals randomly selected from the pooled data (dmean), the maximum distance among all elements in the distance matrix (dmax).\cr
 #' 
 #' 
