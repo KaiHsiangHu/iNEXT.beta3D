@@ -12,11 +12,11 @@ Second_growth_forests data is a yearly tree species data collected from six 1-ha
   Second_growth_forests is a list with two forests. The input format for each forests is a list with two species-by-sampling-units matrices ("Year_2005" and "Year_2017"). Each matrix record the species as 0 (undetect) or 1 (detect) in each sampling units. \cr
  A list of 2  \cr
  $ CR 2005 vs. 2017 :A list of 2 \cr
- .. ..$ Year_2005 (168 (species) x 100 (quadrats)) \cr
- .. ..$ Year_2017 (168 (species) x 100 (quadrats)) \cr 
+ .. ..$ Year_2005 (151 (species) x 100 (quadrats)) \cr
+ .. ..$ Year_2017 (151 (species) x 100 (quadrats)) \cr 
  $ JE 2005 vs. 2017 :A list of 2 \cr
- .. ..$ Year_2005 (109 (species) x 100 (quadrats)) \cr
- .. ..$ Year_2017 (109 (species) x 100 (quadrats)) \cr 
+ .. ..$ Year_2005 (107 (species) x 100 (quadrats)) \cr
+ .. ..$ Year_2017 (107 (species) x 100 (quadrats)) \cr 
  }
 \references{
 Chazdon, R. 2021. Tree abundance in eight 1-ha tropical forest plots in northeastern Costa Rica from 1997-2017, https://doi.org/10.5061/dryad.ncjsxksvr \cr\cr
