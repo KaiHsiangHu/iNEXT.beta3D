@@ -2747,14 +2747,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                              UCL = Estimate + tmp * se$gamma,
                              Dataset = dataset_name,
                              Diversity = index) %>% 
-      arrange(Order.q, Size) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)] %>% rename("Gamma" = "Estimate")
+      arrange(Order.q, Size) %>% .[,c(9, 2, 5, 4, 1, 3, 6, 7, 8, 10)] %>% rename("Gamma" = "Estimate")
     
     alpha = alpha %>% mutate(s.e. = se$alpha,
                              LCL = Estimate - tmp * se$alpha,
                              UCL = Estimate + tmp * se$alpha,
                              Dataset = dataset_name,
                              Diversity = index) %>% 
-      arrange(Order.q, Size) %>% .[,c(9, 2, 4, 5, 1, 3, 6, 7, 8, 10)] %>% rename("Alpha" = "Estimate")
+      arrange(Order.q, Size) %>% .[,c(9, 2, 5, 4, 1, 3, 6, 7, 8, 10)] %>% rename("Alpha" = "Estimate")
     
     
     # beta = beta %>% mutate(  s.e. = se$beta,
@@ -2943,6 +2943,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
                      "#330066", "#CC79A7", "#0072B2", "#D55E00"))
   
   if ((length(output[[1]]) == 7 & type == "B") | (length(output[[1]]) == 2)) {
+    
     if (unique(output[[1]]$gamma$Diversity) == 'TD') { ylab = "Taxonomic diversity" }
     if (unique(output[[1]]$gamma$Diversity) == 'PD') { ylab = "Phylogenetic diversity" }
     if (unique(output[[1]]$gamma$Diversity) == 'meanPD') { ylab = "Mean phylogenetic diversity" }
@@ -2951,6 +2952,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
   }
   
   if (length(output[[1]]) == 7 & type == "D") {
+    
     if (unique(output[[1]]$gamma$Diversity) == 'TD') { ylab = "Taxonomic dissimilarity" }
     if (unique(output[[1]]$gamma$Diversity) == 'PD') { ylab = "Phylogenetic dissimilarity" }
     if (unique(output[[1]]$gamma$Diversity) == 'meanPD') { ylab = "Mean phylogenetic dissimilarity" }
@@ -3802,10 +3804,10 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
                           'n' = sum(x), 
                           'S.obs' = c(sum(rowSums(x) > 0), sum(as.vector(x) > 0)), 
                           'SC' = Chat, 
-                          'a1*' = c(sum(gamma_a == 1), sum(alpha_a == 1)), 
-                          'a2*' = c(sum(gamma_a == 2), sum(alpha_a == 2)), 
-                          'h1' = c(sum(gamma_v[gamma_a == 1]), sum(alpha_v[alpha_a == 1])), 
-                          'h2' = c(sum(gamma_v[gamma_a == 2]), sum(alpha_v[alpha_a == 2])),
+                          'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
+                          'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
+                          'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
+                          'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
                           'Tau' = FDtau)
         
         
@@ -3912,10 +3914,10 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
                           'U' = c(sum(data_gamma_freq), sum(data_2D)),
                           'S.obs' = c(sum(rowSums(data_gamma) > 0), sum(data_2D > 0)), 
                           'SC' = Chat, 
-                          'a1*' = c(sum(gamma_a == 1), sum(alpha_a == 1)), 
-                          'a2*' = c(sum(gamma_a == 2), sum(alpha_a == 2)), 
-                          'h1' = c(sum(gamma_v[gamma_a == 1]), sum(alpha_v[alpha_a == 1])), 
-                          'h2' = c(sum(gamma_v[gamma_a == 2]), sum(alpha_v[alpha_a == 2])),
+                          'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
+                          'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
+                          'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
+                          'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
                           'Tau' = FDtau)
         
         
