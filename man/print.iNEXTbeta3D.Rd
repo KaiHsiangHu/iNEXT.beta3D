@@ -7,7 +7,7 @@
 \method{print}{iNEXTbeta3D}(x, ...)
 }
 \arguments{
-\item{x}{an \code{iNEXT.beta3D} object computed by \code{\link{iNEXTbeta3D}}.}
+\item{x}{an \code{iNEXTbeta3D} object computed by \code{\link{iNEXTbeta3D}}.}
 
 \item{...}{additional arguments.}
 }

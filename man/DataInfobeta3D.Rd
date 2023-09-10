@@ -16,28 +16,28 @@ DataInfobeta3D(
 )
 }
 \arguments{
-\item{data}{(a) For \code{datatype = "abundance"}, data can be input as a \code{matrix/data.frame} (species by assemblages), or a \code{list} of \code{matrices/data.frames}, each matrix represents species-by-assemblages abundance matrix.\cr
-(b) For \code{datatype = "incidence_raw"}, data can be input as a \code{list} (a dataset) with several \code{lists} (assemblages) of \code{matrices/data.frames}, each matrix represents species-by-sampling units.}
+\item{data}{(a) For \code{datatype = "abundance"}, species abundance data for a single dataset can be input as a \code{matrix/data.frame} (species-by-assemblage); data for multiple datasets can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-assemblage abundance matrix for one of the datasets.\cr
+(b) For \code{datatype = "incidence_raw"}, data for a single dataset with N assemblages can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-sampling-unit incidence matrix for one of the assemblages; data for multiple datasets can be input as multiple lists.}
 
 \item{diversity}{selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.}
 
 \item{datatype}{data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).}
 
-\item{PDtree}{(required only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
+\item{PDtree}{(required argument only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
 
-\item{PDreftime}{(required only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).}
+\item{PDreftime}{(argument only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).}
 
-\item{FDdistM}{(required only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage.}
+\item{FDdistM}{(required argument only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage.}
 
-\item{FDtype}{(required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.}
+\item{FDtype}{(argument only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.}
 
-\item{FDtau}{(required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
+\item{FDtau}{(argument only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
 }
 \value{
 a data.frame of basic data information including dataset name (Dataset), assemblage name (Assemblage), sample size (n) or total sampling units (T), total incidences (U), observed species richness (S.obs), sample coverage estimate (SC).\cr\cr
 Besides, show the first ten species abundance (or incidence) frequency counts in the reference sample in TD. (f1-f10 or Q1-Q10)\cr\cr
 In PD, show the the observed total branch length in the phylogenetic tree (PD.obs), the number of singletons and doubletons in the node/branch set (f1*-f2*), the total branch length of those singletons/doubletons in the node/branch set (g1-g2), reference time (Reftime).\cr\cr
-In FD (FDtype = "tau_value"), show the number of singletons and doubletons of species abundance frequency counts in the functionally indistinct set (a1*-a2*), the total contribution of singletons and doubletons of species abundance frequency counts in the functionally indistinct set (h1-h2), the specified threshold level. Default is dmean. (the mean distance between any two individuals randomly selected from the pooled data (Tau).\cr\cr
+In FD (FDtype = "tau_value"), show the number of singletons and doubletons of species abundance frequency counts in the functionally indistinct set (a1*-a2*), the total contribution of singletons and doubletons of species abundance frequency counts in the functionally indistinct set (h1-h2), the specified threshold level. Default is dmean. (the mean distance between any two individuals randomly selected from the pooled data)\cr\cr
 In FD (FDtype = "AUC"), show the the minimum distance among all non-zero elements in the distance matrix (dmin), the mean distance between any two individuals randomly selected from each assemblage (dmean), the maximum distance among all elements in the distance matrix (dmax).\cr
 }
 \description{

@@ -28,7 +28,7 @@ iNEXTbeta3D(
 
 \item{diversity}{selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.}
 
-\item{q}{a numerical vector specifying the diversity orders. Default is c(0, 1, 2).}
+\item{q}{a numerical vector specifying the diversity orders. Default is \code{q = c(0, 1, 2)}.}
 
 \item{datatype}{data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).}
 
@@ -36,21 +36,21 @@ iNEXTbeta3D(
 
 \item{level}{a numerical vector specifying the particular values of sample coverage (between 0 and 1 when \code{base = "coverage"}) or sample sizes (\code{base = "size"}) that will be used to compute standardized diversity/dissimilarity. Asymptotic diversity estimator can be obtained by setting \code{level = 1}. ( i.e., complete coverage for \code{base = "coverage"}). By default (with \code{base = "coverage"}), this function computes the standardized 3D gamma, alpha, beta diversity, and four dissimilarity indices for coverage up to one (for \code{q = 1, 2})) or up to the coverage of double the reference sample size (for \code{q = 0}). The extrapolation limit for beta diversity is defined as that for alpha diversity. If users set \code{base = "size"}, this function computes the standardized 3D gamma and alpha diversity estimates up to double the reference sample size in each dataset.}
 
-\item{nboot}{a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{10}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).}
+\item{nboot}{a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).}
 
-\item{conf}{a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.}
+\item{conf}{a positive number < 1 specifying the level of confidence interval. Default is \code{conf = 0.95}.}
 
 \item{PDtree}{(required argument only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
 
-\item{PDreftime}{(argument only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{NULL} (i.e., the age of the root of PDtree).}
+\item{PDreftime}{(argument only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).}
 
-\item{PDtype}{(argument only when \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{"meanPD"}, where \code{meanPD = PD/tree depth}.}
+\item{PDtype}{(argument only when \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.}
 
 \item{FDdistM}{(required argument only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage.}
 
-\item{FDtype}{(argument only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.}
+\item{FDtype}{(argument only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.}
 
-\item{FDtau}{(argument only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
+\item{FDtau}{(argument only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
 
 \item{FDcut_number}{(argument only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.}
 }
@@ -60,7 +60,7 @@ If \code{base = "coverage"}, return a list of seven matrices with three diversit
 'Order.q' = the diversity order of q.\cr\cr
 'SC' = the target standardized coverage value. The observed coverage and extrapolation limit for beta diversity are defined the same as those for alpha diversity. For q = 0, the extrapolation can be extended to a maximum coverage value C(2n, alpha) = coverage value of twice the alpha reference sample size; for q = 1 and 2, target coverage can be extended to 1 (complete coverage) if data are not sparse. \cr\cr
 'Size' = the corresponding sample size for the standardized coverage value. \cr\cr
-'Alpha/Beta/Gamma/Dissimilarity' = the estimated diversity or dissimilarity of order q for the target coverage value. The estimate for complete coverage (or size = infinity) represents the estimated asymptotic diversity. \cr\cr
+'Alpha/Beta/Gamma/Dissimilarity' = the estimated diversity or dissimilarity of order q for the target coverage value. The estimate for complete coverage (i.e., coverage = 1) represents the estimated asymptotic diversity. \cr\cr
 'Method' = Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample. (For beta diversity, observed coverage is defined as the coverage of the alpha reference sample).\cr\cr
 's.e.' = standard error of diversity estimate.\cr\cr
 'LCL', 'UCL' = the bootstrap lower and upper confidence limits for the diversity of order q at the specified level (with a default value of 0.95).\cr\cr
