@@ -2828,7 +2828,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 # @param scale Are scales shared across all facets (\code{"fixed"}), or do they vary across rows (\code{"free_x"}), columns (\code{"free_y"}), or both rows and columns (\code{"free"})? Default is \code{"free"}.
 # @param transp a value between 0 and 1 controlling transparency. \code{transp = 0} is completely transparent, default is 0.4.
 #' 
-#' @return a figure for gamma, alpha, and beta diversity or four dissimilarity measures when \code{base = "coverage"}); or a figure for gamma, alpha diversity when \code{base = "size"}).\cr
+#' @return a figure for gamma, alpha, and beta diversity or four dissimilarity measures when \code{base = "coverage"}; or a figure for gamma, alpha diversity when \code{base = "size"}.\cr
 #' 
 #' @examples
 #' ## Taxonomic diversity for abundance data
