@@ -9,12 +9,12 @@ ggiNEXTbeta3D(output, type = "B")
 \arguments{
 \item{output}{the output from function iNEXTbeta3D}
 
-\item{type}{(required only when \code{base = "coverage"}), selection of plot type : \cr
+\item{type}{(argument only when \code{base = "coverage"}), selection of plot type : \cr
 \code{type = 'B'} for plotting the gamma, alpha, and beta diversity ;  \cr
 \code{type = 'D'} for plotting 4 turnover dissimilarities.}
 }
 \value{
-a figure for gamma, alpha, and beta diversity or four dissimilarity measures.
+a figure for gamma, alpha, and beta diversity or four dissimilarity measures when \code{base = "coverage"}); or a figure for gamma, alpha diversity when \code{base = "size"}).\cr
 }
 \description{
 \code{ggiNEXTbeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTbeta3D}} object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
