@@ -14,7 +14,7 @@ ggiNEXTbeta3D(output, type = "B")
 \code{type = 'D'} for plotting 4 turnover dissimilarities.}
 }
 \value{
-a figure for gamma, alpha, and beta diversity or four dissimilarity measures when \code{base = "coverage"}); or a figure for gamma, alpha diversity when \code{base = "size"}).\cr
+a figure for gamma, alpha, and beta diversity or four dissimilarity measures when \code{base = "coverage"}; or a figure for gamma, alpha diversity when \code{base = "size"}.\cr
 }
 \description{
 \code{ggiNEXTbeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTbeta3D}} object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
