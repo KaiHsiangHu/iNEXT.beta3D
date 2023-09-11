@@ -63,7 +63,7 @@ If \code{base = "coverage"}, return a list of seven matrices with three diversit
 'Alpha/Beta/Gamma/Dissimilarity' = the estimated diversity or dissimilarity of order q for the target coverage value. The estimate for complete coverage (i.e., coverage = 1) represents the estimated asymptotic diversity. \cr\cr
 'Method' = Rarefaction, Observed, or Extrapolation, depending on whether the coverage is less than, equal to, or greater than the coverage of the reference sample. (For beta diversity, observed coverage is defined as the coverage of the alpha reference sample).\cr\cr
 's.e.' = standard error of diversity/dissimilarity estimate.\cr\cr
-'LCL', 'UCL' = the bootstrap lower and upper confidence limits for the diversity of order q at the specified level (with a default value of 0.95).\cr\cr
+'LCL', 'UCL' = the bootstrap lower and upper confidence limits for the diversity/dissimilarity of order q at the specified level (with a default value of 0.95).\cr\cr
 'Diversity' = "TD" (taxonomic diversity), "PD" (phylogenetic diversity of effective total branch length), "meanPD" (phylogenetic diversity of effective number of equally divergent lineages), "FD_tau" (functional diversity under a single tau), "FD_AUC" (functional diversity by integrating all threshold values between zero and one.\cr\cr
 'Tau' = the threshold of functional distinctiveness between any two species.\cr
 }
