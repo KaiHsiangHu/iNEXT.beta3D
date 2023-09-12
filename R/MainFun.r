@@ -1698,35 +1698,53 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     }
     
     
-    # gamma$Method[gamma$SC == ref_gamma_max] = "Extrap_C(2n, alpha)"
-    # 
-    # alpha$Method[alpha$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+    if (datatype == "abundance") {
+      
+      beta$Method[beta$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+      
+      C$Method[C$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+      
+      U$Method[U$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+      
+      V$Method[V$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+      
+      S$Method[S$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+      
+      
+      beta$Method[beta$SC == ref_alpha] = "Observed_C(n, alpha)"
+      
+      C$Method[C$SC == ref_alpha] = "Observed_C(n, alpha)"
+      
+      U$Method[U$SC == ref_alpha] = "Observed_C(n, alpha)"
+      
+      V$Method[V$SC == ref_alpha] = "Observed_C(n, alpha)"
+      
+      S$Method[S$SC == ref_alpha] = "Observed_C(n, alpha)"
+    }
     
-    beta$Method[beta$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
-    
-    C$Method[C$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
-    
-    U$Method[U$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
-    
-    V$Method[V$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
-    
-    S$Method[S$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
-    
-    
-    # gamma$Method[gamma$SC == ref_gamma] = "Observed"
-    # 
-    # alpha$Method[alpha$SC == ref_alpha] = "Observed"
-    
-    beta$Method[beta$SC == ref_alpha] = "Observed_C(n, alpha)"
-    
-    C$Method[C$SC == ref_alpha] = "Observed_C(n, alpha)"
-    
-    U$Method[U$SC == ref_alpha] = "Observed_C(n, alpha)"
-    
-    V$Method[V$SC == ref_alpha] = "Observed_C(n, alpha)"
-    
-    S$Method[S$SC == ref_alpha] = "Observed_C(n, alpha)"
-    
+    if (datatype == "incidence_raw") {
+      
+      beta$Method[beta$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
+      
+      C$Method[C$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
+      
+      U$Method[U$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
+      
+      V$Method[V$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
+      
+      S$Method[S$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
+      
+      
+      beta$Method[beta$SC == ref_alpha] = "Observed_C(T, alpha)"
+      
+      C$Method[C$SC == ref_alpha] = "Observed_C(T, alpha)"
+      
+      U$Method[U$SC == ref_alpha] = "Observed_C(T, alpha)"
+      
+      V$Method[V$SC == ref_alpha] = "Observed_C(T, alpha)"
+      
+      S$Method[S$SC == ref_alpha] = "Observed_C(T, alpha)"
+    }
     
     
     
@@ -2840,8 +2858,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     # list(gamma = gamma, alpha = alpha, beta = beta, C = C, U = U, V = V, S = S)
     
     if (datatype == 'incidence_raw') {
-      colnames(gamma)[colnames(gamma) == 'Size'] = 'nT'
-      colnames(alpha)[colnames(alpha) == 'Size'] = 'nT'
+      
+      gamma = gamma %>% rename("nT" = "Size")
+      alpha = alpha %>% rename("nT" = "Size")
     }
     
     if (diversity == "FD" & FDtype == "tau_value") {
@@ -3017,7 +3036,9 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       beta =  lapply(output, function(y) y[["beta"]])  %>% do.call(rbind,.) %>% rename("Estimate" = "Beta") %>% mutate(div_type = "Beta")  %>% as_tibble()
       # beta = beta %>% filter(Method != 'Observed')
       beta[beta == 'Observed_C(n, alpha)'] = 'Observed'
+      beta[beta == 'Observed_C(T, alpha)'] = 'Observed'
       beta[beta == 'Extrap_C(2n, alpha)'] = 'Extrapolation'
+      beta[beta == 'Extrap_C(2T, alpha)'] = 'Extrapolation'
       
       
       # # Dropping out the points extrapolated over double reference size
@@ -3615,11 +3636,11 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         if (is.null(names(data[[i]]))) names(data[[i]]) = paste('Assemblage_', 1:length(data[[i]]), sep = "")
         
-        mul_C2n = sapply(Dat[[i]], function(y) iNEXT.3D:::Coverage(y, "incidence_freq", 2*y[1]))
-        sin_C2n = sapply(data[[i]], function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+        mul_C2T = sapply(Dat[[i]], function(y) iNEXT.3D:::Coverage(y, "incidence_freq", 2*y[1]))
+        sin_C2T = sapply(data[[i]], function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
         
-        multiple = DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = mul_C2n, .after = "SC(n)")
-        single = DataInfo3D(data[[i]], datatype = "incidence_raw") %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = sin_C2n, .after = "SC(n)")
+        multiple = DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = mul_C2T, .after = "SC(T)")
+        single = DataInfo3D(data[[i]], datatype = "incidence_raw") %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = sin_C2T, .after = "SC(T)")
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.) %>% .[,1:12])
         
@@ -3741,16 +3762,16 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
           }) %>% t()
         
         Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
-        mul_C2n = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        sin_C2n = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+        mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+        sin_C2T = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
         
         multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
                           'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
-                          'S.obs' = output[,1], 'SC(n)' = Chat, 'SC(2n)' = mul_C2n, 'PD.obs' = output[,2],
+                          'S.obs' = output[,1], 'SC(T)' = Chat, 'SC(2T)' = mul_C2T, 'PD.obs' = output[,2],
                           'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
                           'Reftime' = PDreftime)
         
-        single = DataInfo3D(x, diversity = "PD", datatype = "incidence_raw", PDtree = PDtree, PDreftime = PDreftime) %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = sin_C2n, .after = "SC(n)")
+        single = DataInfo3D(x, diversity = "PD", datatype = "incidence_raw", PDtree = PDtree, PDreftime = PDreftime) %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = sin_C2T, .after = "SC(T)")
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -3941,14 +3962,14 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         
         Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
-        mul_C2n = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        sin_C2n = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+        mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+        sin_C2T = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
         
         multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
                           'T' = rep(ncol(data_gamma), 2), 
                           'U' = c(sum(data_gamma_freq), sum(data_2D)),
                           'S.obs' = c(sum(rowSums(data_gamma) > 0), sum(data_2D > 0)), 
-                          'SC(n)' = Chat, 'SC(2n)' = mul_C2n,
+                          'SC(T)' = Chat, 'SC(2T)' = mul_C2T,
                           'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
                           'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
                           'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
@@ -3975,7 +3996,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         # 
         # out$Tau = FDtau
         
-        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM) %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = sin_C2n, .after = "SC(n)")
+        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM) %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = sin_C2T, .after = "SC(T)")
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -4088,18 +4109,18 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         data_alpha = do.call(rbind, x)
         
-        mul_C2n = sapply(list(data_gamma, data_alpha), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        sin_C2n = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+        mul_C2T = sapply(list(data_gamma, data_alpha), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+        sin_C2T = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
         
         multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
                                                  "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:5] %>% 
-                            rename("SC(n)" = "SC"),
-                          "SC(2n)" = mul_C2n,
+                            rename("SC(T)" = "SC"),
+                          "SC(2T)" = mul_C2T,
                           "dmin" = dmin,
                           "dmean" = dmean,
                           "dmax" = dmax)
         
-        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM) %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = sin_C2n, .after = "SC(n)")
+        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM) %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = sin_C2T, .after = "SC(T)")
         
         out = rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.)
       }
