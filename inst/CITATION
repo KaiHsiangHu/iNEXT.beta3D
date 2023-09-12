@@ -37,7 +37,7 @@ citEntry(
 
 citEntry(
 		 entry = 'Article',
-		 title = 'Revisiting Alwyn H. Gentry's forest transect data: a statistical sampling-model-based approach.',
+		 title = "Revisiting Alwyn H. Gentry's forest transect data: a statistical sampling-model-based approach.",
          author = personList(as.person("Anne Chao"),
                              as.person("Chun-Huo Chiu"),
   		                       as.person("Kai-Hsiang Hu"),
@@ -45,6 +45,6 @@ citEntry(
 		 journal = 'Japanese Journal of Statistics and Data Science',
 		 year = '2023',
 		 doi = '10.1007/s42081-023-00214-1',
-  textVersion = paste('Chao, A., Chiu, C.-H., Hu, K.-H., and Zeleny, D. (2023). Revisiting Alwyn H. Gentry's forest transect data: a statistical sampling-model-based approach. Japanese Journal of Statistics and Data Science. https://doi.org/10.1007/s42081-023-00214-1')
+  textVersion = paste("Chao, A., Chiu, C.-H., Hu, K.-H., and Zeleny, D. (2023). Revisiting Alwyn H. Gentry's forest transect data: a statistical sampling-model-based approach. Japanese Journal of Statistics and Data Science. https://doi.org/10.1007/s42081-023-00214-1")
 )
 

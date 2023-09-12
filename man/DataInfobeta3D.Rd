@@ -62,7 +62,8 @@ output2
 data(Brazil_rainforests)
 data(Brazil_distM)
 output3 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
-                         datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
+                         datatype = 'abundance', FDdistM = Brazil_distM, 
+                         FDtype = 'tau_value', FDtau = NULL)
 output3
 
 
