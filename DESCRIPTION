@@ -9,16 +9,17 @@ License: GPL (>= 3)
 Depends: R (>= 4.0)
 Imports: tidyverse,
          magrittr,
-         tidyr,
          ggplot2,
          abind,
          ape,
-         ade4,
          phytools,
          phyclust,
          tidytree,
          colorRamps,
          future.apply,
+         ade4,
+         tidyr,
+         tibble,
          iNEXT.3D
 Remotes: AnneChao/iNEXT.3D
 Encoding: UTF-8
