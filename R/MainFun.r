@@ -143,6 +143,59 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   
   max_alpha_coverage = F
   
+  
+  ## Check parameter setting
+  if (is.na(pmatch(diversity, c("TD", "PD", "FD")))) stop("invalid diversity")
+  
+  if (!inherits(q, "numeric"))
+    stop("invlid class of order q, q should be a postive value/vector of numeric object", call. = FALSE)
+  if (min(q) < 0){
+    warning("ambigous of order q, we only compute postive q.", call. = FALSE)
+    q <- q[q >= 0]
+  }
+  
+  if (datatype == "incidence" | datatype == "incidence_freq") stop('Please try datatype = "incidence_raw".')  
+  if(is.na(pmatch(datatype, c("abundance", "incidence_raw"))))
+    stop("invalid datatype")
+  
+  if (is.na(pmatch(base, c("size", "coverage")))) stop("invalid datatype")
+  
+  if (! (is.null(level) | inherits(level, "numeric")))
+    stop("invlid class of level, level should be a postive value/vector of numeric object", call. = FALSE)
+  
+  
+  if ((nboot < 0) | (is.numeric(nboot) == F)) stop('Please enter non-negative integer for nboot.', call. = FALSE)
+  
+  if ((conf < 0) | (conf > 1) | (is.numeric(conf) == F)) stop('Please enter value between zero and one for confident interval.', call. = FALSE)
+  
+  if (! (is.null(PDreftime) | inherits(PDreftime, "numeric")))
+    stop("invalid class of reference time, PDreftime should be a postive value of numeric object.", call. = FALSE)
+  if (length(PDreftime) > 1)
+    stop("PDreftime can only accept a value instead of a vector.", call. = FALSE)
+  
+  if(is.na(pmatch(PDtype, c("PD", "meanPD"))))
+    stop("Incorrect type of phylogenetic diversity type, please use either 'PD' or 'meanPD'.", call. = FALSE)
+  
+  if (FDtype == "tau_values") stop('Please try FDtype = "tau_value".')  
+  if(is.na(pmatch(FDtype, c("AUC", "tau_value"))))
+    stop("Incorrect type of functional diversity type, please use either 'AUC' or 'tau_value'", call. = FALSE)
+  
+  if (! (is.null(FDtau) | inherits(FDtau, "numeric")))
+    stop("invalid class of tau value, FDtau should be a postive value between zero and one.", call. = FALSE)
+  if (length(FDtau) > 1)
+    stop("FDtau only accept a value instead of a vector.", call. = FALSE)
+  
+  if (!inherits(FDcut_number, "numeric"))
+    stop("invalid class of FD cut number, FDcut_number should be a postive value.", call. = FALSE)
+  if (FDcut_number < 2)
+    stop("invalid FDcut_number, FDcut_number should be a postive value larger than one.", call. = FALSE)
+  if (length(FDcut_number) > 1)
+    stop("FDcut_number only accept a value instead of a vector.", call. = FALSE)
+  
+  ##
+  
+  
+  
   if (datatype == 'abundance') {
     
     if ( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Dataset_1 = data)
@@ -3095,7 +3148,9 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       # V = V %>% filter(Method != 'Observed')
       # S = S %>% filter(Method != 'Observed')
       C[C == 'Observed_C(n, alpha)'] = U[U == 'Observed_C(n, alpha)'] = V[V == 'Observed_C(n, alpha)'] = S[S == 'Observed_C(n, alpha)'] = 'Observed'
+      C[C == 'Observed_C(T, alpha)'] = U[U == 'Observed_C(T, alpha)'] = V[V == 'Observed_C(T, alpha)'] = S[S == 'Observed_C(T, alpha)'] = 'Observed'
       C[C == 'Extrap_C(2n, alpha)'] = U[U == 'Extrap_C(2n, alpha)'] = V[V == 'Extrap_C(2n, alpha)'] = S[S == 'Extrap_C(2n, alpha)'] = 'Extrapolation'
+      C[C == 'Extrap_C(2T, alpha)'] = U[U == 'Extrap_C(2T, alpha)'] = V[V == 'Extrap_C(2T, alpha)'] = S[S == 'Extrap_C(2T, alpha)'] = 'Extrapolation'
       
       # # Dropping out the points extrapolated over double reference size
       # c1 = data.frame() ; u1 = data.frame() ; v1 = data.frame() ; s1 = data.frame()
@@ -3582,6 +3637,28 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' @export
 DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance', 
                           PDtree = NULL, PDreftime = NULL, FDdistM = NULL, FDtype = 'AUC', FDtau = NULL) {
+  
+  ## Check parameter setting
+  if (is.na(pmatch(diversity, c("TD", "PD", "FD")))) stop("invalid diversity")
+  
+  if (datatype == "incidence" | datatype == "incidence_freq") stop('Please try datatype = "incidence_raw".')  
+  if(is.na(pmatch(datatype, c("abundance", "incidence_raw"))))
+    stop("invalid datatype")
+  
+  if (! (is.null(PDreftime) | inherits(PDreftime, "numeric")))
+    stop("invalid class of reference time, PDreftime should be a postive value of numeric object.", call. = FALSE)
+  if (length(PDreftime) > 1)
+    stop("PDreftime can only accept a value instead of a vector.", call. = FALSE)
+  
+  if (FDtype == "tau_values") stop('Please try FDtype = "tau_value".')  
+  if(is.na(pmatch(FDtype, c("AUC", "tau_value"))))
+    stop("Incorrect type of functional diversity type, please use either 'AUC' or 'tau_value'", call. = FALSE)
+  
+  if (! (is.null(FDtau) | inherits(FDtau, "numeric")))
+    stop("invalid class of tau value, FDtau should be a postive value between zero and one.", call. = FALSE)
+  if (length(FDtau) > 1)
+    stop("FDtau only accept a value instead of a vector.", call. = FALSE)
+  ##
   
   if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
   
