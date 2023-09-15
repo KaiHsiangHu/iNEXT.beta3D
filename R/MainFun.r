@@ -501,9 +501,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = alpha
       beta$Estimate = gamma$Estimate/alpha$Estimate
-      # beta[beta == "Observed"] = "Observed_C(n, alpha)"
+      # beta[beta == "Observed"] = "Observed_SC(n, alpha)"
       # beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
-      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_C(n, alpha)", 'Size']))
+      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_SC(n, alpha)", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(1-Order.q) - 1)/(N^(1-Order.q)-1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(Order.q-1) - 1)/(N^(Order.q-1)-1)))
@@ -734,9 +734,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = alpha
       beta$Estimate = gamma$Estimate/alpha$Estimate
-      # beta[beta == "Observed"] = "Observed_C(n, alpha)"
+      # beta[beta == "Observed"] = "Observed_SC(n, alpha)"
       # beta = beta %>% rbind(., cbind(gamma %>% filter(Method == "Observed") %>% select(Estimate) / alpha %>% filter(Method == "Observed") %>% select(Estimate), 
-      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_C(n, alpha)", 'Size']))
+      #                                Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_SC(n, alpha)", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
@@ -1397,9 +1397,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta = beta[under_max_alpha,]
       
-      # beta[beta == "Observed"] = "Observed_C(n, alpha)"
+      # beta[beta == "Observed"] = "Observed_SC(n, alpha)"
       # beta = beta %>% 
-      #   rbind(., data.frame(Estimate = obs_beta, Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_C(n, alpha)", 'Size']))
+      #   rbind(., data.frame(Estimate = obs_beta, Order.q = q, Method = "Observed", SC = NA, Size = beta[beta$Method == "Observed_SC(n, alpha)", 'Size']))
       
       C = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1)))
       U = beta %>% mutate(Estimate = ifelse(Order.q == 1, log(Estimate)/log(N), (Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1)))
@@ -1753,50 +1753,81 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     if (datatype == "abundance") {
       
-      beta$Method[beta$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+      alpha$Method[alpha$SC == ref_gamma_max] = 
+        beta$Method[beta$SC == ref_gamma_max] = 
+        C$Method[C$SC == ref_gamma_max] = 
+        U$Method[U$SC == ref_gamma_max] = 
+        V$Method[V$SC == ref_gamma_max] = 
+        S$Method[S$SC == ref_gamma_max] = "Extrap_SC(2n, gamma)"
       
-      C$Method[C$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+      gamma$Method[gamma$SC == ref_alpha_max] = 
+        alpha$Method[alpha$SC == ref_alpha_max] = 
+        beta$Method[beta$SC == ref_alpha_max] = 
+        C$Method[C$SC == ref_alpha_max] = 
+        U$Method[U$SC == ref_alpha_max] = 
+        V$Method[V$SC == ref_alpha_max] = 
+        S$Method[S$SC == ref_alpha_max] = "Extrap_SC(2n, alpha)"
       
-      U$Method[U$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
-      
-      V$Method[V$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
-      
-      S$Method[S$SC == ref_alpha_max] = "Extrap_C(2n, alpha)"
+      gamma$Method[gamma$SC == ref_gamma_max] = "Extrap_SC(2n, gamma)"
       
       
-      beta$Method[beta$SC == ref_alpha] = "Observed_C(n, alpha)"
+      alpha$Method[alpha$SC == ref_gamma] = 
+        beta$Method[beta$SC == ref_gamma] = 
+        C$Method[C$SC == ref_gamma] = 
+        U$Method[U$SC == ref_gamma] = 
+        V$Method[V$SC == ref_gamma] = 
+        S$Method[S$SC == ref_gamma] = "Observed_SC(n, gamma)"
       
-      C$Method[C$SC == ref_alpha] = "Observed_C(n, alpha)"
+      gamma$Method[gamma$SC == ref_alpha] = 
+        alpha$Method[alpha$SC == ref_alpha] = 
+        beta$Method[beta$SC == ref_alpha] = 
+        C$Method[C$SC == ref_alpha] = 
+        U$Method[U$SC == ref_alpha] = 
+        V$Method[V$SC == ref_alpha] = 
+        S$Method[S$SC == ref_alpha] = "Observed_SC(n, alpha)"
       
-      U$Method[U$SC == ref_alpha] = "Observed_C(n, alpha)"
+      gamma$Method[gamma$SC == ref_gamma] = "Observed_SC(n, gamma)"
       
-      V$Method[V$SC == ref_alpha] = "Observed_C(n, alpha)"
       
-      S$Method[S$SC == ref_alpha] = "Observed_C(n, alpha)"
     }
     
     if (datatype == "incidence_raw") {
       
-      beta$Method[beta$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
+      alpha$Method[alpha$SC == ref_gamma_max] = 
+        beta$Method[beta$SC == ref_gamma_max] = 
+        C$Method[C$SC == ref_gamma_max] = 
+        U$Method[U$SC == ref_gamma_max] = 
+        V$Method[V$SC == ref_gamma_max] = 
+        S$Method[S$SC == ref_gamma_max] = "Extrap_SC(2T, gamma)"
       
-      C$Method[C$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
+      gamma$Method[gamma$SC == ref_alpha_max] = 
+        alpha$Method[alpha$SC == ref_alpha_max] = 
+        beta$Method[beta$SC == ref_alpha_max] = 
+        C$Method[C$SC == ref_alpha_max] = 
+        U$Method[U$SC == ref_alpha_max] = 
+        V$Method[V$SC == ref_alpha_max] = 
+        S$Method[S$SC == ref_alpha_max] = "Extrap_SC(2T, alpha)"
       
-      U$Method[U$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
-      
-      V$Method[V$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
-      
-      S$Method[S$SC == ref_alpha_max] = "Extrap_C(2T, alpha)"
+      gamma$Method[gamma$SC == ref_gamma_max] = "Extrap_SC(2T, gamma)"
       
       
-      beta$Method[beta$SC == ref_alpha] = "Observed_C(T, alpha)"
+      alpha$Method[alpha$SC == ref_gamma] = 
+        beta$Method[beta$SC == ref_gamma] = 
+        C$Method[C$SC == ref_gamma] = 
+        U$Method[U$SC == ref_gamma] = 
+        V$Method[V$SC == ref_gamma] = 
+        S$Method[S$SC == ref_gamma] = "Observed_SC(T, gamma)"
       
-      C$Method[C$SC == ref_alpha] = "Observed_C(T, alpha)"
+      gamma$Method[gamma$SC == ref_alpha] = 
+        alpha$Method[alpha$SC == ref_alpha] = 
+        beta$Method[beta$SC == ref_alpha] = 
+        C$Method[C$SC == ref_alpha] = 
+        U$Method[U$SC == ref_alpha] = 
+        V$Method[V$SC == ref_alpha] = 
+        S$Method[S$SC == ref_alpha] = "Observed_SC(T, alpha)"
       
-      U$Method[U$SC == ref_alpha] = "Observed_C(T, alpha)"
+      gamma$Method[gamma$SC == ref_gamma] = "Observed_SC(T, gamma)"
       
-      V$Method[V$SC == ref_alpha] = "Observed_C(T, alpha)"
-      
-      S$Method[S$SC == ref_alpha] = "Observed_C(T, alpha)"
     }
     
     
@@ -3084,14 +3115,68 @@ ggiNEXTbeta3D = function(output, type = 'B'){
   if (length(output[[1]]) == 7) {
     if (type == 'B'){
       
-      gamma = lapply(output, function(y) y[["gamma"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Gamma") %>% mutate(div_type = "Gamma") %>% as_tibble()
-      alpha = lapply(output, function(y) y[["alpha"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Alpha") %>% mutate(div_type = "Alpha") %>% as_tibble()
-      beta =  lapply(output, function(y) y[["beta"]])  %>% do.call(rbind,.) %>% rename("Estimate" = "Beta") %>% mutate(div_type = "Beta")  %>% as_tibble()
-      # beta = beta %>% filter(Method != 'Observed')
-      beta[beta == 'Observed_C(n, alpha)'] = 'Observed'
-      beta[beta == 'Observed_C(T, alpha)'] = 'Observed'
-      beta[beta == 'Extrap_C(2n, alpha)'] = 'Extrapolation'
-      beta[beta == 'Extrap_C(2T, alpha)'] = 'Extrapolation'
+      gamma = lapply(output, function(y) {
+        
+        tmp = y[["gamma"]]
+        
+        tmp[tmp == 'Observed_SC(n, gamma)'] = tmp[tmp == 'Observed_SC(T, gamma)'] = 'Observed'
+        tmp[tmp == 'Extrap_SC(2n, gamma)'] = tmp[tmp == 'Extrap_SC(2T, gamma)'] = 'Extrapolation'
+        
+        tmp[tmp == 'Observed_SC(n, alpha)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(n, alpha)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2n, alpha)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2n, alpha)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp[tmp == 'Observed_SC(T, alpha)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(T, alpha)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2T, alpha)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2T, alpha)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp
+        
+      }) %>% do.call(rbind,.) %>% rename("Estimate" = "Gamma") %>% mutate(div_type = "Gamma") %>% as_tibble()
+      
+      alpha = lapply(output, function(y) {
+        
+        tmp = y[["alpha"]]
+        
+        tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
+        tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
+        
+        tmp[tmp == 'Observed_SC(n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp[tmp == 'Observed_SC(T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp
+        
+      }) %>% do.call(rbind,.) %>% rename("Estimate" = "Alpha") %>% mutate(div_type = "Alpha") %>% as_tibble()
+      
+      beta =  lapply(output, function(y) {
+        
+        tmp = y[["beta"]]
+        
+        tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
+        tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
+        
+        tmp[tmp == 'Observed_SC(n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp[tmp == 'Observed_SC(T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp
+        
+      })  %>% do.call(rbind,.) %>% rename("Estimate" = "Beta") %>% mutate(div_type = "Beta")  %>% as_tibble()
       
       
       # # Dropping out the points extrapolated over double reference size
@@ -3139,18 +3224,95 @@ ggiNEXTbeta3D = function(output, type = 'B'){
     
     if (type == 'D'){
       
-      C = lapply(output, function(y) y[["1-C"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Dissimilarity") %>% mutate(div_type = "1-CqN") %>% as_tibble()
-      U = lapply(output, function(y) y[["1-U"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Dissimilarity") %>% mutate(div_type = "1-UqN") %>% as_tibble()
-      V = lapply(output, function(y) y[["1-V"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Dissimilarity") %>% mutate(div_type = "1-VqN") %>% as_tibble()
-      S = lapply(output, function(y) y[["1-S"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Dissimilarity") %>% mutate(div_type = "1-SqN") %>% as_tibble()
+      C = lapply(output, function(y) {
+        
+        tmp = y[["1-C"]]
+        
+        tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
+        tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
+        
+        tmp[tmp == 'Observed_SC(n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp[tmp == 'Observed_SC(T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp
+        
+      }) %>% do.call(rbind,.) %>% rename("Estimate" = "Dissimilarity") %>% mutate(div_type = "1-CqN") %>% as_tibble()
+      
+      U = lapply(output, function(y) {
+        
+        tmp = y[["1-U"]]
+        
+        tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
+        tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
+        
+        tmp[tmp == 'Observed_SC(n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp[tmp == 'Observed_SC(T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp
+        
+      }) %>% do.call(rbind,.) %>% rename("Estimate" = "Dissimilarity") %>% mutate(div_type = "1-UqN") %>% as_tibble()
+      
+      V = lapply(output, function(y) {
+        
+        tmp = y[["1-V"]]
+        
+        tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
+        tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
+        
+        tmp[tmp == 'Observed_SC(n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp[tmp == 'Observed_SC(T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp
+        
+      }) %>% do.call(rbind,.) %>% rename("Estimate" = "Dissimilarity") %>% mutate(div_type = "1-VqN") %>% as_tibble()
+      
+      S = lapply(output, function(y) {
+        
+        tmp = y[["1-S"]]
+        
+        tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
+        tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
+        
+        tmp[tmp == 'Observed_SC(n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2n, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2n, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp[tmp == 'Observed_SC(T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Observed_SC(T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                      "Rarefaction", "Extrapolation")
+        tmp[tmp == 'Extrap_SC(2T, gamma)'] = ifelse( unique(tmp[tmp$Method == 'Extrap_SC(2T, gamma)',"Size"] < unique(tmp[tmp$Method == "Observed", "Size"]) ),
+                                                     "Rarefaction", "Extrapolation")
+        
+        tmp
+        
+      }) %>% do.call(rbind,.) %>% rename("Estimate" = "Dissimilarity") %>% mutate(div_type = "1-SqN") %>% as_tibble()
+      
       # C = C %>% filter(Method != 'Observed')
       # U = U %>% filter(Method != 'Observed')
       # V = V %>% filter(Method != 'Observed')
       # S = S %>% filter(Method != 'Observed')
-      C[C == 'Observed_C(n, alpha)'] = U[U == 'Observed_C(n, alpha)'] = V[V == 'Observed_C(n, alpha)'] = S[S == 'Observed_C(n, alpha)'] = 'Observed'
-      C[C == 'Observed_C(T, alpha)'] = U[U == 'Observed_C(T, alpha)'] = V[V == 'Observed_C(T, alpha)'] = S[S == 'Observed_C(T, alpha)'] = 'Observed'
-      C[C == 'Extrap_C(2n, alpha)'] = U[U == 'Extrap_C(2n, alpha)'] = V[V == 'Extrap_C(2n, alpha)'] = S[S == 'Extrap_C(2n, alpha)'] = 'Extrapolation'
-      C[C == 'Extrap_C(2T, alpha)'] = U[U == 'Extrap_C(2T, alpha)'] = V[V == 'Extrap_C(2T, alpha)'] = S[S == 'Extrap_C(2T, alpha)'] = 'Extrapolation'
+     
       
       # # Dropping out the points extrapolated over double reference size
       # c1 = data.frame() ; u1 = data.frame() ; v1 = data.frame() ; s1 = data.frame()
@@ -4230,7 +4392,7 @@ print.iNEXTbeta3D <- function(x, ...){
       
       # index1 = which(y[[i]]$SC == min(y[[i]]$SC))
       # index2 = which( (y[[i]]$Order.q != 0 & y[[i]]$SC == max(y[[i]]$SC)) | (y[[i]]$Order.q == 0 & y[[i]]$SC == max(y[[i]][y[[i]]$Order.q == 0, "SC"])) )
-      # index3 = which(y[[i]]$Method %in% c("Observed", "Observed_C(n, alpha)"))
+      # index3 = which(y[[i]]$Method %in% c("Observed", "Observed_SC(n, alpha)"))
       # 
       # index = sort(unique(c(index1, index1 + 1, index2, index2 - 1, index3 - 1, index3, index3 + 1)))
       # if (length(index) > 0) out = y[[i]][index,] else out = y[[i]]
