@@ -3751,10 +3751,10 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' @param FDtype (argument only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
 #' @param FDtau (argument only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy). 
 #' 
-#' @return a data.frame of basic data information including dataset name (Dataset), assemblage name (Assemblage), sample size (n) or total sampling units (T), total incidences (U), observed species richness (S.obs), sample coverage estimate of the reference sample(SC(n)), sample coverage estimate of twice the reference sample size (SC(2n)).\cr\cr
+#' @return a data.frame of basic data information including dataset name (Dataset), assemblage name (Assemblage), sample size (n) or total sampling units (T), total incidences (U), observed species richness (S.obs), sample coverage estimate of the reference sample(SC(n) or SC(T)), sample coverage estimate of twice the reference sample size (SC(2n) or SC(2T)).\cr\cr
 #' Besides, show the first five species abundance (or incidence) frequency counts in the reference sample in TD. (f1-f5 or Q1-Q5)\cr\cr
 #' In PD, show the the observed total branch length in the phylogenetic tree (PD.obs), the number of singletons and doubletons in the node/branch set (f1*-f2*), the total branch length of those singletons/doubletons in the node/branch set (g1-g2), reference time (Reftime).\cr\cr
-#' In FD (FDtype = "tau_value"), show the number of singletons and doubletons of species abundance frequency counts in the functionally indistinct set (a1*-a2*), the total contribution of singletons and doubletons of species abundance frequency counts in the functionally indistinct set (h1-h2), the specified threshold level. Default is dmean. (the mean distance between any two individuals randomly selected from the pooled data)\cr\cr
+#' In FD (FDtype = "tau_value"), show the number of singletons (`a1*`) and of doubletons (`a2*`) among the functionally indistinct set at the specified threshold level 'Tau', the total contribution of singletons ('h1') and of doubletons ('h2') at the specified threshold level 'Tau', the specified threshold level of distinctiveness (`Tau`, default is dmean: the mean distance between any two individuals randomly selected from the pooled data over all datasets).\cr\cr
 #' In FD (FDtype = "AUC"), show the the minimum distance among all non-zero elements in the distance matrix (dmin), the mean distance between any two individuals randomly selected from each assemblage (dmean), the maximum distance among all elements in the distance matrix (dmax).\cr
 #' 
 #' 
@@ -4315,7 +4315,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
       
       dmean <- sum ( (as.matrix(pdata) %*% t(as.matrix(pdata)) ) * FDdistM) # dmean
       
-      dmin <- min(FDdistM[FDdistM > 0])
+      dmin <- min(FDdistM[lower.tri(FDdistM)])
       dmax <- max(FDdistM[FDdistM > 0])
       
       if (datatype == "abundance") {
