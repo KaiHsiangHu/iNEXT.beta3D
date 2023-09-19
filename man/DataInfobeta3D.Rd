@@ -2,7 +2,7 @@
 % Please edit documentation in R/MainFun.r
 \name{DataInfobeta3D}
 \alias{DataInfobeta3D}
-\title{Data information for beta diversity}
+\title{Data information for reference samples}
 \usage{
 DataInfobeta3D(
   data,
@@ -23,25 +23,42 @@ DataInfobeta3D(
 
 \item{datatype}{data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).}
 
-\item{PDtree}{(required argument only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
+\item{PDtree}{(required argument only for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
 
-\item{PDreftime}{(argument only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).}
+\item{PDreftime}{(argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).}
 
-\item{FDdistM}{(required argument only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage.}
+\item{FDdistM}{(required argument only for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage.}
 
-\item{FDtype}{(argument only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.}
+\item{FDtype}{(argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.}
 
-\item{FDtau}{(argument only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
+\item{FDtau}{(argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).}
 }
 \value{
-a data.frame of basic data information including dataset name (Dataset), assemblage name (Assemblage), sample size (n) or total sampling units (T), total incidences (U), observed species richness (S.obs), sample coverage estimate of the reference sample(SC(n) or SC(T)), sample coverage estimate of twice the reference sample size (SC(2n) or SC(2T)).\cr\cr
-Besides, show the first five species abundance (or incidence) frequency counts in the reference sample in TD. (f1-f5 or Q1-Q5)\cr\cr
-In PD, show the the observed total branch length in the phylogenetic tree (PD.obs), the number of singletons and doubletons in the node/branch set (f1*-f2*), the total branch length of those singletons/doubletons in the node/branch set (g1-g2), reference time (Reftime).\cr\cr
-In FD (FDtype = "tau_value"), show the number of singletons (`a1*`) and of doubletons (`a2*`) among the functionally indistinct set at the specified threshold level 'Tau', the total contribution of singletons ('h1') and of doubletons ('h2') at the specified threshold level 'Tau', the specified threshold level of distinctiveness (`Tau`, default is dmean: the mean distance between any two individuals randomly selected from the pooled data over all datasets).\cr\cr
-In FD (FDtype = "AUC"), show the the minimum distance among all non-diagonal elements in the distance matrix (dmin), the mean distance between any two individuals randomly selected from each assemblage (dmean), the maximum distance among all elements in the distance matrix (dmax).\cr
+a data.frame including the following data information. 
+For abundance data, basic information shared by TD, mean-PD and FD
+ includes dataset name (Dataset), individual/pooled/joint assemblage (Assemblage),
+sample size (n), observed species richness (S.obs), sample coverage estimates of the reference sample (SC(n)), 
+sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.\cr
+(1) TD: the first five species abundance (f1-f5).\cr
+(2) Mean-PD: the the observed total branch length in the phylogenetic tree (PD.obs), 
+the number of singletons (f1*) and doubletons (f2*) in the node/branch abundance set, as well as the total branch length 
+of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).\cr
+(3) FD (FDtype = "AUC"): the minimum distance among all non-diagonal elements in the distance matrix (dmin), the mean distance
+(dmean), and the maximum distance (dmax) in the distance matrix.\cr
+(4) FD (FDtype = "tau_value"): the number of singletons (a1*) and of doubletons (a2*) among the functionally indistinct
+ set at the specified threshold level 'Tau', as well as the total contribution of singletons (`h1`) and of doubletons (`h2`)
+  at the specified threshold level 'Tau'.\cr
+ 
+ For incidence data, the basic information for TD includes dataset name (Dataset), individual/pooled/joint assemblage 
+ (Assemblage), number of sampling units (T), total number of incidences (U), observed species richness (S.obs), 
+ sample coverage estimates of the reference sample (SC(T)), sample coverage estimate for twice the reference sample size
+ (SC(2T)), as well as the first species incidence frequency counts (Q1-Q5). For mean-PD and FD, output is similar to that
+ for abundance data.
 }
 \description{
-\code{DataInfobeta3D}: Data information for individual assemblages, pool assemblage, and joint assemblage in three dimension
+\code{DataInfobeta3D}: Provides basic data information for (1) the reference sample in each assemblage, 
+(2) the gamma reference sample in the pooled assemblage, and (3) the alpha reference sample in the
+ joint assemblage for TD, mean-PD and FD.
 }
 \examples{
 ## Taxonomic diversity for abundance data
@@ -50,7 +67,7 @@ output1 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'TD', datatype =
 output1
 
 
-## Phylogenetic diversity for abundance data
+## Mean phylogenetic diversity for abundance data
 data(Brazil_rainforests)
 data(Brazil_tree)
 output2 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
@@ -58,16 +75,15 @@ output2 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD',
 output2
 
 
-## Functional diversity for abundance data under single threshold
+## Functional diversity for abundance data under a specified threshold level
 data(Brazil_rainforests)
 data(Brazil_distM)
 output3 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
-                         datatype = 'abundance', FDdistM = Brazil_distM, 
-                         FDtype = 'tau_value', FDtau = NULL)
+                         datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
 output3
 
 
-## Functional diversity for abundance data with thresholds integrating from 0 to 1
+## Functional diversity for abundance data when all threshold levels from 0 to 1 are considered
 data(Brazil_rainforests)
 data(Brazil_distM)
 output4 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 

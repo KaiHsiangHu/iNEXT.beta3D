@@ -2,23 +2,22 @@
 \alias{Brazil_distM}
 \docType{data}
 \title{
-Gower distance for Brazil abundance data
+Species pairwise distance matrix for \code{Brazil_rainforests} abundance data
 }
 \description{
-Brazil_distM is a species-by-species pairwise, symmetric data, which contains all species collected from rainforest fragments in Brazil. It is used as example for computing functional diversity. \cr
+This dataset includes a species pairwise symmetric distance matrix for 185 species listed in the 
+  \code{Brazil_rainforests} dataset. Each element in the matrix represents a Gower distance between two species
+  computed from species traits. \cr
 }
 \usage{data(Brazil_distM)}
 \format{
-  Brazil_distM is a 185 x 185 (species by species) symmetric data.frame. The value of Brazil_distM is between zero (identical) and one.  \cr
+  Brazil_distM is a 185 x 185 (species by species) symmetric data.frame. The value of Brazil_distM
+  is between zero (for identical pairs) and one.  \cr
  $ Carpotroche_brasiliensis      : num  0 0.522 0.522 0.253 0.0.396 ... \cr
  $ Astronium_concinnum           : num  0.522 0 0 0.525 0.0.625 ... \cr
  $ Astronium_graveolens          : num  0.522 0 0 0.525 0.0.625 ... \cr
  ....... \cr
  }
-\references{
-Magnago, L. F. S., Edwards, D. P., Edwards, F. A., Magrach, A., Martins, S. V., & Laurance, W. F. 2014. Functional attributes change but functional richness is unchanged after fragmentation of Brazilian Atlantic forests. Journal of Ecology 102: 475-485. \cr\cr
-Magnago, L. F. S., Magrach, A., Barlow, J., Schaefer, C. E. G. R., Laurance, W. F., Martins, S. V., & Edwards, D. P. 2017. Do fragment size and edge effects predict carbon stocks in trees and lianas in tropical forests? Functional Ecology 31: 542-552. \cr\cr
-Magnago, L. F. S., Rocha, M. F., Meyer, L., Martins, S. v., & Meira-Neto, J. A. A. 2015. Microclimatic conditions at forest edges have significant impacts on vegetation structure in large Atlantic forest fragments. Biodiversity and Conservation 24: 2305-2318. \cr\cr 
-}
+
 
 \keyword{datasets}

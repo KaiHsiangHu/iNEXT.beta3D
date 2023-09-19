@@ -1,26 +1,26 @@
 Package: iNEXT.beta3D
 Type: Package
-Title: iNterpolation and EXTrapolation with beta diversity for three dimensions of biodiversity
+Title: Interpolation and extrapolation with beta diversity for three dimensions of biodiversity
 Version: 1.0.1
 Author: Anne Chao, K.-H. Hu
 Maintainer: K.-H. Hu <river19951224@gmail.com>
-Description: iNEXT.beta3D features non-asymptotic analyses for taxonomic, phylogenetic, and functional diversity based on Hill numbers family: It computes the estimated diversities for standardized samples with a common sample size or sample completeness (sample coverages). This approach aims to compare gamma, alpha, and beta diversity estimates for equally-large (with a common sample size) or equally-complete (with a common sample coverage) samples; it is based on the seamless rarefaction and extrapolation (R/E) sampling curves of Hill numbers family.
+Description: As a sequel to 'iNEXT', the 'iNEXT.beta3D' package provides functions to compute standardized taxonomic, phylogenetic, and functional diversity (3D) estimates with a common sample size (for alpha and gamma diversity) or sample coverage (for alpha, beta, gamma diversity as well as dissimilarity or turnover indices. 
+             Hill numbers and their generalizations are used to quantify 3D and to make multiplicative decomposition (gamma = alpha x beta). The package also features size- and coverage-based rarefaction and extrapolation sampling curves to facilitate rigorous comparsison of beta diversity across datasets. 
 License: GPL (>= 3)
 Depends: R (>= 4.0)
 Imports: tidyverse,
-         magrittr,
-         ggplot2,
-         abind,
-         ape,
-         phytools,
-         phyclust,
-         tidytree,
-         colorRamps,
-         future.apply,
-         ade4,
-         tidyr,
-         tibble,
-         iNEXT.3D
+          magrittr,
+          tidyr,
+          ggplot2,
+          abind,
+          ape,
+          ade4,
+          phytools,
+          phyclust,
+          tidytree,
+          colorRamps,
+          future.apply,
+          iNEXT.3D
 Remotes: AnneChao/iNEXT.3D
 Encoding: UTF-8
 BugReports: https://github.com/KaiHsiangHu/iNEXT.beta3D/issues
