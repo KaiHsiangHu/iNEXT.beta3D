@@ -12,5 +12,5 @@
 \item{...}{additional arguments.}
 }
 \description{
-\code{print.iNEXTbeta3D}: Print method for objects inheriting from class "iNEXTbeta3D"
+\code{print.iNEXTbeta3D}: Print method for objects inheriting from class \code{iNEXTbeta3D}
 }

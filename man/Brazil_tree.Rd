@@ -5,8 +5,7 @@
 Phylogenetic tree for Brazil abundance data
 }
 \description{
-This dataset includes a phylogenetic tree spanned by 185 species listed in the 
-  code{Brazil_rainforests} dataset.  \cr
+This dataset includes a phylogenetic tree spanned by 185 species listed in the \code{Brazil_rainforests} dataset.  \cr
 }
 \usage{data(Brazil_tree)}
 \format{

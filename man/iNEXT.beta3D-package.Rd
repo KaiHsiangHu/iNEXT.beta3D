@@ -6,52 +6,52 @@
   Interpolation and extrapolation with beta diversity for three dimensions of biodiversity
 }
 \description{
-\code{iNEXTbeta3D} (iNterpolation and EXTrapolation with beta diversity for three dimensions of biodiversity)
-is a sequel to iNEXT. Here the three dimensions (3D) of diversity includes taxonomic diversity (TD),
-phylogenetic diversity (PD) and functional diversity (FD). An online version "iNEXT.beta3D Online"
-(https://chao.shinyapps.io/iNEXT_beta3D/) is also available for users without an R background.
-
-A unified framework based on Hill numbers (for TD) and their generalizations (Hill-Chao numbers, for PD and FD) 
-is adopted in the package. TD quantifies the effective number of species, mean-PD (PD divided by tree depth)
-quantifies the effective number of lineages, and FD quantifies the effective number of virtual functional groups
-(or functional "species"). Thus, TD, mean-PD, and FD are all in the same units of species/lineage equivalents
-and can be meaningfully compared; see Chao et al. (2021) for a review of the unified framework. 
-
-For each of the three dimensions, iNEXT.beta3D focuses on the multiplicative diversity decomposition 
-(gamma = alpha x beta) of orders q = 0, 1 and 2 based on sampling data. Beta diversity quantifies the extent 
-of among-assemblage differentiation, or the changes in species/lineages/functional-groups composition and
-their abundance among assemblages. iNEXT.beta3D features standardized 3D estimates with a common sample size
-(for alpha and gamma diversity) or sample coverage (for alpha, beta and gamma diversity). iNEXT.beta3D also 
-features standardized estimates of four classes of coverage-based dissimilarity measures. Based on the 
-rarefaction and extrapolation (R/E) method for Hill numbers (TD) for q = 0, 1 and 2, Chao et al. (2023b) 
-developed the pertinent R/E theory for taxonomic beta diversity with applications to real-world spatial,
-temporal and spatio-temporal data. An application to Gentry's global forest data along with a concise 
-description of the theory is provided in Chao et al. (2023a). The extension to phylogenetic and functional
-beta diversity is generally parallel.
-
-\code{iNEXT.beta3D} also features two types of R/E sampling curves:
-
-*	Sample-size-based (or size-based) R/E curves: This type of sampling curve plots standardized 3D gamma and 
-alpha diversity with respect to sample size. Note that the size-based beta diversity is not a statistically 
-valid measure (Chao et al. 2023b) and thus the corresponding sampling curve is not provided. 
-
-*	Coverage-based R/E sampling curves: This type of sampling curve plots standardized 3D gamma, alpha, and
-beta diversity as well as four classes of dissimilarity measures with respect to sample coverage 
-(an objective measure of sample completeness).
-
-Sufficient data are needed to run \code{iNEXT.beta3D}. If your data comprise only a few species and their 
-abundances/phylogenies/traits, it is probable that the data lack sufficient information to run iNEXT.beta3D.  
-
-
-This package contains three main functions: \cr\cr
-1. \code{iNEXTbeta3D} Computes standardized 3D estimates with a common sample size (for alpha and gamma diversity)
-or sample coverage (for alpha, beta and gamma diversity). This function also computes coverage-based standardized 
-3D estimates of four classes of dissimilarity measures.
-
-2. \code{ggiNEXTbeta3D} visualizing the output from the function \code{iNEXTbeta3D}. \cr
-
-3. \code{DataInfobeta3D} Provides basic data information for (1) the reference sample in each assemblage, 
-(2) the gamma reference sample in the pooled assemblage, and (3) the alpha reference sample in the joint assemblage.
+  \code{iNEXTbeta3D} (iNterpolation and EXTrapolation with beta diversity for three dimensions of biodiversity)
+  is a sequel to iNEXT. Here the three dimensions (3D) of diversity includes taxonomic diversity (TD),
+  phylogenetic diversity (PD) and functional diversity (FD). An online version "iNEXT.beta3D Online"
+  (https://chao.shinyapps.io/iNEXT_beta3D/) is also available for users without an R background.
+  
+  A unified framework based on Hill numbers (for TD) and their generalizations (Hill-Chao numbers, for PD and FD) 
+  is adopted to quantify 3D. In this framework, TD quantifies the effective number of species, mean-PD (PD divided by 
+  tree depth) quantifies the effective number of lineages, and FD quantifies the effective number of virtual functional   groups (or functional "species"). Thus, TD, mean-PD, and FD are all in the same units of species/lineage equivalents
+  and can be meaningfully compared; see Chao et al. (2021) for a review of the unified framework. 
+  
+  For each of the three dimensions, iNEXT.beta3D focuses on the multiplicative diversity decomposition 
+  (gamma = alpha x beta) of orders q = 0, 1 and 2 based on sampling data. Beta diversity quantifies the extent 
+  of among-assemblage differentiation, or the changes in species/lineages/functional-groups composition and
+  their abundance among assemblages. \code{iNEXT.beta3D} features standardized 3D estimates with a common sample size
+  (for alpha and gamma diversity) or sample coverage (for alpha, beta and gamma diversity). \code{iNEXT.beta3D} also 
+  features standardized estimates of four classes of coverage-based dissimilarity measures. Based on the 
+  rarefaction and extrapolation (R/E) method for Hill numbers (TD) for q = 0, 1 and 2, Chao et al. (2023b) 
+  developed the pertinent R/E theory for taxonomic beta diversity with applications to real-world spatial,
+  temporal and spatio-temporal data. An application to Gentry's global forest data along with a concise 
+  description of the theory is provided in Chao et al. (2023a). The extension to phylogenetic and functional
+  beta diversity is generally parallel.
+  
+  \code{iNEXT.beta3D} also features two types of R/E sampling curves:
+  
+  *	Sample-size-based (or size-based) R/E curves: This type of sampling curve plots standardized 3D gamma and 
+  alpha diversity with respect to sample size. Note that the size-based beta diversity is not a statistically 
+  valid measure (Chao et al. 2023b) and thus the corresponding sampling curve is not provided. 
+  
+  *	Coverage-based R/E sampling curves: This type of sampling curve plots standardized 3D gamma, alpha, and
+  beta diversity as well as four classes of dissimilarity measures with respect to sample coverage 
+  (an objective measure of sample completeness).
+  
+  Sufficient data are needed to run \code{iNEXT.beta3D}. If your data comprise only a few species and their 
+  abundances/phylogenies/traits, it is probable that the data lack sufficient information to run iNEXT.beta3D.  
+  
+  
+  This package contains three main functions: \cr
+  
+  1. \code{iNEXTbeta3D} Computes standardized 3D estimates with a common sample size (for alpha and gamma diversity)
+  or sample coverage (for alpha, beta and gamma diversity). This function also computes coverage-based standardized 
+  3D estimates of four classes of dissimilarity measures. \cr
+  
+  2. \code{ggiNEXTbeta3D} visualizing the output from the function \code{iNEXTbeta3D}. \cr
+  
+  3. \code{DataInfobeta3D} Provides basic data information for (1) the reference sample in each assemblage, 
+  (2) the gamma reference sample in the pooled assemblage, and (3) the alpha reference sample in the joint assemblage.
 }
 \author{
 Anne Chao, K.H. Hu \cr

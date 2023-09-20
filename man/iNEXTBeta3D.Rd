@@ -49,22 +49,22 @@ iNEXTbeta3D(
 
 \item{conf}{a positive number < 1 specifying the level of confidence interval. Default is \code{conf = 0.95}.}
 
-\item{PDtree}{(required argument only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
+\item{PDtree}{(required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled dataset.}
 
-\item{PDreftime}{(argument only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).}
+\item{PDreftime}{(argument for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).}
 
-\item{PDtype}{(argument only when \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.}
+\item{PDtype}{(argument for \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.}
 
-\item{FDdistM}{(required argument only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage.}
+\item{FDdistM}{(required argument for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled dataset.}
 
-\item{FDtype}{(argument only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.}
+\item{FDtype}{(argument for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.}
 
-\item{FDtau}{(argument only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
+\item{FDtau}{(argument for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
 1 specifying the tau value (threshold level) that will be used to compute FD. If \code{FDtype = NULL} (default), 
 then threshold level is set to be the mean distance between any two individuals randomly selected from the pooled 
 dataset (i.e., quadratic entropy).}
 
-\item{FDcut_number}{(argument only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.}
+\item{FDcut_number}{(argument for \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.}
 }
 \value{
 For \code{base = "coverage"}, return a list of seven data frames with three diversity (gamma, alpha, and beta

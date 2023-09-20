@@ -3,7 +3,7 @@
 #' \code{iNEXTbeta3D}: compute standardized 3D estimates with a common sample size
 #'(for alpha and gamma diversity) or sample coverage (for alpha, beta, gamma diversity as well as
 #' dissimilarity indices; see Chao et al. (2023) for the theory.
-
+#'                      
 #' @param data (a) For \code{datatype = "abundance"}, species abundance data for a single dataset can be input as a \code{matrix/data.frame} (species-by-assemblage); data for multiple datasets can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-assemblage abundance matrix for one of the datasets.\cr
 #' (b) For \code{datatype = "incidence_raw"}, data for a single dataset with N assemblages can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-sampling-unit incidence matrix for one of the assemblages; data for multiple datasets can be input as multiple lists.
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
@@ -22,16 +22,16 @@
 #'     up to double the reference sample size.
 #' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{conf = 0.95}.
-#' @param PDtree (required argument only when \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
-#' @param PDreftime (argument only when \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).  
-#' @param PDtype (argument only when \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.
-#' @param FDdistM (required argument only when \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage. 
-#' @param FDtype (argument only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
-#' @param FDtau (argument only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
+#' @param PDtree (required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled dataset. 
+#' @param PDreftime (argument for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).  
+#' @param PDtype (argument for \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.
+#' @param FDdistM (required argument for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled dataset. 
+#' @param FDtype (argument for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
+#' @param FDtau (argument for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
 #'  1 specifying the tau value (threshold level) that will be used to compute FD. If \code{FDtype = NULL} (default), 
 #'  then threshold level is set to be the mean distance between any two individuals randomly selected from the pooled 
 #'  dataset (i.e., quadratic entropy). 
-#' @param FDcut_number (argument only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.
+#' @param FDcut_number (argument for \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.
 #' 
 #' @import tidyverse
 #' @import magrittr
@@ -3763,26 +3763,26 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' (b) For \code{datatype = "incidence_raw"}, data for a single dataset with N assemblages can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-sampling-unit incidence matrix for one of the assemblages; data for multiple datasets can be input as multiple lists.
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).
-#' @param PDtree (required argument only for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
+#' @param PDtree (required argument only for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled dataset. 
 #' @param PDreftime (argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).  
-#' @param FDdistM (required argument only for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage. 
+#' @param FDdistM (required argument only for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled dataset. 
 #' @param FDtype (argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
-#' @param FDtau (argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy). 
+#' @param FDtau (argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled dataset (i.e., quadratic entropy). 
 #' 
-#' @return a data.frame including the following data information. 
+#' @return a data.frame including basic data information.\cr\cr 
 #' For abundance data, basic information shared by TD, mean-PD and FD
 #'  includes dataset name (Dataset), individual/pooled/joint assemblage (Assemblage),
 #' sample size (n), observed species richness (S.obs), sample coverage estimates of the reference sample (SC(n)), 
-#' sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.\cr
-#' (1) TD: the first five species abundance (f1-f5).\cr
+#' sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.
+#' (1) TD: the first five species abundance (f1-f5).
 #' (2) Mean-PD: the the observed total branch length in the phylogenetic tree (PD.obs), 
 #' the number of singletons (f1*) and doubletons (f2*) in the node/branch abundance set, as well as the total branch length 
-#' of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).\cr
-#' (3) FD (FDtype = "AUC"): the minimum distance among all non-diagonal elements in the distance matrix (dmin), the mean distance
-#' (dmean), and the maximum distance (dmax) in the distance matrix.\cr
-#' (4) FD (FDtype = "tau_value"): the number of singletons (a1*) and of doubletons (a2*) among the functionally indistinct
-#'  set at the specified threshold level 'Tau', as well as the total contribution of singletons (`h1`) and of doubletons (`h2`)
-#'   at the specified threshold level 'Tau'.\cr
+#' of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).
+#' (3) FD (\code{FDtype = "AUC"}): the minimum distance among all non-diagonal elements in the distance matrix (dmin), the mean distance
+#' (dmean), and the maximum distance (dmax) in the distance matrix.
+#' (4) FD (\code{FDtype = "tau_value"}): the number of singletons (a1*) and of doubletons (a2*) among the functionally indistinct
+#'  set at the specified threshold level 'Tau', as well as the total contribution of singletons (h1) and of doubletons (h2)
+#'   at the specified threshold level 'Tau'.\cr\cr
 #'  
 #'  For incidence data, the basic information for TD includes dataset name (Dataset), individual/pooled/joint assemblage 
 #'  (Assemblage), number of sampling units (T), total number of incidences (U), observed species richness (S.obs), 
@@ -4411,7 +4411,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
 
 #' Printing iNEXTbeta3D object
 #' 
-#' \code{print.iNEXTbeta3D}: Print method for objects inheriting from class "iNEXTbeta3D"
+#' \code{print.iNEXTbeta3D}: Print method for objects inheriting from class \code{iNEXTbeta3D}
 #' @param x an \code{iNEXTbeta3D} object computed by \code{\link{iNEXTbeta3D}}.
 #' @param ... additional arguments.
 #' @export

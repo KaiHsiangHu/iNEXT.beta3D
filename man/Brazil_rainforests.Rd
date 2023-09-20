@@ -5,9 +5,9 @@
 Brazil rainforests data (datatype = "abundance" for TD, PD, and FD)
 }
 \description{
-  This dataset includes species abundace counts in two rainforests (Marium and Rebio2) collected from
+  This dataset includes tree species abundace counts in two rainforests (Marium and Rebio2) collected from
   rainforests in Brazil by Magnago et al. (2014, 2015, 2017). Within each forest, 
-  there are two assemblages/habits (Edge and Interior).  \cr
+  there are two assemblages/habitats (Edge and Interior).  \cr
 }
 \usage{data(Brazil_rainforests)}
 \format{
