@@ -112,7 +112,7 @@ library(ggplot2)
 ```{r, echo=FALSE,warning=FALSE}
 Des <- c("data","(a) For datatype = 'abundance', species abundance data for a single dataset can be input as a matrix/data.frame (species-by-assemblage); data for multiple datasets can be input as a list of matrices/data.frames, with each matrix representing a species-by-assemblage abundance matrix for one of the datasets.
 (b) For datatype = 'incidence_raw', data for a single dataset with N assemblages can be input as a list of matrices/data.frames, with each matrix representing a species-by-sampling-unit incidence matrix for one of the assemblages; data for multiple datasets can be input as multiple lists.",
-"diversity","selection of diversity type: diversity = 'TD' = <font color=#FF6781>Taxonomic diversity</font>, diversity = 'PD' = <font color=#FF6781>Phylogenetic diversity</font>, and diversity = 'FD' = <font color=#FF6781>Functional diversity</font>.",
+"diversity","selection of diversity type: diversity = 'TD': Taxonomic diversity, diversity = 'PD': Phylogenetic diversity, and diversity = 'FD': Functional diversity.",
 "q","a numerical vector specifying the diversity orders. Default is q = c(0, 1, 2)",
 "datatype","data type of input data: individual-based abundance data (datatype = 'abundance') or species by sampling-units incidence matrix (datatype = 'incidence_raw') with all entries being 0 (non-detection) or 1 (detection).", 
 "base","standardization base: coverage-based rarefaction and extrapolation for gamma, alpha, beta diversity, and four classes of dissimilarity indices (base = 'coverage'), or sized-based rarefaction and extrapolation for gamma and alpha diversity (base = 'size'). Default is base = 'coverage'.",
@@ -230,7 +230,6 @@ First, we run the `iNEXTbeta3D()` function with `Brazil rainforests` abundance d
 
 ```{r eval=FALSE}
 # Taxonomic diversity
-
 data(Brazil_rainforests)
 
 # Abundance data
