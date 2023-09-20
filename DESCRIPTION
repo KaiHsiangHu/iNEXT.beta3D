@@ -3,7 +3,7 @@ Type: Package
 Title: Interpolation and extrapolation with beta diversity for three dimensions of biodiversity
 Version: 1.0.1
 Author: Anne Chao, K.-H. Hu
-Maintainer: Anne Chao <chao@stat.nthu.edu.tw >
+Maintainer: Anne Chao <chao@stat.nthu.edu.tw>
 Description: As a sequel to 'iNEXT', the 'iNEXT.beta3D' package provides functions to compute standardized taxonomic, phylogenetic, and functional diversity (3D) estimates with a common sample size (for alpha and gamma diversity) or sample coverage (for alpha, beta, gamma diversity as well as dissimilarity or turnover indices. Hill numbers and their generalizations are used to quantify 3D and to make multiplicative decomposition (gamma = alpha x beta). The package also features size- and coverage-based rarefaction and extrapolation sampling curves to facilitate rigorous comparsison of beta diversity across datasets. 
 License: GPL (>= 3)
 Depends: R (>= 4.0)
