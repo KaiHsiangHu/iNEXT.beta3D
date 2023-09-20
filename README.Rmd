@@ -11,8 +11,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "",
   fig.path = "README/README-",
-  fig.align = 'center',
   fig.retina=2, 
+  fig.align = 'center',
+  fig.width = 7, fig.height = 5,
   warning = FALSE,
   message = FALSE
 )
@@ -116,7 +117,7 @@ Des <- c("data","(a) For datatype = 'abundance', species abundance data for a si
 "datatype","data type of input data: individual-based abundance data (datatype = 'abundance') or species by sampling-units incidence matrix (datatype = 'incidence_raw') with all entries being 0 (non-detection) or 1 (detection).", 
 "base","standardization base: coverage-based rarefaction and extrapolation for gamma, alpha, beta diversity, and four classes of dissimilarity indices (base = 'coverage'), or sized-based rarefaction and extrapolation for gamma and alpha diversity (base = 'size'). Default is base = 'coverage'.",
 "level","A numerical vector specifying the particular values of sample coverage (between 0 and 1 when base = 'coverage') or sample sizes (base = 'size') that will be used to compute standardized diversity/dissimilarity. Asymptotic diversity estimator can be obtained by setting level = 1 (i.e., complete coverage for base = 'coverage'). By default (with base = 'coverage'), this function computes coverage-based standardized 3D gamma, alpha, beta diversity, and four dissimilarity indices for coverage from 0.5 up to one (for q = 1, 2) or up to the coverage of double the reference sample size (for q = 0), in increments of 0.025. The extrapolation limit for beta diversity is defined as that for alpha diversity. If users set base = 'size', this function computes size-based standardized 3D gamma and alpha diversity estimates based on 40 equally-spaced sample sizes/knots from sample size 1 up to double the reference sample size.",
-"nboot","a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Set `nboot = 0` to skip the bootstrap procedures. Default is `nboot = 10`. If more accurate results are required, set `nbbot = 100 (or `nbbot = 200`).",
+"nboot","a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Set `nboot = 0` to skip the bootstrap procedures. Default is 'nboot = 10'. If more accurate results are required, set 'nboot = 100 (or 'nboot = 200').",
 "conf","a positive number < 1 specifying the level of confidence interval. Default is conf = 0.95.",
 "PDtree","(required argument only for diversity = 'PD'), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.",
 "PDreftime", "(argument only for diversity = 'PD'), a numerical value specifying reference time for PD. Default is PDreftime = NULL (i.e., the age of the root of PDtree).",

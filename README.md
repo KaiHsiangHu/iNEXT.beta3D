@@ -268,9 +268,9 @@ data
     a positive integer specifying the number of bootstrap replications
     when assessing sampling uncertainty and constructing confidence
     intervals. Bootstrap replications are generally time consuming. Set
-    `nboot = 0` to skip the bootstrap procedures. Default is
-    `nboot = 10`. If more accurate results are required, set
-    `nbbot = 100 (or`nbbot = 200\`).
+    `nboot = 0` to skip the bootstrap procedures. Default is ‘nboot =
+    10’. If more accurate results are required, set ‘nboot = 100 (or
+    ’nboot = 200’).
     </td>
     </tr>
     <tr>
@@ -680,16 +680,16 @@ Below we show the output for taxonomic beta diversity between the Edge
 and Interior habitats in the Marim fragment.
 
        Dataset Order.q    SC    Size  Beta                Method  s.e.   LCL   UCL
-    1    Marim       0 0.500 148.277 1.111           Rarefaction 0.066 0.981 1.241
-    2    Marim       0 0.525 162.445 1.108           Rarefaction 0.067 0.977 1.239
-    3    Marim       0 0.550 177.829 1.105           Rarefaction 0.068 0.972 1.238
-    4    Marim       0 0.575 194.579 1.102           Rarefaction 0.069 0.967 1.237
-    5    Marim       0 0.600 212.873 1.099           Rarefaction 0.070 0.961 1.236
-    6    Marim       0 0.625 232.920 1.095           Rarefaction 0.072 0.955 1.236
-    7    Marim       0 0.650 254.965 1.092           Rarefaction 0.074 0.948 1.237
-    8    Marim       0 0.675 279.291 1.089           Rarefaction 0.076 0.939 1.239
-    9    Marim       0 0.696 302.000 1.087 Observed_SC(n, alpha) 0.079 0.931 1.242
-    10   Marim       0 0.700 306.186 1.086         Extrapolation 0.080 0.930 1.243
+    1    Marim       0 0.500 148.277 1.111           Rarefaction 0.069 0.975 1.246
+    2    Marim       0 0.525 162.445 1.108           Rarefaction 0.069 0.972 1.244
+    3    Marim       0 0.550 177.829 1.105           Rarefaction 0.069 0.969 1.241
+    4    Marim       0 0.575 194.579 1.102           Rarefaction 0.069 0.966 1.238
+    5    Marim       0 0.600 212.873 1.099           Rarefaction 0.070 0.962 1.235
+    6    Marim       0 0.625 232.920 1.095           Rarefaction 0.070 0.958 1.233
+    7    Marim       0 0.650 254.965 1.092           Rarefaction 0.071 0.953 1.231
+    8    Marim       0 0.675 279.291 1.089           Rarefaction 0.072 0.948 1.230
+    9    Marim       0 0.696 302.000 1.087 Observed_SC(n, alpha) 0.073 0.943 1.231
+    10   Marim       0 0.700 306.186 1.086         Extrapolation 0.074 0.942 1.231
 
 We can also use incidence raw data (`Second_growth_forests`) to compute
 coverage-based standardized gamma, alpha, beta diversity, and four
