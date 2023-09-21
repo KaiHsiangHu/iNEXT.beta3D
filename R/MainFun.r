@@ -497,9 +497,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         
       }
       
-      gamma = (cbind(SC = rep(level, each=length(q)), gamma[,-c(1,5,7,8,9)]) %>% 
+      gamma = (cbind(SC = rep(level, each=length(q)), gamma[,-c(1,3,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Rarefaction'))
-      )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
+      )[,c(4,2,5,1,3)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
       if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC > 0
@@ -507,9 +507,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       
       
-      alpha = (cbind(SC = rep(level, each = length(q)), alpha[,-c(1,5,7,8,9)]) %>% 
+      alpha = (cbind(SC = rep(level, each = length(q)), alpha[,-c(1,3,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Rarefaction'))
-      )[,c(5,4,3,1,2)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
+      )[,c(4,2,5,1,3)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Estimate = alpha$Estimate / N
       
@@ -562,9 +562,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               estimate3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", base = "coverage", level = level[i], nboot = 0)
             }) %>% do.call(rbind,.)
             
-            # beta_obs = (AO3D(as.numeric(bootstrap_data_gamma), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Observed") %>% select(qD) / 
-            #               (AO3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", nboot = 0, method = "Observed") %>% select(qD) / N)) %>% unlist()
-            
           }
           
           if (datatype == 'incidence_raw') {
@@ -594,23 +591,15 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               estimate3D(bootstrap_data_alpha_freq, diversity = 'TD', q = q, datatype = "incidence_freq", base = "coverage", level = level[i], nboot = 0)
             }) %>% do.call(rbind,.)
             
-            # beta_obs = (AO3D(as.numeric(bootstrap_data_gamma_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Observed") %>% select(qD) / 
-            #               (AO3D(as.numeric(bootstrap_data_alpha_freq), diversity = 'TD', q = q, datatype = "incidence_freq", nboot = 0, method = "Observed") %>% select(qD) / N)) %>% unlist()
-            
           }
           
-          gamma = gamma[,c(6,3,7)]$qD[under_max_alpha]
+          gamma = gamma$qTD[under_max_alpha]
           
-          alpha = alpha[,c(6,3,7)]$qD[under_max_alpha]
+          alpha = alpha$qTD[under_max_alpha]
           alpha = alpha / N
           
           beta = gamma/alpha
           
-          # gamma = c(gamma, rep(0, length(q)))
-          # alpha = c(alpha, rep(0, length(q)))
-          # beta = c(beta, beta_obs)
-          # 
-          # Order.q = rep(q, length(level) + 1)[under_max_alpha]
           Order.q = rep(q, length(level))[under_max_alpha]
           
           beta = data.frame(Estimate=beta, Order.q)
@@ -1916,129 +1905,16 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       se = as.data.frame(se)
       # se[is.na(se)] = 0
       
-      gamma = (cbind(Size = rep(level, each=length(q)), gamma[,-c(1,2,8,9)]) %>% 
+      gamma = (cbind(Size = rep(level, each=length(q)), gamma[,-c(1,3,8,9)]) %>% 
                  mutate(Method = ifelse(Size>=ref_gamma, ifelse(Size == ref_gamma, 'Observed', 'Extrapolation'), 'Rarefaction'))
-      )[,c(5,3,2,4,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
+      )[,c(5,2,3,4,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
-      alpha = (cbind(Size = rep(level, each = length(q)), alpha[,-c(1,2,8,9)]) %>% 
+      alpha = (cbind(Size = rep(level, each = length(q)), alpha[,-c(1,3,8,9)]) %>% 
                  mutate(Method = ifelse(Size >= ref_alpha, ifelse(Size == ref_alpha, 'Observed', 'Extrapolation'), 'Rarefaction'))
-      )[,c(5,3,2,4,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
+      )[,c(5,2,3,4,1)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Estimate = alpha$Estimate / N
-      
-      # beta = alpha
-      # beta$Estimate = gamma$Estimate/alpha$Estimate
-      # 
-      # C = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(1-Order.q) - 1)/(N^(1-Order.q)-1)))
-      # U = beta %>% mutate(Estimate = ifelse(Order.q==1, log(Estimate)/log(N), (Estimate^(Order.q-1) - 1)/(N^(Order.q-1)-1)))
-      # V = beta %>% mutate(Estimate = (Estimate-1)/(N-1))
-      # S = beta %>% mutate(Estimate = (1/Estimate-1)/(1/N-1))
-      
-      # if(nboot>1){
-      #   
-      #   # cl = makeCluster(cluster_numbers)
-      #   # clusterExport(cl, c("bootstrap_population_multiple_assemblage","data","data_gamma", 'data_gamma_freq',"level","N",'under_max_alpha',
-      #   #                     'datatype', 'data_2D'))
-      #   # clusterEvalQ(cl, library(tidyverse, magrittr))
-      #   
-      #   # plan(sequential)
-      #   # plan(multiprocess)
-      #   
-      #   # se = parSapply(cl, 1:nboot, function(i){
-      #   
-      #   # start = Sys.time()
-      #   se = future_lapply(1:nboot, function(i){
-      #     
-      #     if (datatype == 'abundance') {
-      #       
-      #       bootstrap_population = bootstrap_population_multiple_assemblage(data, data_gamma, 'abundance')
-      #       bootstrap_sample = sapply(1:ncol(data), function(k) rmultinom(n = 1, size = sum(data[,k]), prob = bootstrap_population[,k]))
-      #       
-      #       bootstrap_data_gamma = rowSums(bootstrap_sample)
-      #       bootstrap_data_gamma = bootstrap_data_gamma[bootstrap_data_gamma > 0]
-      #       bootstrap_data_alpha = as.matrix(bootstrap_sample) %>% as.vector
-      #       bootstrap_data_alpha = bootstrap_data_alpha[bootstrap_data_alpha > 0]
-      #       
-      #       gamma = lapply(1:length(level), function(i){
-      #         estimate3D(as.numeric(bootstrap_data_gamma), diversity = 'TD', q = q, datatype = "abundance", base = "size", level = level[i], nboot = 0)
-      #       }) %>% do.call(rbind,.)
-      #       
-      #       alpha = lapply(1:length(level), function(i){
-      #         estimate3D(as.numeric(bootstrap_data_alpha), diversity = 'TD', q = q, datatype = "abundance", base = "size", level = level[i], nboot = 0)
-      #       }) %>% do.call(rbind,.)
-      #       
-      #     }
-      #     
-      #     if (datatype == 'incidence_raw') {
-      #       
-      #       bootstrap_population = bootstrap_population_multiple_assemblage(data_2D, data_gamma_freq, 'incidence')
-      #       
-      #       raw = lapply(1:ncol(bootstrap_population), function(j){
-      #         
-      #         lapply(1:nrow(bootstrap_population), function(i) rbinom(n = n, size = 1, prob = bootstrap_population[i,j])) %>% do.call(rbind,.)
-      #         
-      #       })
-      #       
-      #       gamma = Reduce('+', raw)
-      #       gamma[gamma > 1] = 1
-      #       bootstrap_data_gamma_freq = c(n, rowSums(gamma))
-      #       
-      #       bootstrap_data_alpha_freq = sapply(raw, rowSums) %>% c(n, .)
-      #       
-      #       bootstrap_data_gamma_freq = bootstrap_data_gamma_freq[bootstrap_data_gamma_freq > 0]
-      #       bootstrap_data_alpha_freq = bootstrap_data_alpha_freq[bootstrap_data_alpha_freq > 0]
-      #       
-      #       gamma = lapply(1:length(level), function(i){
-      #         estimate3D(bootstrap_data_gamma_freq, diversity = 'TD', q = q, datatype = "incidence_freq", base = "size", level = level[i], nboot = 0)
-      #       }) %>% do.call(rbind,.)
-      #       
-      #       alpha = lapply(1:length(level), function(i){
-      #         estimate3D(bootstrap_data_alpha_freq, diversity = 'TD', q = q, datatype = "incidence_freq", base = "size", level = level[i], nboot = 0)
-      #       }) %>% do.call(rbind,.)
-      #       
-      #     }
-      #     
-      #     gamma = gamma$qD
-      #     
-      #     alpha = alpha$qD
-      #     alpha = alpha / N
-      #     
-      #     # beta = gamma/alpha
-      #     # 
-      #     # Order.q = rep(q, length(level))
-      #     # 
-      #     # beta = data.frame(Estimate=beta, Order.q)
-      #     # 
-      #     # C = (beta %>% mutate(Estimate = ifelse(Order.q == 1,log(Estimate)/log(N),(Estimate^(1 - Order.q) - 1)/(N^(1 - Order.q) - 1))))$Estimate
-      #     # U = (beta %>% mutate(Estimate = ifelse(Order.q == 1,log(Estimate)/log(N),(Estimate^(Order.q - 1) - 1)/(N^(Order.q - 1) - 1))))$Estimate
-      #     # V = (beta %>% mutate(Estimate = (Estimate - 1)/(N - 1)))$Estimate
-      #     # S = (beta %>% mutate(Estimate = (1/Estimate - 1)/(1/N - 1)))$Estimate
-      #     # 
-      #     # beta = beta$Estimate
-      #     # 
-      #     # cbind(gamma, alpha, beta, C, U, V, S) %>% as.matrix
-      #     cbind(gamma, alpha) %>% as.matrix
-      #     
-      #     # }, simplify = "array") %>% apply(., 1:2, sd) %>% data.frame
-      #   }) %>% abind(along = 3) %>% apply(1:2, sd)
-      #   # end = Sys.time()
-      #   # end - start
-      #   
-      #   # stopCluster(cl)
-      #   # plan(sequential)
-      #   
-      # } else {
-      #   
-      #   # se = matrix(0, ncol = 7, nrow = nrow(beta))
-      #   # colnames(se) = c("gamma", "alpha", "beta", "C", "U", 'V', 'S')
-      #   # se = as.data.frame(se)
-      #   
-      #   se = matrix(0, ncol = 2, nrow = nrow(gamma))
-      #   colnames(se) = c("gamma", "alpha")
-      #   se = as.data.frame(se)
-      #   
-      # }
       
     }
     
@@ -2925,40 +2801,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                              Dataset = dataset_name,
                              Diversity = index) %>% 
       arrange(Order.q, Size) %>% .[,c(9, 2, 5, 4, 1, 3, 6, 7, 8, 10)] %>% rename("Alpha" = "Estimate")
-    
-    
-    # beta = beta %>% mutate(  s.e. = se$beta,
-    #                          LCL = Estimate - tmp * se$beta,
-    #                          UCL = Estimate + tmp * se$beta,
-    #                          Dataset = dataset_name,
-    #                          Diversity = index)
-    # 
-    # C = C %>% mutate(        s.e. = se$C,
-    #                          LCL = Estimate - tmp * se$C,
-    #                          UCL = Estimate + tmp * se$C,
-    #                          Dataset = dataset_name,
-    #                          Diversity = index)
-    # 
-    # 
-    # U = U %>% mutate(        s.e. = se$U,
-    #                          LCL = Estimate - tmp * se$U,
-    #                          UCL = Estimate + tmp * se$U,
-    #                          Dataset = dataset_name,
-    #                          Diversity = index)
-    # 
-    # V = V %>% mutate(        s.e. = se$V,
-    #                          LCL = Estimate - tmp * se$V,
-    #                          UCL = Estimate + tmp * se$V,
-    #                          Dataset = dataset_name,
-    #                          Diversity = index)
-    # 
-    # S = S %>% mutate(        s.e. = se$S,
-    #                          LCL = Estimate - tmp * se$S,
-    #                          UCL = Estimate + tmp * se$S,
-    #                          Dataset = dataset_name,
-    #                          Diversity = index)
-    # 
-    # list(gamma = gamma, alpha = alpha, beta = beta, C = C, U = U, V = V, S = S)
     
     if (datatype == 'incidence_raw') {
       
