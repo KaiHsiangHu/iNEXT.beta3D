@@ -56,7 +56,7 @@
 \author{
 Anne Chao, K.H. Hu \cr
 
-Maintainer: K.H. Hu <river19951224@gmail.com>
+Maintainer: Anne Chao <chao@stat.nthu.edu.tw>
 }
 \references{
 *	Chao, A., Chiu, C.-H., Hu, K.-H., and Zeleny, D. (2023a). Revisiting Alwyn H. Gentry's forest transect data: 
