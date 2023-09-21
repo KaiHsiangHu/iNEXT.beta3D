@@ -3707,10 +3707,6 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     
     if (datatype == "abundance") {
       
-      # Dat = do.call(data.frame, data)
-      # Dat = Dat %>% set_colnames(lapply(1:length(data), function(i) paste(names(data)[i], colnames(data[[i]]), sep = " ")) %>% unlist)
-      # Dat = Dat[, !duplicated(colnames(Dat))]
-      
       Dat = lapply(data, function(x) list("Pooled assemblage" = rowSums(x),
                                           "Joint assemblage" = as.vector(x)))
       
@@ -3718,11 +3714,8 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         if (is.null(colnames(data[[i]]))) colnames(data[[i]]) = paste('Assemblage_', 1:ncol(data[[i]]), sep = "")
         
-        mul_C2n = sapply(Dat[[i]], function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
-        sin_C2n = apply(data[[i]], 2, function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
-        
-        multiple = DataInfo3D(Dat[[i]], datatype = "abundance") %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = mul_C2n, .after = "SC(n)")
-        single = DataInfo3D(data[[i]], datatype = "abundance") %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = sin_C2n, .after = "SC(n)")
+        multiple = DataInfo3D(Dat[[i]], datatype = "abundance")
+        single = DataInfo3D(data[[i]], datatype = "abundance")
         
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.) %>% .[,1:11])
@@ -3731,10 +3724,6 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     }
     
     if (datatype == "incidence_raw") {
-      
-      # Dat = rbind(sapply(data, function(x) ncol(x[[1]])), lapply(data, function(x) sapply(x, rowSums)) %>% do.call(cbind,.))
-      # if (is.null(colnames(Dat))) colnames(Dat) = paste("Assemblage", 1:ncol(Dat), sep = " ")
-      # Dat = Dat[, !duplicated(colnames(Dat))]
       
       Dat = lapply(data, function(x) {
         
@@ -3751,11 +3740,8 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         if (is.null(names(data[[i]]))) names(data[[i]]) = paste('Assemblage_', 1:length(data[[i]]), sep = "")
         
-        mul_C2T = sapply(Dat[[i]], function(y) iNEXT.3D:::Coverage(y, "incidence_freq", 2*y[1]))
-        sin_C2T = sapply(data[[i]], function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        
-        multiple = DataInfo3D(Dat[[i]], datatype = "incidence_freq") %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = mul_C2T, .after = "SC(T)")
-        single = DataInfo3D(data[[i]], datatype = "incidence_raw") %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = sin_C2T, .after = "SC(T)")
+        multiple = DataInfo3D(Dat[[i]], datatype = "incidence_freq")
+        single = DataInfo3D(data[[i]], datatype = "incidence_raw")
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.) %>% .[,1:12])
         
@@ -3819,14 +3805,13 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         Chat = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", sum(y)))
         mul_C2n = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
-        sin_C2n = apply(x, 2, function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
         
         multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
                           'n' = sum(x), 'S.obs' = output[,1], 'SC(n)' = Chat, 'SC(2n)' = mul_C2n, 'PD.obs' = output[,2],
                           'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
                           'Reftime' = PDreftime)
         
-        single = DataInfo3D(x, diversity = "PD", datatype = "abundance", PDtree = PDtree, PDreftime = PDreftime) %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = sin_C2n, .after = "SC(n)")
+        single = DataInfo3D(x, diversity = "PD", datatype = "abundance", PDtree = PDtree, PDreftime = PDreftime)
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -3878,15 +3863,13 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
         mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        sin_C2T = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        
         multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
                           'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
                           'S.obs' = output[,1], 'SC(T)' = Chat, 'SC(2T)' = mul_C2T, 'PD.obs' = output[,2],
                           'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
                           'Reftime' = PDreftime)
         
-        single = DataInfo3D(x, diversity = "PD", datatype = "incidence_raw", PDtree = PDtree, PDreftime = PDreftime) %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = sin_C2T, .after = "SC(T)")
+        single = DataInfo3D(x, diversity = "PD", datatype = "incidence_raw", PDtree = PDtree, PDreftime = PDreftime)
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -3977,7 +3960,6 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         Chat = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", sum(y)))
         mul_C2n = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
-        sin_C2n = apply(x, 2, function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
         
         multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
                           'n' = sum(x), 
@@ -3989,27 +3971,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
                           'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
                           'Tau' = FDtau)
         
-        
-        # out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = gamma_a,
-        #                               "Joint assemblage" = alpha_a), "abundance")
-        # 
-        # out$SC = sapply(list(rowSums(x), as.vector(x)), function(y) {
-        #   
-        #   n = sum(y)
-        #   f1 = sum(y == 1)
-        #   f2 = sum(y == 2)
-        #   f0.hat <- ifelse(f2 == 0, (n-1) / n * f1 * (f1-1) / 2, (n-1) / n * f1^2 / 2 / f2) 
-        #   A <- ifelse(f1 > 0, n * f0.hat / (n * f0.hat + f1), 1)
-        #   1 - f1/n * A
-        #   
-        # })
-        # out$n = sum(x)
-        # 
-        # colnames(out)[colnames(out) %in% paste0("f", 1:10)] = paste0("a", 1:10, "'")
-        # 
-        # out$Tau = FDtau
-        
-        single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM) %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = sin_C2n, .after = "SC(n)")
+        single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -4078,7 +4040,6 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
         mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        sin_C2T = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
         
         multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
                           'T' = rep(ncol(data_gamma), 2), 
@@ -4092,26 +4053,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
                           'Tau' = FDtau)
         
         
-        # out <- iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(nT, gamma_a),
-        #                               "Joint assemblage" = c(nT, alpha_a)), "incidence_freq")
-        # out$SC = sapply(list(data_gamma_freq, data_2D), function(y) {
-        #   
-        #   U <- sum(y)
-        #   Q1 = sum(y == 1)
-        #   Q2 = sum(y == 2)
-        #   Q0.hat <- ifelse(Q2 == 0, (nT-1) / nT * Q1 * (Q1-1) / 2, (nT-1) / nT * Q1^2 / 2 / Q2) 
-        #   A <- ifelse(Q1 > 0, nT * Q0.hat / (nT * Q0.hat + Q1), 1)
-        #   
-        #   1 - Q1/U * A
-        # })
-        # 
-        # out$U = c(sum(data_gamma_freq), sum(data_2D))
-        # 
-        # colnames(out)[colnames(out) %in% paste0("f", 1:10)] = paste0("a", 1:10, "'")
-        # 
-        # out$Tau = FDtau
-        
-        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM) %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = sin_C2T, .after = "SC(T)")
+        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -4200,17 +4142,14 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         mul_C2n = sapply(list("Pooled assemblage" = rowSums(x),
                               "Joint assemblage" = as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
-        sin_C2n = apply(x, 2, function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
         
         multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = rowSums(x),
-                                                 "Joint assemblage" = as.vector(x)), "abundance")[,1:4] %>% 
-                            rename("SC(n)" = "SC"), 
-                          "SC(2n)" = mul_C2n,
+                                                 "Joint assemblage" = as.vector(x)), "abundance")[,1:5], 
                           "dmin" = dmin,
                           "dmean" = dmean,
                           "dmax" = dmax)
         
-        single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "AUC", FDdistM = FDdistM) %>% rename("SC(n)" = "SC") %>% mutate("SC(2n)" = sin_C2n, .after = "SC(n)")
+        single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "AUC", FDdistM = FDdistM)
         
         out = rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.)
       }
@@ -4225,17 +4164,14 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         data_alpha = do.call(rbind, x)
         
         mul_C2T = sapply(list(data_gamma, data_alpha), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        sin_C2T = sapply(x, function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
         
         multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
-                                                 "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:5] %>% 
-                            rename("SC(T)" = "SC"),
-                          "SC(2T)" = mul_C2T,
+                                                 "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:6],
                           "dmin" = dmin,
                           "dmean" = dmean,
                           "dmax" = dmax)
         
-        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM) %>% rename("SC(T)" = "SC") %>% mutate("SC(2T)" = sin_C2T, .after = "SC(T)")
+        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM)
         
         out = rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.)
       }
