@@ -38,13 +38,13 @@ a data.frame including basic data information.\cr\cr
 For abundance data, basic information shared by TD, mean-PD and FD
  includes dataset name (Dataset), individual/pooled/joint assemblage (Assemblage),
 sample size (n), observed species richness (S.obs), sample coverage estimates of the reference sample (SC(n)), 
-sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.
-(1) TD: the first five species abundance (f1-f5).
+sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.\cr\cr
+(1) TD: the first five species abundance (f1-f5).\cr\cr
 (2) Mean-PD: the the observed total branch length in the phylogenetic tree (PD.obs), 
 the number of singletons (f1*) and doubletons (f2*) in the node/branch abundance set, as well as the total branch length 
-of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).
+of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).\cr\cr
 (3) FD (\code{FDtype = "AUC"}): the minimum distance among all non-diagonal elements in the distance matrix (dmin), the mean distance
-(dmean), and the maximum distance (dmax) in the distance matrix.
+(dmean), and the maximum distance (dmax) in the distance matrix.\cr \cr
 (4) FD (\code{FDtype = "tau_value"}): the number of singletons (a1*) and of doubletons (a2*) among the functionally indistinct
  set at the specified threshold level 'Tau', as well as the total contribution of singletons (h1) and of doubletons (h2)
   at the specified threshold level 'Tau'.\cr\cr

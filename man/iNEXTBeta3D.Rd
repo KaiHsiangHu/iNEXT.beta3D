@@ -71,13 +71,16 @@ For \code{base = "coverage"}, return a list of seven data frames with three dive
  diversity) and four dissimilarity measures. For \code{base = "size"}, return a list of two matrices with two diversity
  (gamma and alpha diversity).\cr 
  
- For \code{base = "coverage"}, the output in each data frame includes the name of dataset ("Dataset"), the diversity order of q
-  ("Order.q"), the target standardized coverage value ("SC"), the corresponding sample size ("Size"),
-   the estimated diversity/dissimilarity estimate ("Alpha/Beta/Gamma/Dissimilarity"), "Method" 
-   (Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to,
-    or greater than the coverage of the reference sample), standard error of standardized estimate ("s.e."),
-    the bootstrap lower ("LCL") and upper ("UCL") confidence limits for the diversity/dissimilarity with a default significance 
-  level of 0.95). Similar output is obtained for \code{base = "size"}.\cr
+ For \code{base = "coverage"}, the output in each data frame includes: 
+ \item{Dataset}{the name of dataset. }
+ \item{Order.q}{the diversity order of q.} 
+ \item{SC}{the target standardized coverage value.}
+ \item{Size}{the corresponding sample size.}
+ \item{Alpha/Beta/Gamma/Dissimilarity}{the estimated diversity/dissimilarity estimate.}
+ \item{Method}{Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample.} 
+ \item{s.e.}{standard error of standardized estimate.}
+ \item{LCL, UCL}{the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95.}
+ Similar output is obtained for \code{base = "size"}.\cr
 }
 \description{
 \code{iNEXTbeta3D}: compute standardized 3D estimates with a common sample size

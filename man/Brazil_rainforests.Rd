@@ -7,12 +7,12 @@ Brazil rainforests data (datatype = "abundance" for TD, PD, and FD)
 \description{
   This dataset includes tree species abundace counts in two rainforests (Marium and Rebio2) collected from
   rainforests in Brazil by Magnago et al. (2014, 2015, 2017). Within each forest, 
-  there are two assemblages/habitats (Edge and Interior).  \cr
+  there are two assemblages/habitats (Edge and Interior). \cr
 }
 \usage{data(Brazil_rainforests)}
 \format{
   Brazil_rainforests is a list with two species-by-assemblage data.frames/matrices. The two columns
-  repreesnts the Edge and Interior habitats.   \cr
+  repreesnts the Edge and Interior habitats. \cr
  A list of 2 matrices: \cr
  $ Marim is a matrix with 119 species(rows) and 2 columns("Edge" and "Interior"). \cr
  $ Rebio2 is a matrix with 118 species(rows) and 2 columns("Edge" and "Interior"). \cr

@@ -52,13 +52,16 @@
 #'  diversity) and four dissimilarity measures. For \code{base = "size"}, return a list of two matrices with two diversity
 #'  (gamma and alpha diversity).\cr 
 #'  
-#'  For \code{base = "coverage"}, the output in each data frame includes the name of dataset ("Dataset"), the diversity order of q
-#'   ("Order.q"), the target standardized coverage value ("SC"), the corresponding sample size ("Size"),
-#'    the estimated diversity/dissimilarity estimate ("Alpha/Beta/Gamma/Dissimilarity"), "Method" 
-#'    (Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to,
-#'     or greater than the coverage of the reference sample), standard error of standardized estimate ("s.e."),
-#'     the bootstrap lower ("LCL") and upper ("UCL") confidence limits for the diversity/dissimilarity with a default significance 
-#'   level of 0.95). Similar output is obtained for \code{base = "size"}.\cr
+#'  For \code{base = "coverage"}, the output in each data frame includes: 
+#'  \item{Dataset}{the name of dataset. }
+#'  \item{Order.q}{the diversity order of q.} 
+#'  \item{SC}{the target standardized coverage value.}
+#'  \item{Size}{the corresponding sample size.}
+#'  \item{Alpha/Beta/Gamma/Dissimilarity}{the estimated diversity/dissimilarity estimate.}
+#'  \item{Method}{Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample.} 
+#'  \item{s.e.}{standard error of standardized estimate.}
+#'  \item{LCL, UCL}{the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95.}
+#'  Similar output is obtained for \code{base = "size"}.\cr
 #'  
 #'  
 #' @examples
@@ -3773,13 +3776,13 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' For abundance data, basic information shared by TD, mean-PD and FD
 #'  includes dataset name (Dataset), individual/pooled/joint assemblage (Assemblage),
 #' sample size (n), observed species richness (S.obs), sample coverage estimates of the reference sample (SC(n)), 
-#' sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.
-#' (1) TD: the first five species abundance (f1-f5).
+#' sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.\cr\cr
+#' (1) TD: the first five species abundance (f1-f5).\cr\cr
 #' (2) Mean-PD: the the observed total branch length in the phylogenetic tree (PD.obs), 
 #' the number of singletons (f1*) and doubletons (f2*) in the node/branch abundance set, as well as the total branch length 
-#' of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).
+#' of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).\cr\cr
 #' (3) FD (\code{FDtype = "AUC"}): the minimum distance among all non-diagonal elements in the distance matrix (dmin), the mean distance
-#' (dmean), and the maximum distance (dmax) in the distance matrix.
+#' (dmean), and the maximum distance (dmax) in the distance matrix.\cr \cr
 #' (4) FD (\code{FDtype = "tau_value"}): the number of singletons (a1*) and of doubletons (a2*) among the functionally indistinct
 #'  set at the specified threshold level 'Tau', as well as the total contribution of singletons (h1) and of doubletons (h2)
 #'   at the specified threshold level 'Tau'.\cr\cr
