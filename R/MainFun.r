@@ -3698,10 +3698,17 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     stop("FDtau only accept a value instead of a vector.", call. = FALSE)
   ##
   
+  
+  if (datatype == 'abundance') {
+    
+    if ( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Dataset_1 = data)
+    
+    if (class(data) == "list") data = lapply(data, as.matrix)
+  }
+  
   if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
   
-  if (datatype == "abundance") data = lapply(data, as.matrix) else if (datatype == "incidence_raw")
-    data = lapply(data, function(x) lapply(x, as.matrix))
+  
   
   if (diversity == "TD") {
     
@@ -3891,9 +3898,13 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         tmp <- lapply(data, rowSums)
         tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
         pdata = tmp[[1]]
-        for(i in 2:length(tmp)){
-          pdata = full_join(pdata, tmp[[i]], by = "Species")
+        
+        if (length(tmp) > 1) {
+          for(i in 2:length(tmp)){
+            pdata = full_join(pdata, tmp[[i]], by = "Species")
+          }
         }
+        
         pdata[is.na(pdata)] = 0
         pdata = pdata %>% column_to_rownames("Species")
         pdata = rowSums(pdata)
