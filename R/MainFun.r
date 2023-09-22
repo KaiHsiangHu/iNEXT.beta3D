@@ -2804,8 +2804,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     if (datatype == 'incidence_raw') {
       
-      gamma = gamma %>% rename("nT" = "Size")
-      alpha = alpha %>% rename("nT" = "Size")
+      gamma = gamma %>% rename("T" = "Size")
+      alpha = alpha %>% rename("T" = "Size")
     }
     
     if (diversity == "FD" & FDtype == "tau_value") {
@@ -2820,7 +2820,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   }
 
   if (base == 'coverage') output = lapply(1:length(data_list), function(i) for_each_dataset(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i], level = level[[i]]))
+  
   if (base == 'size') output = lapply(1:length(data_list), function(i) for_each_dataset.size(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i], level = level[[i]]))
+  
   names(output) = dataset_names
   
   class(output) <- c("iNEXTbeta3D")
@@ -3258,11 +3260,11 @@ ggiNEXTbeta3D = function(output, type = 'B'){
     gamma = lapply(output, function(y) y[["gamma"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Gamma") %>% mutate(div_type = "Gamma") %>% as_tibble()
     alpha = lapply(output, function(y) y[["alpha"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Alpha") %>% mutate(div_type = "Alpha") %>% as_tibble()
     
-    if ('nT' %in% colnames(gamma)) {
+    if ('T' %in% colnames(gamma)) {
       
       xlab = 'Number of sampling units'
-      colnames(gamma)[colnames(gamma) == 'nT'] = 'Size'
-      colnames(alpha)[colnames(alpha) == 'nT'] = 'Size'
+      colnames(gamma)[colnames(gamma) == 'T'] = 'Size'
+      colnames(alpha)[colnames(alpha) == 'T'] = 'Size'
       
     } else xlab = 'Number of individuals'
     
