@@ -72,7 +72,7 @@ For \code{base = "coverage"}, return a list of seven data frames with three dive
  (gamma and alpha diversity).\cr 
  
  For \code{base = "coverage"}, the output in each data frame includes: 
- \item{Dataset}{the name of dataset. }
+ \item{Dataset}{the name of dataset.}
  \item{Order.q}{the diversity order of q.} 
  \item{SC}{the target standardized coverage value.}
  \item{Size}{the corresponding sample size.}
@@ -110,7 +110,7 @@ data(Brazil_rainforests)
 data(Brazil_tree)
 output2c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
                        datatype = 'abundance', base = "coverage", nboot = 10, conf = 0.95, 
-                       PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
+                       PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 output2c
 
 # Size-based standardized PD estimates and related statistics
@@ -118,7 +118,7 @@ data(Brazil_rainforests)
 data(Brazil_tree)
 output2s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
                        datatype = 'abundance', base = "size", nboot = 20, conf = 0.95, 
-                       PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
+                       PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 output2s
 
 

@@ -47,7 +47,7 @@ data(Brazil_rainforests)
 data(Brazil_tree)
 output2c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
                        datatype = 'abundance', base = "coverage", nboot = 10, conf = 0.95, 
-                       PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
+                       PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 
 ggiNEXTbeta3D(output2c, type = 'B')
 ggiNEXTbeta3D(output2c, type = 'D')
@@ -58,7 +58,7 @@ data(Brazil_rainforests)
 data(Brazil_tree)
 output2s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
                        datatype = 'abundance', base = "size", nboot = 10, conf = 0.95, 
-                       PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'PD')
+                       PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 
 ggiNEXTbeta3D(output2s)
 
