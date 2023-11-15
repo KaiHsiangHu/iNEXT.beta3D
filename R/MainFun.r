@@ -500,7 +500,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       gamma = (cbind(SC = rep(level, each=length(q)), gamma[,-c(1,3,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC>=ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Rarefaction'))
-      )[,c(4,2,5,1,3)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
+      )[,c(5,2,4,1,3)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
       if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC > 0
@@ -510,7 +510,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       alpha = (cbind(SC = rep(level, each = length(q)), alpha[,-c(1,3,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Rarefaction'))
-      )[,c(4,2,5,1,3)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
+      )[,c(5,2,4,1,3)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Estimate = alpha$Estimate / N
       
