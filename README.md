@@ -3,7 +3,7 @@
 # iNEXT.beta3D (R package)
 
 <h5 align="right">
-Latest version: 2023-09-21
+Latest version: 2023-11-16
 </h5>
 <font color="394CAE">
 <h3 color="394CAE" style="font-weight: bold">
@@ -651,19 +651,19 @@ default output are displayed for the standardized coverage value from
 addition, the results for the following four coverage value are also
 added: SC(n, alpha), SC(2n, alpha), SC(n, gamma) and SC(2n, gamma) if
 these values are in the above-specified range. Here SC(n, alpha) and
-SC(2n, alpha) denotes, respectively, the coverage estimate for the alpha
-reference sample size n and the extrapolated sample with size 2n in the
-joint assemblage. These values can be found as SC(n) and SC(2n) for
-“Joint assemblage (for alpha)” in the column “Assemblage” from the
+SC(2n, alpha) represent, respectively, the coverage estimate for the
+alpha reference sample size n and the extrapolated sample with size 2n
+in the joint assemblage. These values can be found as SC(n) and SC(2n)
+for “Joint assemblage (for alpha)” in the column “Assemblage” from the
 output of the function `DataInfobeta3D`; see later text. Similar
 definitions pertain to SC(n, gamma) and SC(2n, gamma) for the gamma
 reference sample; these two values can also be found as SC(n) and SC(2n)
 for “Pooled assemblage (for gamma)” in the column “Assemblage” from the
 output of the function `DataInfobeta3D`. For beta diversity and
-dissimilarity, the observed sample coverage and extrapolation limits are
-defined as those for alpha diversity. The corresponding coverage values
-for incidence data are denoted as, respectively, SC(T, alpha), SC(2T,
-alpha), SC(T, gamma) and SC(2T, gamma) in the output.
+dissimilarity, the observed sample coverage and extrapolation limit are
+defined the same as the alpha diversity. The corresponding coverage
+values for incidence data are denoted as, respectively, SC(T, alpha),
+SC(2T, alpha), SC(T, gamma) and SC(2T, gamma) in the output.
 
 Because all the diversity/dissimilarity estimates are computed for the
 standardized coverage range values starting from 0.5, the default
@@ -672,22 +672,21 @@ coverage in the alpha/gamma reference sample is less than 50%. In this
 case, readers should specify sample coverage values using the argument
 `level`, instead of using `level = NULL`. The suggested maximum coverage
 value that readers can specify is SC(2n, alpha). Beyond the limit, beta
-diversity and dissimilarity estimates may be subject to some bias.
-
-Below we show the output for taxonomic beta diversity between the Edge
-and Interior habitats in the Marim fragment.
+diversity and dissimilarity estimates may be subject to some bias. Below
+we show the output for taxonomic beta diversity between the Edge and
+Interior habitats in the Marim fragment.
 
        Dataset Order.q    SC    Size  Beta                Method  s.e.   LCL   UCL
-    1    Marim       0 0.500 148.277 1.111           Rarefaction 0.072 0.970 1.252
-    2    Marim       0 0.525 162.445 1.108           Rarefaction 0.072 0.966 1.250
-    3    Marim       0 0.550 177.829 1.105           Rarefaction 0.073 0.962 1.248
-    4    Marim       0 0.575 194.579 1.102           Rarefaction 0.074 0.957 1.246
-    5    Marim       0 0.600 212.873 1.099           Rarefaction 0.075 0.952 1.245
-    6    Marim       0 0.625 232.920 1.095           Rarefaction 0.076 0.947 1.244
-    7    Marim       0 0.650 254.965 1.092           Rarefaction 0.077 0.940 1.244
-    8    Marim       0 0.675 279.291 1.089           Rarefaction 0.079 0.933 1.245
-    9    Marim       0 0.696 302.000 1.087 Observed_SC(n, alpha) 0.082 0.927 1.247
-    10   Marim       0 0.700 306.186 1.086         Extrapolation 0.082 0.925 1.247
+    1    Marim       0 0.500 148.277 1.111           Rarefaction 0.062 0.990 1.232
+    2    Marim       0 0.525 162.445 1.108           Rarefaction 0.062 0.987 1.229
+    3    Marim       0 0.550 177.829 1.105           Rarefaction 0.062 0.983 1.227
+    4    Marim       0 0.575 194.579 1.102           Rarefaction 0.063 0.979 1.224
+    5    Marim       0 0.600 212.873 1.099           Rarefaction 0.063 0.975 1.223
+    6    Marim       0 0.625 232.920 1.095           Rarefaction 0.064 0.969 1.222
+    7    Marim       0 0.650 254.965 1.092           Rarefaction 0.066 0.963 1.222
+    8    Marim       0 0.675 279.291 1.089           Rarefaction 0.069 0.955 1.223
+    9    Marim       0 0.696 302.000 1.087 Observed_SC(n, alpha) 0.071 0.947 1.226
+    10   Marim       0 0.700 306.186 1.086         Extrapolation 0.072 0.946 1.227
 
 We can also use incidence raw data (`Second_growth_forests`) to compute
 coverage-based standardized gamma, alpha, beta diversity, and four
@@ -729,9 +728,9 @@ PD/tree depth). Default is `PDtype = "meanPD"`. `PDreftime` is a
 numerical value specifying a reference time for computing phylogenetic
 diversity. By default (`PDreftime = NULL`), the reference time is set to
 the tree depth, i.e., age of the root of the phylogenetic tree. Run the
-following code to perform PD analysis. The output is similar to that of
-taxonomic diversity and thus is omitted; see later graphical display of
-the output.
+following code to perform PD analysis. The output data frame is similar
+to that based on abundance data and thus is omitted; see later graphical
+display of the output.
 
 ``` r
 ## Phylogenetic diversity
@@ -773,8 +772,8 @@ individuals randomly selected from the pooled data over all datasets
 \[0, 1\] interval into equal-spaced sub-intervals to obtain the AUC
 value. Default is `FDcut_number = 30`. If more accurate integration is
 desired, then use a larger integer. Run the following code to perform FD
-analysis. The output is similar to that of taxonomic diversity and thus
-is omitted; see later graphical display of the output.
+analysis. The output data frame is similar to that based on abundance
+data and thus is omitted; see later graphical display of the output.
 
 ``` r
 # Abundance data
@@ -914,8 +913,8 @@ ggiNEXTbeta3D(Abundance_PD, type = 'B')
 data(Brazil_rainforests)
 data(Brazil_distM)
 Abundance_FD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', datatype = 'abundance', 
-                       base = "coverage", nboot = 20, conf = 0.95, 
-                       FDdistM = Brazil_distM, FDtype = 'AUC')
+                           base = "coverage", nboot = 20, conf = 0.95, 
+                           FDdistM = Brazil_distM, FDtype = 'AUC')
 
 ggiNEXTbeta3D(Abundance_FD, type = 'B')
 ```
