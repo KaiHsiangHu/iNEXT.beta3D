@@ -180,7 +180,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   
   if (is.na(pmatch(base, c("size", "coverage")))) stop("invalid datatype")
   
-  if (! (is.null(level) | inherits(level, "numeric")))
+  if (! (is.null(level) | inherits(level, c("numeric", "integer", "double"))))
     stop("invlid class of level, level should be a postive value/vector of numeric object", call. = FALSE)
   
   
