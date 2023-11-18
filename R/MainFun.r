@@ -70,14 +70,14 @@
 #' # Coverage-based standardized TD estimates and related statistics
 #' data(Brazil_rainforests)
 #' output1c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
-#'                        datatype = 'abundance', base = "coverage", nboot = 30, conf = 0.95)
+#'                        datatype = 'abundance', base = "coverage", nboot = 10)
 #' output1c
 #' 
 #' 
 #' # Size-based standardized TD estimates and related statistics
 #' data(Brazil_rainforests)
 #' output1s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
-#'                        datatype = 'abundance', base = "size", nboot = 30, conf = 0.95)
+#'                        datatype = 'abundance', base = "size", nboot = 10)
 #' output1s
 #' 
 #' 
@@ -86,7 +86,7 @@
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
 #' output2c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
-#'                        datatype = 'abundance', base = "coverage", nboot = 10, conf = 0.95, 
+#'                        datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' output2c
 #' 
@@ -94,7 +94,7 @@
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
 #' output2s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
-#'                        datatype = 'abundance', base = "size", nboot = 20, conf = 0.95, 
+#'                        datatype = 'abundance', base = "size", nboot = 10, 
 #'                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' output2s
 #' 
@@ -104,7 +104,7 @@
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
 #' output3c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
-#'                        datatype = 'abundance', base = "coverage", nboot = 0, conf = 0.95, 
+#'                        datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output3c
 #' 
@@ -113,7 +113,7 @@
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
 #' output3s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
-#'                        datatype = 'abundance', base = "size", nboot = 10, conf = 0.95, 
+#'                        datatype = 'abundance', base = "size", nboot = 10, 
 #'                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output3s
 #' 
@@ -122,14 +122,14 @@
 #' # Coverage-based standardized TD estimates and related statistics
 #' data(Second_growth_forests)
 #' output4c = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-#'                        base = "coverage", level = NULL, nboot = 10, conf = 0.95)
+#'                        base = "coverage", level = NULL, nboot = 10)
 #' output4c
 #' 
 #' 
 #' # Size-based standardized TD estimates and related statistics
 #' data(Second_growth_forests)
 #' output4s = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-#'                        base = "size", level = NULL, nboot = 10, conf = 0.95)
+#'                        base = "size", level = NULL, nboot = 10)
 #' output4s
 #' 
 #' 
@@ -2835,7 +2835,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' output1c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
-#'                        datatype = 'abundance', base = "coverage", nboot = 30, conf = 0.95)
+#'                        datatype = 'abundance', base = "coverage", nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output1c, type = 'B')
 #' ggiNEXTbeta3D(output1c, type = 'D')
@@ -2844,7 +2844,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' output1s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
-#'                        datatype = 'abundance', base = "size", nboot = 30, conf = 0.95)
+#'                        datatype = 'abundance', base = "size", nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output1s)
 #' 
@@ -2854,7 +2854,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
 #' output2c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
-#'                        datatype = 'abundance', base = "coverage", nboot = 10, conf = 0.95, 
+#'                        datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
 #' ggiNEXTbeta3D(output2c, type = 'B')
@@ -2865,7 +2865,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
 #' output2s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
-#'                        datatype = 'abundance', base = "size", nboot = 10, conf = 0.95, 
+#'                        datatype = 'abundance', base = "size", nboot = 10, 
 #'                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
 #' ggiNEXTbeta3D(output2s)
@@ -2876,7 +2876,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
 #' output3c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
-#'                        datatype = 'abundance', base = "coverage", nboot = 0, conf = 0.95, 
+#'                        datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
 #' ggiNEXTbeta3D(output3c, type = 'B')
@@ -2887,7 +2887,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
 #' output3s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
-#'                        datatype = 'abundance', base = "size", nboot = 10, conf = 0.95, 
+#'                        datatype = 'abundance', base = "size", nboot = 10, 
 #'                        FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
 #' ggiNEXTbeta3D(output3s)
@@ -2897,7 +2897,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Second_growth_forests)
 #' output4c = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-#'                        base = "coverage", level = NULL, nboot = 20, conf = 0.95)
+#'                        base = "coverage", level = NULL, nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output4c, type = 'B')
 #' ggiNEXTbeta3D(output4c, type = 'D')
@@ -2906,7 +2906,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Second_growth_forests)
 #' output4s = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-#'                        base = "size", level = NULL, nboot = 30, conf = 0.95)
+#'                        base = "size", level = NULL, nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output4s)
 #' 
