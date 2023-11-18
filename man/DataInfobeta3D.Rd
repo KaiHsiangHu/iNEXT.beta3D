@@ -25,7 +25,7 @@ DataInfobeta3D(
 
 \item{PDtree}{(required argument only for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled dataset.}
 
-\item{PDreftime}{(argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).}
+\item{PDreftime}{(argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of \code{PDtree}).}
 
 \item{FDdistM}{(required argument only for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled dataset.}
 
@@ -39,12 +39,12 @@ For abundance data, basic information shared by TD, mean-PD and FD
  includes dataset name (Dataset), individual/pooled/joint assemblage (Assemblage),
 sample size (n), observed species richness (S.obs), sample coverage estimates of the reference sample (SC(n)), 
 sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.\cr\cr
-(1) TD: the first five species abundance (f1-f5).\cr\cr
+(1) TD: the first five species abundance frequency counts in the reference sample (f1-f5).\cr\cr
 (2) Mean-PD: the the observed total branch length in the phylogenetic tree (PD.obs), 
 the number of singletons (f1*) and doubletons (f2*) in the node/branch abundance set, as well as the total branch length 
 of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).\cr\cr
-(3) FD (\code{FDtype = "AUC"}): the minimum distance among all non-diagonal elements in the distance matrix (dmin), the mean distance
-(dmean), and the maximum distance (dmax) in the distance matrix.\cr \cr
+(3) FD (\code{FDtype = "AUC"}): the minimum distance (dmin) and the maximum distance (dmax) among all non-diagonal elements in the distance matrix, 
+and the mean distance between any two individuals randomly selected from the dataset (dmean).\cr\cr
 (4) FD (\code{FDtype = "tau_value"}): the number of singletons (a1*) and of doubletons (a2*) among the functionally indistinct
  set at the specified threshold level 'Tau', as well as the total contribution of singletons (h1) and of doubletons (h2)
   at the specified threshold level 'Tau'.\cr\cr
@@ -52,11 +52,11 @@ of those singletons (g1) and of those doubletons (g2), and the reference time (R
  For incidence data, the basic information for TD includes dataset name (Dataset), individual/pooled/joint assemblage 
  (Assemblage), number of sampling units (T), total number of incidences (U), observed species richness (S.obs), 
  sample coverage estimates of the reference sample (SC(T)), sample coverage estimate for twice the reference sample size
- (SC(2T)), as well as the first species incidence frequency counts (Q1-Q5). For mean-PD and FD, output is similar to that
+ (SC(2T)), as well as the first species incidence frequency counts (Q1-Q5) in the reference sample. For mean-PD and FD, output is similar to that
  for abundance data.
 }
 \description{
-\code{DataInfobeta3D}: Provides basic data information for (1) the reference sample in each assemblage, 
+\code{DataInfobeta3D} provides basic data information for (1) the reference sample in each assemblage, 
 (2) the gamma reference sample in the pooled assemblage, and (3) the alpha reference sample in the
  joint assemblage for TD, mean-PD and FD.
 }

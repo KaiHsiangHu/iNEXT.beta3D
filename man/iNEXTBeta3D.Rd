@@ -84,7 +84,7 @@ For \code{base = "coverage"}, return a list of seven data frames with three dive
  Similar output is obtained for \code{base = "size"}.\cr
 }
 \description{
-\code{iNEXTbeta3D}: compute standardized 3D estimates with a common sample size
+\code{iNEXTbeta3D} compute standardized 3D estimates with a common sample size
 (for alpha and gamma diversity) or sample coverage (for alpha, beta, gamma diversity as well as
 dissimilarity indices; see Chao et al. (2023) for the theory.
 }

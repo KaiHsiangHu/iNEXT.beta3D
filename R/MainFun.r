@@ -1,6 +1,6 @@
 #' iNterpolation and EXTrapolation with beta diversity for TD, PD and FD 
 #' 
-#' \code{iNEXTbeta3D}: compute standardized 3D estimates with a common sample size
+#' \code{iNEXTbeta3D} compute standardized 3D estimates with a common sample size
 #'(for alpha and gamma diversity) or sample coverage (for alpha, beta, gamma diversity as well as
 #' dissimilarity indices; see Chao et al. (2023) for the theory.
 #'                      
@@ -2818,13 +2818,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 
 #' ggplot2 extension for an iNEXTbeta3D object
 #' 
-#' \code{ggiNEXTbeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTbeta3D}} 
+#' \code{ggiNEXTbeta3D} is an \code{ggplot2} extension for \code{iNEXTbeta3D} 
 #' object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 #' 
-#' @param output the output from the function iNEXTbeta3D
+#' @param output output from the function iNEXTbeta3D
 #' @param type (argument only for \code{base = "coverage"}),\cr
 #' \code{type = 'B'} for plotting the rarefaction and extrapolation sampling curves for gamma, alpha, and beta diversity;  \cr
-#' \code{type = 'D'} for plotting the rarefaction and extrapolation sampling curves for four dissimilarity indices.
+#' \code{type = 'D'} for plotting the rarefaction and extrapolation sampling curves for four dissimilarity indices.\cr
 #' Skip the argument for plotting size-based rarefaction and extrapolation sampling curves for gamma and alpha diversity.
 #' 
 #' @return a figure for gamma, alpha, and beta diversity, or a figure for four dissimilarity indices for \code{base = "coverage"}; 
@@ -3571,7 +3571,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 
 #' Data information for reference samples 
 #' 
-#' \code{DataInfobeta3D}: Provides basic data information for (1) the reference sample in each assemblage, 
+#' \code{DataInfobeta3D} provides basic data information for (1) the reference sample in each assemblage, 
 #' (2) the gamma reference sample in the pooled assemblage, and (3) the alpha reference sample in the
 #'  joint assemblage for TD, mean-PD and FD. 
 #' 
@@ -3580,7 +3580,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).
 #' @param PDtree (required argument only for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled dataset. 
-#' @param PDreftime (argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).  
+#' @param PDreftime (argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of \code{PDtree}).  
 #' @param FDdistM (required argument only for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled dataset. 
 #' @param FDtype (argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
 #' @param FDtau (argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled dataset (i.e., quadratic entropy). 
@@ -3590,12 +3590,12 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #'  includes dataset name (Dataset), individual/pooled/joint assemblage (Assemblage),
 #' sample size (n), observed species richness (S.obs), sample coverage estimates of the reference sample (SC(n)), 
 #' sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.\cr\cr
-#' (1) TD: the first five species abundance (f1-f5).\cr\cr
+#' (1) TD: the first five species abundance frequency counts in the reference sample (f1-f5).\cr\cr
 #' (2) Mean-PD: the the observed total branch length in the phylogenetic tree (PD.obs), 
 #' the number of singletons (f1*) and doubletons (f2*) in the node/branch abundance set, as well as the total branch length 
 #' of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).\cr\cr
-#' (3) FD (\code{FDtype = "AUC"}): the minimum distance among all non-diagonal elements in the distance matrix (dmin), the mean distance
-#' (dmean), and the maximum distance (dmax) in the distance matrix.\cr \cr
+#' (3) FD (\code{FDtype = "AUC"}): the minimum distance (dmin) and the maximum distance (dmax) among all non-diagonal elements in the distance matrix, 
+#' and the mean distance between any two individuals randomly selected from the dataset (dmean).\cr\cr
 #' (4) FD (\code{FDtype = "tau_value"}): the number of singletons (a1*) and of doubletons (a2*) among the functionally indistinct
 #'  set at the specified threshold level 'Tau', as well as the total contribution of singletons (h1) and of doubletons (h2)
 #'   at the specified threshold level 'Tau'.\cr\cr
@@ -3603,7 +3603,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #'  For incidence data, the basic information for TD includes dataset name (Dataset), individual/pooled/joint assemblage 
 #'  (Assemblage), number of sampling units (T), total number of incidences (U), observed species richness (S.obs), 
 #'  sample coverage estimates of the reference sample (SC(T)), sample coverage estimate for twice the reference sample size
-#'  (SC(2T)), as well as the first species incidence frequency counts (Q1-Q5). For mean-PD and FD, output is similar to that
+#'  (SC(2T)), as well as the first species incidence frequency counts (Q1-Q5) in the reference sample. For mean-PD and FD, output is similar to that
 #'  for abundance data.   
 #' 
 #' @examples
@@ -4172,7 +4172,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
 
 
 
-#' Printing iNEXTbeta3D object
+#' Printing \code{iNEXTbeta3D} object
 #' 
 #' \code{print.iNEXTbeta3D}: Print method for objects inheriting from class \code{iNEXTbeta3D}
 #' @param x an \code{iNEXTbeta3D} object computed by \code{\link{iNEXTbeta3D}}.

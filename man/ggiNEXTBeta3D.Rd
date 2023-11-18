@@ -7,11 +7,11 @@
 ggiNEXTbeta3D(output, type = "B")
 }
 \arguments{
-\item{output}{the output from the function iNEXTbeta3D}
+\item{output}{output from the function iNEXTbeta3D}
 
 \item{type}{(argument only for \code{base = "coverage"}),\cr
 \code{type = 'B'} for plotting the rarefaction and extrapolation sampling curves for gamma, alpha, and beta diversity;  \cr
-\code{type = 'D'} for plotting the rarefaction and extrapolation sampling curves for four dissimilarity indices.
+\code{type = 'D'} for plotting the rarefaction and extrapolation sampling curves for four dissimilarity indices.\cr
 Skip the argument for plotting size-based rarefaction and extrapolation sampling curves for gamma and alpha diversity.}
 }
 \value{
@@ -19,7 +19,7 @@ a figure for gamma, alpha, and beta diversity, or a figure for four dissimilarit
 or a figure for gamma and alpha diversity when \code{base = "size"}.\cr
 }
 \description{
-\code{ggiNEXTbeta3D}: the \code{\link[ggplot2]{ggplot}} extension for \code{\link{iNEXTbeta3D}} 
+\code{ggiNEXTbeta3D} is an \code{ggplot2} extension for \code{iNEXTbeta3D} 
 object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 }
 \examples{

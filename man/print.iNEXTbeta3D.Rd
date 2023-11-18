@@ -2,7 +2,7 @@
 % Please edit documentation in R/MainFun.r
 \name{print.iNEXTbeta3D}
 \alias{print.iNEXTbeta3D}
-\title{Printing iNEXTbeta3D object}
+\title{Printing \code{iNEXTbeta3D} object}
 \usage{
 \method{print}{iNEXTbeta3D}(x, ...)
 }
