@@ -643,7 +643,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         aL$treeNabu$branch.length = aL$BLbyT[,1]
         aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
         
-        gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, cal = "PD") %>% t %>% as.data.frame %>% 
+        gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, reft = reft, cal = "PD") %>% t %>% as.data.frame %>% 
           set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(SC = rep(level, length(q)), Size = rep(m_gamma, length(q)))
         
@@ -664,7 +664,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         }
         
         
-        qPDm = iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, cal = "PD")
+        qPDm = iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, reft = reft, cal = "PD")
         qPDm = qPDm/N
         alpha = qPDm %>% t %>% as.data.frame %>% 
           set_colnames(q) %>% gather(Order.q, Estimate) %>% 
@@ -677,7 +677,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         aL = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = as.matrix(data_gamma_raw), datatype = "incidence_raw", refT = reft, rootExtend = T)
         aL$treeNabu$branch.length = aL$BLbyT[,1]
         aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
-        gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis=as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, cal = "PD") %>% t %>% as.data.frame %>% 
+        gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis=as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, reft = reft, cal = "PD") %>% t %>% as.data.frame %>% 
           set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(SC = rep(level, length(q)), Size = rep(m_gamma, length(q)))
         
@@ -695,7 +695,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
         }
         
-        alpha = (iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, cal = "PD")/N) %>% t %>% as.data.frame %>% 
+        alpha = (iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, reft = reft, cal = "PD")/N) %>% t %>% as.data.frame %>% 
           set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(SC = rep(level, length(q)), Size = rep(m_alpha, length(q)))
         
@@ -852,7 +852,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             aL$treeNabu$branch.length = aL$BLbyT[,1]
             aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
             
-            gamma = as.vector(iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, cal = "PD") %>% t)
+            gamma = as.vector(iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, reft = reft, cal = "PD") %>% t)
             
             
             aL_table_alpha = c()
@@ -874,7 +874,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               
             }
             
-            alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, cal = "PD")/N) %>% t)
+            alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q = q, nt = n, reft = reft, cal = "PD")/N) %>% t)
             
             # beta_obs = (iNEXT.3D:::PD.Tprofile(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), q = q, nt = n, cal = "PD") / 
             #               (iNEXT.3D:::PD.Tprofile(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), q = q, nt = n, cal = "PD") / N)) %>% unlist()
@@ -991,7 +991,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             aL$treeNabu$branch.length = aL$BLbyT[,1]
             aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
             
-            gamma = as.vector(iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, cal="PD") %>% t)
+            gamma = as.vector(iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = m_gamma, q = q, nt = n, reft = reft, cal="PD") %>% t)
             
             
             aL_table_alpha = c()
@@ -1008,7 +1008,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               
             }
             
-            alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q=q, nt = n, cal = "PD")/N) %>% t)
+            alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = m_alpha, q=q, nt = n, reft = reft, cal = "PD")/N) %>% t)
             
             # beta_obs = (iNEXT.3D:::PD.Tprofile(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), q = q, nt = n, cal = "PD") / 
             #               (iNEXT.3D:::PD.Tprofile(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), q = q, nt = n, cal = "PD") / N)) %>% unlist()
@@ -1909,7 +1909,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         aL$treeNabu$branch.length = aL$BLbyT[,1]
         aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
         
-        gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, cal = "PD") %>% t %>% as.data.frame %>% 
+        gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, reft = reft, cal = "PD") %>% t %>% as.data.frame %>% 
           set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma, "abundance", level), length(q)), Size = rep(level, length(q)), Size = rep(level, length(q)))
         
@@ -1930,7 +1930,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         }
         
         
-        qPDm = iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q = q, nt = n, cal = "PD")
+        qPDm = iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q = q, nt = n, reft = reft, cal = "PD")
         qPDm = qPDm/N
         alpha = qPDm %>% t %>% as.data.frame %>% 
           set_colnames(q) %>% gather(Order.q, Estimate) %>% 
@@ -1943,7 +1943,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         aL = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = as.matrix(data_gamma_raw), datatype = "incidence_raw", refT = reft, rootExtend = T)
         aL$treeNabu$branch.length = aL$BLbyT[,1]
         aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
-        gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis=as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, cal = "PD") %>% t %>% as.data.frame %>% 
+        gamma = iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis=as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, reft = reft, cal = "PD") %>% t %>% as.data.frame %>% 
           set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(Coverage_real = rep(iNEXT.3D:::Coverage(data_gamma_freq, "incidence_freq", level), length(q)), Size = rep(level, length(q)))
         
@@ -1961,7 +1961,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
         }
         
-        alpha = (iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q = q, nt = n, cal = "PD")/N) %>% t %>% as.data.frame %>% 
+        alpha = (iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q = q, nt = n, reft = reft, cal = "PD")/N) %>% t %>% as.data.frame %>% 
           set_colnames(q) %>% gather(Order.q, Estimate) %>% 
           mutate(Coverage_real = rep(iNEXT.3D:::Coverage(data_alpha_freq, "incidence_freq", level), length(q)), Size = rep(level, length(q)))
         
@@ -2108,7 +2108,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             aL$treeNabu$branch.length = aL$BLbyT[,1]
             aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
             
-            gamma = as.vector(iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, cal = "PD") %>% t)
+            gamma = as.vector(iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, reft = reft, cal = "PD") %>% t)
             
             
             aL_table_alpha = c()
@@ -2130,7 +2130,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               
             }
             
-            alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q = q, nt = n, cal = "PD")/N) %>% t)
+            alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q = q, nt = n, reft = reft, cal = "PD")/N) %>% t)
             
           }
           
@@ -2241,7 +2241,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             aL$treeNabu$branch.length = aL$BLbyT[,1]
             aL_table_gamma = aL$treeNabu %>% select(branch.abun, branch.length, tgroup)
             
-            gamma = as.vector(iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, cal="PD") %>% t)
+            gamma = as.vector(iNEXT.3D:::PhD.m.est(ai = aL_table_gamma$branch.abun, Lis = as.matrix(aL_table_gamma$branch.length), m = level, q = q, nt = n, reft = reft, cal="PD") %>% t)
             
             
             aL_table_alpha = c()
@@ -2258,7 +2258,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               
             }
             
-            alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q=q, nt = n, cal = "PD")/N) %>% t)
+            alpha = as.vector((iNEXT.3D:::PhD.m.est(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), m = level, q=q, nt = n, reft = reft, cal = "PD")/N) %>% t)
             
           }
           
