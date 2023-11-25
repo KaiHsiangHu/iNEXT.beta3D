@@ -143,9 +143,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                        PDtree = NULL, PDreftime = NULL, PDtype = 'meanPD',
                        FDdistM = NULL, FDtype = 'AUC', FDtau = NULL, FDcut_number = 30) {
   
-  max_alpha_coverage = F
-  
-  
   ## Check parameter setting
   if (is.na(pmatch(diversity, c("TD", "PD", "FD")))) stop("invalid diversity")
   
@@ -485,20 +482,12 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       )[,c(5,2,4,1,3)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       
-      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC > 0
-      gamma = gamma[under_max_alpha,]
-      
-      
       
       alpha = (cbind(SC = rep(level, each = length(q)), alpha[,-c(1,3,7,8,9)]) %>% 
                  mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Rarefaction'))
       )[,c(5,2,4,1,3)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
       alpha$Estimate = alpha$Estimate / N
-      
-      
-      alpha = alpha[under_max_alpha,]
-      
       
       
       beta = alpha
@@ -576,14 +565,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             
           }
           
-          gamma = gamma$qTD[under_max_alpha]
+          gamma = gamma$qTD
           
-          alpha = alpha$qTD[under_max_alpha]
+          alpha = alpha$qTD
           alpha = alpha / N
           
           beta = gamma/alpha
           
-          Order.q = rep(q, length(level))[under_max_alpha]
+          Order.q = rep(q, length(level))
           
           beta = data.frame(Estimate=beta, Order.q)
           
@@ -706,8 +695,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                  mutate(Method = ifelse(SC >= ref_gamma, ifelse(SC == ref_gamma, 'Observed', 'Extrapolation'), 'Rarefaction')))[,c(2,1,5,3,4)] %>% 
         set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC>0
-      gamma = gamma[under_max_alpha,]
       gamma$Order.q = as.numeric(gamma$Order.q)
       
       
@@ -715,7 +702,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                  mutate(Method = ifelse(SC >= ref_alpha, ifelse(SC == ref_alpha, 'Observed', 'Extrapolation'), 'Rarefaction')))[,c(2,1,5,3,4)] %>% 
         set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      alpha = alpha[under_max_alpha,]
       alpha$Order.q = as.numeric(alpha$Order.q)
       
       if (PDtype == 'meanPD') {
@@ -1014,10 +1000,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             #               (iNEXT.3D:::PD.Tprofile(ai = aL_table_alpha$branch.abun, Lis = as.matrix(aL_table_alpha$branch.length), q = q, nt = n, cal = "PD") / N)) %>% unlist()
           }
           
-          gamma = gamma[under_max_alpha]
-          
-          alpha = alpha[under_max_alpha]
-          
           if (PDtype == 'meanPD') {
             gamma = gamma/reft
             alpha = alpha/reft
@@ -1030,7 +1012,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           # beta = c(beta, beta_obs)
           # 
           # Order.q = rep(q, each = length(level) + 1)[under_max_alpha]
-          Order.q = rep(q, each = length(level))[under_max_alpha]
+          Order.q = rep(q, each = length(level))
           
           beta = data.frame(Estimate = beta, Order.q)
           
@@ -1065,7 +1047,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       FDdistM = as.matrix(FDdistM)
       
-      FD_by_tau = function(data, distM, tau, level, datatype, by, m_gamma, m_alpha) {
+      FD_by_tau = function(data, distM, tau, level, datatype, m_gamma, m_alpha) {
         
         if (datatype == 'abundance') {
           
@@ -1089,30 +1071,36 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma_x = rowSums(zik)[positive_id]
           gamma_a = rowSums(aik)[positive_id]
           gamma_v = gamma_x/gamma_a
-          # gamma_a = ifelse(gamma_a < 1, 1, round(gamma_a))
+          gamma_a_int = ifelse(gamma_a < 1, 1, round(gamma_a))
+          gamma_v_int = gamma_x/gamma_a_int
           
-          ai_vi_gamma = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
+          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
           gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
-          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n) %>% as.vector
+          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
           
           
           alpha_x = as.vector(as.matrix(zik))
           alpha_a = as.vector(aik)
           # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
+          # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
-          alpha_v = alpha_x/alpha_a
+          # alpha_v = alpha_x/alpha_a
           alpha_v = rep(gamma_v,N)
-          
           alpha_v = alpha_v[alpha_a>0]
           alpha_a = alpha_a[alpha_a>0]
           
-          ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          # alpha_v_int = rep(gamma_v_int,N)
+          # alpha_v_int = alpha_v_int[alpha_a_int>0]
+          # alpha_a_int = alpha_a_int[alpha_a_int>0]
           
-          if (by == 'size') alpha = (FD.m.est_0(ai_vi_alpha, m_gamma, q, n)/N) %>% as.vector
-          if (by == 'coverage') alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
-          # if (by == 'size') alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_gamma, q, n)/N) %>% as.vector
-          # if (by == 'coverage') alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
+          ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          # ai_vi_alpha = list(ai = data.frame(alpha_a_int), vi = data.frame(alpha_v_int))
+          # ai_vi_alpha_MLE = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          
+          alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
+          # alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
           
         }
         
@@ -1138,14 +1126,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma_a[gamma_a > n] = n
           gamma_v = gamma_Y/gamma_a
+          gamma_a_int = ifelse(gamma_a < 1, 1, round(gamma_a))
+          gamma_v_int = gamma_Y/gamma_a_int
           
-          # gamma_a = ifelse(gamma_a < 1, 1, round(gamma_a))
-          # gamma_a[gamma_a > n] = n
-          
-          ai_vi_gamma = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
+          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
           gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
-          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n) %>% as.vector
+          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
           
           
           alpha_Y = data_2D[-1,]
@@ -1166,17 +1154,22 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           alpha_a[alpha_a > n] = n
           alpha_a = as.vector(alpha_a)
+          # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
           alpha_v = rep(gamma_v, N)
           alpha_v = alpha_v[alpha_a > 0]
           alpha_a = alpha_a[alpha_a > 0]
           
-          ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          # alpha_v_int = rep(gamma_v_int, N)
+          # alpha_v_int = alpha_v_int[alpha_a_int > 0]
+          # alpha_a_int = alpha_a_int[alpha_a_int > 0]
           
-          if (by == 'size') alpha = (FD.m.est_0(ai_vi_alpha, m_gamma, q, n)/N) %>% as.vector
-          if (by == 'coverage') alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
-          # if (by == 'size') alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_gamma, q, n)/N) %>% as.vector
-          # if (by == 'coverage') alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
+          ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          # ai_vi_alpha = list(ai = data.frame(alpha_a_int), vi = data.frame(alpha_v_int))
+          # ai_vi_alpha_MLE = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          
+          alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
+          # alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
           
         }
         
@@ -1192,7 +1185,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           order_sp <- match(rownames(data),rownames(FDdistM))
           FDdistM <- FDdistM[order_sp,order_sp]
           
-          output = FD_by_tau(data, FDdistM, FDtau, level, datatype = 'abundance', by = 'coverage', m_gamma = m_gamma, m_alpha = m_alpha)
+          output = FD_by_tau(data, FDdistM, FDtau, level, datatype = 'abundance', m_gamma = m_gamma, m_alpha = m_alpha)
           gamma = output$gamma
           alpha = output$alpha
           
@@ -1221,7 +1214,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           order_sp <- match(names(data_gamma_freq)[-1],rownames(FDdistM))
           FDdistM <- FDdistM[order_sp,order_sp]
           
-          output = FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, FDtau, level, datatype='incidence_raw', by = 'coverage', m_gamma=m_gamma, m_alpha=m_alpha)
+          output = FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, FDtau, level, datatype='incidence_raw', m_gamma=m_gamma, m_alpha=m_alpha)
           gamma = output$gamma
           alpha = output$alpha
           
@@ -1248,8 +1241,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       if (FDtype == 'AUC'){
         
-        # cut = seq(0.00000001, 1, length.out = FDcut_number)
-        cut = seq(0, 1, length.out = FDcut_number)
+        cut = seq(0.00000001, 1, length.out = FDcut_number)
+        # cut = seq(0, 1, length.out = FDcut_number)
         width = diff(cut)
         
         if (datatype == 'abundance') {
@@ -1260,7 +1253,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma_alpha_over_tau = lapply(cut, function(tau) {
             
-            FD_by_tau(data, FDdistM, tau, level, datatype = 'abundance', by = 'coverage', m_gamma = m_gamma, m_alpha = m_alpha)
+            FD_by_tau(data, FDdistM, tau, level, datatype = 'abundance', m_gamma = m_gamma, m_alpha = m_alpha)
             
           })
           
@@ -1320,7 +1313,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma_alpha_over_tau = lapply(cut, function(tau) {
             
-            FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, tau, level, datatype = 'incidence_raw', by = 'coverage', m_gamma = m_gamma, m_alpha = m_alpha)
+            FD_by_tau(list(data_gamma_freq = data_gamma_freq, data_2D = data_2D), FDdistM, tau, level, datatype = 'incidence_raw', m_gamma = m_gamma, m_alpha = m_alpha)
             
           })
           
@@ -1376,17 +1369,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       gamma = gamma[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      if (max_alpha_coverage == T) under_max_alpha = !((gamma$Order.q == 0) & (gamma$SC > ref_alpha_max)) else under_max_alpha = gamma$SC > 0
-      gamma = gamma[under_max_alpha,]
-      
-      
       alpha = alpha[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
       
-      alpha = alpha[under_max_alpha,]
-      
       beta = beta[,c(2,4,3,1,5)] %>% set_colnames(c('Estimate', 'Order.q', 'Method', 'SC', 'Size'))
-      
-      beta = beta[under_max_alpha,]
       
       # beta[beta == "Observed"] = "Observed_SC(n, alpha)"
       # beta = beta %>% 
@@ -1430,7 +1415,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               m_gamma = sapply(level, function(i) coverage_to_size(data_gamma, i, datatype='abundance'))
               m_alpha = sapply(level, function(i) coverage_to_size(data_alpha, i, datatype='abundance'))
               
-              output = FD_by_tau(data_bt, distance_matrix_bt, FDtau, level, datatype='abundance', by = 'coverage', m_gamma = m_gamma, m_alpha = m_alpha)
+              output = FD_by_tau(data_bt, distance_matrix_bt, FDtau, level, datatype='abundance', m_gamma = m_gamma, m_alpha = m_alpha)
               gamma = output$gamma
               alpha = output$alpha
               
@@ -1451,7 +1436,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               
               gamma_alpha_over_tau = lapply(cut, function(tau) {
                 
-                FD_by_tau(data_bt, distance_matrix_bt, tau, level, datatype = 'abundance', by = 'coverage', m_gamma = m_gamma, m_alpha = m_alpha)
+                FD_by_tau(data_bt, distance_matrix_bt, tau, level, datatype = 'abundance', m_gamma = m_gamma, m_alpha = m_alpha)
                 
               })
               
@@ -1532,7 +1517,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               m_gamma = sapply(level, function(i) coverage_to_size(data_gamma_freq_bt, i, datatype='incidence_freq'))
               m_alpha = sapply(level, function(i) coverage_to_size(data_alpha_freq_bt, i, datatype='incidence_raw'))
               
-              output = FD_by_tau(list(data_gamma_freq = data_gamma_freq_bt, data_2D = data_2D_bt), distance_matrix_bt, FDtau, level, datatype = 'incidence_raw', by = 'coverage', m_gamma = m_gamma, m_alpha = m_alpha)
+              output = FD_by_tau(list(data_gamma_freq = data_gamma_freq_bt, data_2D = data_2D_bt), distance_matrix_bt, FDtau, level, datatype = 'incidence_raw', m_gamma = m_gamma, m_alpha = m_alpha)
               gamma = output$gamma
               alpha = output$alpha
               
@@ -1553,7 +1538,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               
               gamma_alpha_over_tau = lapply(cut, function(tau) {
                 
-                FD_by_tau(list(data_gamma_freq = data_gamma_freq_bt, data_2D = data_2D_bt), distance_matrix_bt, tau, level, datatype = 'incidence_raw', by = 'coverage', m_gamma = m_gamma, m_alpha = m_alpha)
+                FD_by_tau(list(data_gamma_freq = data_gamma_freq_bt, data_2D = data_2D_bt), distance_matrix_bt, tau, level, datatype = 'incidence_raw', m_gamma = m_gamma, m_alpha = m_alpha)
                 
               })
               
@@ -1602,10 +1587,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             
           }
           
-          gamma = gamma[under_max_alpha]
-          alpha = alpha[under_max_alpha]
-          beta = beta[under_max_alpha]
-          
           beta = gamma/alpha
           
           # gamma = c(gamma, rep(0, length(q)))
@@ -1613,7 +1594,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           # beta = c(beta, beta_obs)
           # 
           # Order.q = rep(q, each=length(level) + 1)[under_max_alpha]
-          Order.q = rep(q, each=length(level))[under_max_alpha]
+          Order.q = rep(q, each=length(level))
           
           beta = data.frame(Estimate = beta, Order.q)
           
@@ -2309,7 +2290,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       FDdistM = as.matrix(FDdistM)
       
-      FD_by_tau = function(data, distM, tau, datatype, m_gamma, m_alpha) {
+      FD_by_tau = function(data, distM, tau, level, datatype, m_gamma, m_alpha) {
         
         if (datatype == 'abundance') {
           
@@ -2318,6 +2299,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           dij = distM
           dij = dij[rowSums(data)>0, rowSums(data)>0]
+          
           
           if (tau == 0) {
             dij[dij > 0] <- 1
@@ -2332,27 +2314,36 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma_x = rowSums(zik)[positive_id]
           gamma_a = rowSums(aik)[positive_id]
           gamma_v = gamma_x/gamma_a
-          # gamma_a = ifelse(gamma_a < 1, 1, round(gamma_a))
+          gamma_a_int = ifelse(gamma_a < 1, 1, round(gamma_a))
+          gamma_v_int = gamma_x/gamma_a_int
           
-          ai_vi_gamma = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
+          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
           gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
-          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n) %>% as.vector
+          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
           
           
           alpha_x = as.vector(as.matrix(zik))
           alpha_a = as.vector(aik)
           # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
+          # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
-          alpha_v = alpha_x/alpha_a
+          # alpha_v = alpha_x/alpha_a
           alpha_v = rep(gamma_v,N)
-          
           alpha_v = alpha_v[alpha_a>0]
           alpha_a = alpha_a[alpha_a>0]
           
-          ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          # alpha_v_int = rep(gamma_v_int,N)
+          # alpha_v_int = alpha_v_int[alpha_a_int>0]
+          # alpha_a_int = alpha_a_int[alpha_a_int>0]
           
-          alpha = (FD.m.est_0(ai_vi_alpha, m_gamma, q, n)/N) %>% as.vector
+          ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          # ai_vi_alpha = list(ai = data.frame(alpha_a_int), vi = data.frame(alpha_v_int))
+          # ai_vi_alpha_MLE = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          
+          alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
+          # alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
           
         }
         
@@ -2367,6 +2358,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           dij = dij[gamma_Y > 0, gamma_Y > 0]
           gamma_Y = gamma_Y[gamma_Y > 0]
           
+          
           if (tau == 0) {
             dij[dij > 0] <- 1
             gamma_a = (1 - dij/1) %*% as.matrix(gamma_Y)
@@ -2377,14 +2369,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma_a[gamma_a > n] = n
           gamma_v = gamma_Y/gamma_a
+          gamma_a_int = ifelse(gamma_a < 1, 1, round(gamma_a))
+          gamma_v_int = gamma_Y/gamma_a_int
           
-          # gamma_a = ifelse(gamma_a < 1, 1, round(gamma_a))
-          # gamma_a[gamma_a > n] = n
-          
-          ai_vi_gamma = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
+          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
           gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
-          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n) %>% as.vector
+          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
           
           
           alpha_Y = data_2D[-1,]
@@ -2405,13 +2397,22 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           alpha_a[alpha_a > n] = n
           alpha_a = as.vector(alpha_a)
+          # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
           alpha_v = rep(gamma_v, N)
           alpha_v = alpha_v[alpha_a > 0]
           alpha_a = alpha_a[alpha_a > 0]
           
+          # alpha_v_int = rep(gamma_v_int, N)
+          # alpha_v_int = alpha_v_int[alpha_a_int > 0]
+          # alpha_a_int = alpha_a_int[alpha_a_int > 0]
+          
           ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
-          alpha = (FD.m.est_0(ai_vi_alpha, m_gamma, q, n)/N) %>% as.vector
+          # ai_vi_alpha = list(ai = data.frame(alpha_a_int), vi = data.frame(alpha_v_int))
+          # ai_vi_alpha_MLE = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
+          
+          alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
+          # alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
           
         }
         
@@ -3504,14 +3505,17 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
       if (qs[i] != 2) {
         obs[i] + (asy[i] - obs[i]) * (1 - (1 - beta[i])^m)
       }
-      else if (qs[i] == 2) {
+      else if (qs[i] == 2 & beta[i] != 0 ) {
         V_bar^2/sum((av[, 2]) * ((1/(nT + m)) * (av[, 1]/nT) + ((nT + m - 1)/(nT + m)) * (av[, 1] * (av[, 1] - 1)/(nT * (nT - 1)))))
       }
+      else if( qs[i] == 2 & beta[i] == 0 ){
+        asy[i]
+      } 
     })
     return(out)
   }
   V_bar <- sum(ai_vi$ai[, 1] * ai_vi$vi[, 1])/nT
-  asy <- iNEXT.3D:::FD_est(ai_vi, q, nT)$est
+  asy <- iNEXT.3D:::FD_est(ai_vi, q, nT, ai_vi)
   obs <- iNEXT.3D:::FD_mle(ai_vi, q)
   out <- sapply(1:ncol(ai_vi$ai), function(i) {
     ai <- ai_vi$ai[, i]
