@@ -25,3 +25,7 @@ Encoding: UTF-8
 BugReports: https://github.com/KaiHsiangHu/iNEXT.beta3D/issues
 LazyData: true
 RoxygenNote: 7.2.3
+VignetteBuilder: knitr
+ByteCompile: true
+
+
