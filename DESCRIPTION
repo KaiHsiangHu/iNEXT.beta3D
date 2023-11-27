@@ -20,6 +20,7 @@ Imports: tidyverse,
           colorRamps,
           future.apply,
           iNEXT.3D
+Suggests: knitr
 Remotes: AnneChao/iNEXT.3D
 Encoding: UTF-8
 BugReports: https://github.com/KaiHsiangHu/iNEXT.beta3D/issues
