@@ -48,7 +48,7 @@ If you publish your work based on results from `iNEXT.beta3D`, you should make r
 
 ## SOFTWARE NEEDED TO RUN iNEXT.beta3D IN R
 - Required: [R](https://cran.r-project.org/)
-- Suggested: [RStudio IDE](https://www.rstudio.com/products/RStudio/#Desktop)
+- Suggested: [RStudio IDE](https://posit.co/products/open-source/rstudio/#Desktop)
 
 ## HOW TO RUN iNEXT.beta3D:
 The `iNEXT.beta3D` package is available from CRAN and can be downloaded from Anne Chao's Github [iNEXT.beta3D_github](https://github.com/AnneChao/iNEXT.beta3D) using the following commands. For a first-time installation, an additional visualization extension package (`ggplot2` frm CRAN) and (`iNEXT.3D` from Anne Chao's github) must be installed and loaded. 
