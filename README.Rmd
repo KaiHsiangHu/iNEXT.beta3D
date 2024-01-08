@@ -27,7 +27,7 @@ iNEXT.beta3D (R package)
 
 <font color="394CAE"><h3 color= 394CAE style = "font-weight: bold"> Introduction to iNEXT.beta3D (R package): Excerpt from iNEXT.beta3D User’s Guide </h3> </font>
 <br>
-<h5><b>Anne Chao, Kai-Hsiang Hu, Y.S. Kao and Z.C. Szu-tu</b>
+<h5><b>Anne Chao, Hu, K.-H., Y.S. Kao and Z.C. Szu-tu</b>
 <br><br>
 <i>Institute of Statistics, National Tsing Hua University, Hsin-Chu, Taiwan 30043</i>  
 </h5>

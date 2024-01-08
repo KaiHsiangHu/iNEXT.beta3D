@@ -1,6 +1,6 @@
 ---
 title: "An Introduction to iNEXT.beta3D via Examples"
-author: "Anne Chao and K. H. Hu"
+author: "Anne Chao and Hu, K.-H."
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
                       fig.align = 'center',
                       fig.width = 7, fig.height = 5,
                       warning = FALSE, message = FALSE)
-options("width"=200)
+options("width" = 200, digits = 3)
 library(iNEXT.beta3D)
 ```
 
