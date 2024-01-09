@@ -11,7 +11,7 @@ citEntry(
 		 year = year,
 		 note = note,
 		 url = "http://chao.stat.nthu.edu.tw/wordpress/software_download/inext-beta3d/",
-		 textVersion = paste("Chao, A. and K.-H. Hu", year, "iNEXT.beta3D: interpolation and extrapolation with beta diversity for three dimensions of biodiversity.", note, "URL: http://chao.stat.nthu.edu.tw/wordpress/software_download/inext-beta3d/.")
+		 textVersion = paste("Anne Chao and Kai-Hsiang Hu", year, "iNEXT.beta3D: interpolation and extrapolation with beta diversity for three dimensions of biodiversity.", note, "URL: http://chao.stat.nthu.edu.tw/wordpress/software_download/inext-beta3d/.")
 )
 
 citEntry(
