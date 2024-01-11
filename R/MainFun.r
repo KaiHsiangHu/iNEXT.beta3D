@@ -3591,23 +3591,23 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' 
 #' @return a data.frame including basic data information.\cr\cr 
 #' For abundance data, basic information shared by TD, mean-PD and FD
-#'  includes dataset name (Dataset), individual/pooled/joint assemblage (Assemblage),
-#' sample size (n), observed species richness (S.obs), sample coverage estimates of the reference sample (SC(n)), 
-#' sample coverage estimate for twice the reference sample size (SC(2n)). Other additional information is given below.\cr\cr
-#' (1) TD: the first five species abundance frequency counts in the reference sample (f1-f5).\cr\cr
-#' (2) Mean-PD: the the observed total branch length in the phylogenetic tree (PD.obs), 
-#' the number of singletons (f1*) and doubletons (f2*) in the node/branch abundance set, as well as the total branch length 
-#' of those singletons (g1) and of those doubletons (g2), and the reference time (Reftime).\cr\cr
-#' (3) FD (\code{FDtype = "AUC"}): the minimum distance (dmin) and the maximum distance (dmax) among all non-diagonal elements in the distance matrix, 
-#' and the mean distance between any two individuals randomly selected from the dataset (dmean).\cr\cr
-#' (4) FD (\code{FDtype = "tau_value"}): the number of singletons (a1*) and of doubletons (a2*) among the functionally indistinct
-#'  set at the specified threshold level 'Tau', as well as the total contribution of singletons (h1) and of doubletons (h2)
-#'   at the specified threshold level 'Tau'.\cr\cr
+#'  includes dataset name (\code{Dataset}), individual/pooled/joint assemblage (\code{Assemblage}),
+#' sample size (\code{n}), observed species richness (\code{S.obs}), sample coverage estimates of the reference sample (\code{SC(n)}), 
+#' sample coverage estimate for twice the reference sample size (\code{SC(2n)}). Other additional information is given below.\cr\cr
+#' (1) TD: the first five species abundance frequency counts in the reference sample (\code{f1}-\code{f5}).\cr\cr
+#' (2) Mean-PD: the the observed total branch length in the phylogenetic tree (\code{PD.obs}), 
+#' the number of singletons (\code{f1*}) and doubletons (\code{f2*}) in the node/branch abundance set, as well as the total branch length 
+#' of those singletons (\code{g1}) and of those doubletons (\code{g2}), and the reference time (\code{Reftime}).\cr\cr
+#' (3) FD (\code{FDtype = "AUC"}): the minimum distance (\code{dmin}) and the maximum distance (\code{dmax}) among all non-diagonal elements in the distance matrix, 
+#' and the mean distance between any two individuals randomly selected from the dataset (\code{dmean}).\cr\cr
+#' (4) FD (\code{FDtype = "tau_value"}): the number of singletons (\code{a1*}) and of doubletons (\code{a2*}) among the functionally indistinct
+#'  set at the specified threshold level \code{'Tau'}, as well as the total contribution of singletons (\code{h1}) and of doubletons (\code{h2})
+#'   at the specified threshold level \code{'Tau'}.\cr\cr
 #'  
-#'  For incidence data, the basic information for TD includes dataset name (Dataset), individual/pooled/joint assemblage 
-#'  (Assemblage), number of sampling units (T), total number of incidences (U), observed species richness (S.obs), 
-#'  sample coverage estimates of the reference sample (SC(T)), sample coverage estimate for twice the reference sample size
-#'  (SC(2T)), as well as the first species incidence frequency counts (Q1-Q5) in the reference sample. For mean-PD and FD, output is similar to that
+#'  For incidence data, the basic information for TD includes dataset name (\code{Dataset}), individual/pooled/joint assemblage 
+#'  (\code{Assemblage}), number of sampling units (\code{T}), total number of incidences (\code{U}), observed species richness (\code{S.obs}), 
+#'  sample coverage estimates of the reference sample (\code{SC(T)}), sample coverage estimate for twice the reference sample size
+#'  (\code{SC(2T)}), as well as the first species incidence frequency counts (\code{Q1}-\code{Q5}) in the reference sample. For mean-PD and FD, output is similar to that
 #'  for abundance data.   
 #' 
 #' @examples
