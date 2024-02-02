@@ -3,7 +3,7 @@
 # iNEXT.beta3D (R package)
 
 <h5 align="right">
-Latest version: 2024-01-09
+Latest version: 2024-02-02
 </h5>
 <font color="394CAE">
 <h3 color="394CAE" style="font-weight: bold">
@@ -183,16 +183,18 @@ data
 </td>
 <td style='text-align: left;'>
 
-1.  For datatype = ‘abundance’, species abundance data for a single
-    dataset can be input as a matrix/data.frame (species-by-assemblage);
-    data for multiple datasets can be input as a list of
-    matrices/data.frames, with each matrix representing a
-    species-by-assemblage abundance matrix for one of the datasets.
-2.  For datatype = ‘incidence_raw’, data for a single dataset with N
-    assemblages can be input as a list of matrices/data.frames, with
-    each matrix representing a species-by-sampling-unit incidence matrix
-    for one of the assemblages; data for multiple datasets can be input
-    as multiple lists.
+1.  For <code>datatype = ‘abundance’</code>, species abundance data for
+    a single dataset can be input as a <code>matrix/data.frame</code>
+    (species-by-assemblage); data for multiple datasets can be input as
+    a <code>list</code> of <code>matrices/data.frames</code>, with each
+    matrix representing a species-by-assemblage abundance matrix for one
+    of the datasets.
+2.  For <code>datatype = ‘incidence_raw’</code>, data for a single
+    dataset with N assemblages can be input as a <code>list</code> of
+    <code>matrices/data.frames</code>, with each matrix representing a
+    species-by-sampling-unit incidence matrix for one of the
+    assemblages; data for multiple datasets can be input as multiple
+    lists.
     </td>
     </tr>
     <tr>
@@ -200,9 +202,11 @@ data
     diversity
     </td>
     <td style="text-align: left;">
-    selection of diversity type: diversity = ‘TD’: Taxonomic diversity,
-    diversity = ‘PD’: Phylogenetic diversity, and diversity = ‘FD’:
-    Functional diversity.
+    selection of diversity type: <code>diversity = ‘TD’</code> =
+    <font color=#FF6781>Taxonomic diversity</font>, <code>diversity =
+    ‘PD’</code> = <font color=#FF6781>Phylogenetic diversity</font>, and
+    <code>diversity = ‘FD’</code> = <font color=#FF6781>Functional
+    diversity</font>.
     </td>
     </tr>
     <tr>
@@ -210,8 +214,8 @@ data
     q
     </td>
     <td style="text-align: left;">
-    a numerical vector specifying the diversity orders. Default is q =
-    c(0, 1, 2)
+    a numerical vector specifying the diversity orders. Default is
+    <code>q = c(0, 1, 2)</code>.
     </td>
     </tr>
     <tr>
@@ -219,10 +223,10 @@ data
     datatype
     </td>
     <td style="text-align: left;">
-    data type of input data: individual-based abundance data (datatype =
-    ‘abundance’) or species by sampling-units incidence matrix (datatype
-    = ‘incidence_raw’) with all entries being 0 (non-detection) or 1
-    (detection).
+    data type of input data: individual-based abundance data
+    (<code>datatype = ‘abundance’</code>) or species by sampling-units
+    incidence matrix (<code>datatype = ‘incidence_raw’</code>) with all
+    entries being 0 (non-detection) or 1 (detection).
     </td>
     </tr>
     <tr>
@@ -232,9 +236,9 @@ data
     <td style="text-align: left;">
     standardization base: coverage-based rarefaction and extrapolation
     for gamma, alpha, beta diversity, and four classes of dissimilarity
-    indices (base = ‘coverage’), or sized-based rarefaction and
-    extrapolation for gamma and alpha diversity (base = ‘size’). Default
-    is base = ‘coverage’.
+    indices (<code>base = ‘coverage’</code>), or sized-based rarefaction
+    and extrapolation for gamma and alpha diversity (<code>base =
+    ‘size’</code>). Default is <code>base = ‘coverage’</code>.
     </td>
     </tr>
     <tr>
@@ -243,20 +247,21 @@ data
     </td>
     <td style="text-align: left;">
     A numerical vector specifying the particular values of sample
-    coverage (between 0 and 1 when base = ‘coverage’) or sample sizes
-    (base = ‘size’) that will be used to compute standardized
-    diversity/dissimilarity. Asymptotic diversity estimator can be
-    obtained by setting level = 1 (i.e., complete coverage for base =
-    ‘coverage’). By default (with base = ‘coverage’), this function
-    computes coverage-based standardized 3D gamma, alpha, beta
-    diversity, and four dissimilarity indices for coverage from 0.5 up
-    to one (for q = 1, 2) or up to the coverage of double the reference
-    sample size (for q = 0), in increments of 0.025. The extrapolation
-    limit for beta diversity is defined as that for alpha diversity. If
-    users set base = ‘size’, this function computes size-based
-    standardized 3D gamma and alpha diversity estimates based on 40
-    equally-spaced sample sizes/knots from sample size 1 up to double
-    the reference sample size.
+    coverage (between 0 and 1 when <code>base = ‘coverage’</code>) or
+    sample sizes (<code>base = ‘size’</code>) that will be used to
+    compute standardized diversity/dissimilarity. Asymptotic diversity
+    estimator can be obtained by setting <code>level = 1</code> (i.e.,
+    complete coverage for <code>base = ‘coverage’</code>). By default
+    (with <code>base = ‘coverage’</code>), this function computes
+    coverage-based standardized 3D gamma, alpha, beta diversity, and
+    four dissimilarity indices for coverage from 0.5 up to one (for
+    <code>q = 1, 2</code>) or up to the coverage of double the reference
+    sample size (for <code>q = 0</code>), in increments of 0.025. The
+    extrapolation limit for beta diversity is defined as that for alpha
+    diversity. If users set <code>base = ‘size’</code>, this function
+    computes size-based standardized 3D gamma and alpha diversity
+    estimates based on 40 equally-spaced sample sizes/knots from sample
+    size 1 up to double the reference sample size.
     </td>
     </tr>
     <tr>
@@ -267,9 +272,9 @@ data
     a positive integer specifying the number of bootstrap replications
     when assessing sampling uncertainty and constructing confidence
     intervals. Bootstrap replications are generally time consuming. Set
-    `nboot = 0` to skip the bootstrap procedures. Default is ‘nboot =
-    10’. If more accurate results are required, set ‘nboot = 100 (or
-    ’nboot = 200’).
+    `nboot = 0` to skip the bootstrap procedures. Default is
+    `nboot = 10`. If more accurate results are required, set
+    `nbbot = 100 (or`nbbot = 200\`).
     </td>
     </tr>
     <tr>
@@ -278,7 +283,7 @@ data
     </td>
     <td style="text-align: left;">
     a positive number \< 1 specifying the level of confidence interval.
-    Default is conf = 0.95.
+    Default is <code>conf = 0.95</code>.
     </td>
     </tr>
     <tr>
@@ -286,8 +291,9 @@ data
     PDtree
     </td>
     <td style="text-align: left;">
-    (required argument only for diversity = ‘PD’), a phylogenetic tree
-    in Newick format for all observed species in the pooled assemblage.
+    (required argument only for <code>diversity = ‘PD’</code>), a
+    phylogenetic tree in Newick format for all observed species in the
+    pooled assemblage.
     </td>
     </tr>
     <tr>
@@ -295,9 +301,9 @@ data
     PDreftime
     </td>
     <td style="text-align: left;">
-    (argument only for diversity = ‘PD’), a numerical value specifying
-    reference time for PD. Default is PDreftime = NULL (i.e., the age of
-    the root of PDtree).
+    (argument only for <code>diversity = ‘PD’</code>), a numerical value
+    specifying reference time for PD. Default is <code>PDreftime =
+    NULL</code> (i.e., the age of the root of PDtree).
     </td>
     </tr>
     <tr>
@@ -305,10 +311,11 @@ data
     PDtype
     </td>
     <td style="text-align: left;">
-    (argument only for diversity = ‘PD’), select PD type: PDtype = ‘PD’
-    (effective total branch length) or PDtype = ‘meanPD’ (effective
-    number of equally divergent lineages). Default is PDtype = ‘meanPD’,
-    where meanPD = PD/tree depth.
+    (argument only for <code>diversity = ‘PD’</code>), select PD type:
+    <code>PDtype = ‘PD’</code> (effective total branch length) or
+    <code>PDtype = ‘meanPD’</code> (effective number of equally
+    divergent lineages). Default is <code>PDtype = ‘meanPD’</code>,
+    where <code>meanPD</code> = PD/tree depth.
     </td>
     </tr>
     <tr>
@@ -316,8 +323,9 @@ data
     FDdistM
     </td>
     <td style="text-align: left;">
-    (required argument only for diversity = ‘FD’), a species pairwise
-    distance matrix for all species in the pooled assemblage.
+    (required argument only for <code>diversity = ‘FD’</code>), a
+    species pairwise distance matrix for all species in the pooled
+    assemblage.
     </td>
     </tr>
     <tr>
@@ -325,11 +333,11 @@ data
     FDtype
     </td>
     <td style="text-align: left;">
-    (argument only for diversity = ‘FD’), select FD type: FDtype =
-    ‘tau_value’ for FD under a specified threshold value, or FDtype =
-    ‘AUC’ (area under the curve of tau-profile) for an overall FD which
-    integrates all threshold values between zero and one. Default is
-    ‘FDtype = AUC’.
+    (argument only for <code>diversity = ‘FD’</code>), select FD type:
+    <code>FDtype = ‘tau_value’</code> for FD under a specified threshold
+    value, or <code>FDtype = ‘AUC’</code> (area under the curve of
+    tau-profile) for an overall FD which integrates all threshold values
+    between zero and one. Default is <code>FDtype = ‘AUC’</code>.
     </td>
     </tr>
     <tr>
@@ -337,12 +345,12 @@ data
     FDtau
     </td>
     <td style="text-align: left;">
-    (argument only for diversity = ‘FD’ and FDtype = ‘tau_value’), a
-    numerical value between 0 and 1 specifying the tau value (threshold
-    level) that will be used to compute FD. If FDtau = NULL (default),
-    then the threshold level is set to be the mean distance between any
-    two individuals randomly selected from the pooled dataset (i.e.,
-    quadratic entropy).
+    (argument only for <code>diversity = ‘FD’</code> and <code>FDtype =
+    ‘tau_value’</code>), a numerical value between 0 and 1 specifying
+    the tau value (threshold level) that will be used to compute FD. If
+    <code>FDtau = NULL</code> (default), then the threshold level is set
+    to be the mean distance between any two individuals randomly
+    selected from the pooled dataset (i.e., quadratic entropy).
     </td>
     </tr>
     <tr>
@@ -350,12 +358,13 @@ data
     FDcut_number
     </td>
     <td style="border-bottom: 2px solid grey; text-align: left;">
-    (argument only for diversity = ‘FD’ and FDtype = ‘AUC’), a numeric
-    number to cut \[0, 1\] interval into equal-spaced sub-intervals to
-    obtain the AUC value by integrating the tau-profile. Equivalently,
-    the number of tau values that will be considered to compute the
-    integrated AUC value. Default is FDcut_number = 30. A larger value
-    can be set to obtain more accurate AUC value.
+    (argument only for <code>diversity = ‘FD’</code> and <code>FDtype =
+    ‘AUC’</code>), a numeric number to cut \[0, 1\] interval into
+    equal-spaced sub-intervals to obtain the AUC value by integrating
+    the tau-profile. Equivalently, the number of tau values that will be
+    considered to compute the integrated AUC value. Default is
+    <code>FDcut_number = 30</code>. A larger value can be set to obtain
+    more accurate AUC value.
     </td>
     </tr>
     </tbody>
@@ -677,16 +686,16 @@ we show the output for taxonomic beta diversity between the Edge and
 Interior habitats in the Marim fragment.
 
        Dataset Order.q    SC    Size  Beta                Method  s.e.   LCL   UCL
-    1    Marim       0 0.500 148.277 1.111           Rarefaction 0.060 0.993 1.228
-    2    Marim       0 0.525 162.445 1.108           Rarefaction 0.060 0.990 1.226
-    3    Marim       0 0.550 177.829 1.105           Rarefaction 0.061 0.985 1.225
-    4    Marim       0 0.575 194.579 1.102           Rarefaction 0.062 0.980 1.224
-    5    Marim       0 0.600 212.873 1.099           Rarefaction 0.063 0.975 1.223
-    6    Marim       0 0.625 232.920 1.095           Rarefaction 0.065 0.968 1.222
-    7    Marim       0 0.650 254.965 1.092           Rarefaction 0.066 0.962 1.222
-    8    Marim       0 0.675 279.291 1.089           Rarefaction 0.069 0.955 1.223
-    9    Marim       0 0.696 302.000 1.087 Observed_SC(n, alpha) 0.071 0.948 1.225
-    10   Marim       0 0.700 306.186 1.086         Extrapolation 0.071 0.947 1.226
+    1    Marim       0 0.500 148.278 1.111           Rarefaction 0.058 0.997 1.225
+    2    Marim       0 0.525 162.446 1.108           Rarefaction 0.059 0.993 1.223
+    3    Marim       0 0.550 177.829 1.105           Rarefaction 0.060 0.988 1.222
+    4    Marim       0 0.575 194.580 1.102           Rarefaction 0.061 0.983 1.221
+    5    Marim       0 0.600 212.873 1.099           Rarefaction 0.062 0.977 1.220
+    6    Marim       0 0.625 232.920 1.095           Rarefaction 0.064 0.971 1.220
+    7    Marim       0 0.650 254.965 1.092           Rarefaction 0.065 0.964 1.220
+    8    Marim       0 0.675 279.292 1.089           Rarefaction 0.068 0.956 1.222
+    9    Marim       0 0.696 302.000 1.087 Observed_SC(n, alpha) 0.070 0.949 1.224
+    10   Marim       0 0.700 306.186 1.086         Extrapolation 0.071 0.948 1.225
 
 We can also use incidence raw data (`Second_growth_forests`) to compute
 coverage-based standardized gamma, alpha, beta diversity, and four
