@@ -89,13 +89,14 @@ For \code{base = "coverage"}, return a list of seven data frames with three dive
 dissimilarity indices; see Chao et al. (2023) for the theory.
 }
 \examples{
+\donttest{
 ## Taxonomic diversity for abundance data
 # Coverage-based standardized TD estimates and related statistics
 data(Brazil_rainforests)
 output1c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
                        datatype = 'abundance', base = "coverage", nboot = 10)
 output1c
-
+}
 
 # Size-based standardized TD estimates and related statistics
 data(Brazil_rainforests)
@@ -103,7 +104,7 @@ output1s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD',
                        datatype = 'abundance', base = "size", nboot = 10)
 output1s
 
-
+\donttest{
 ## Phylogenetic diversity for abundance data
 # Coverage-based standardized PD estimates and related statistics
 data(Brazil_rainforests)
@@ -112,6 +113,7 @@ output2c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD',
                        datatype = 'abundance', base = "coverage", nboot = 10, 
                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 output2c
+
 
 # Size-based standardized PD estimates and related statistics
 data(Brazil_rainforests)
@@ -147,7 +149,7 @@ data(Second_growth_forests)
 output4c = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
                        base = "coverage", level = NULL, nboot = 10)
 output4c
-
+}
 
 # Size-based standardized TD estimates and related statistics
 data(Second_growth_forests)

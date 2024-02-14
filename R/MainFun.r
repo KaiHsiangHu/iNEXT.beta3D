@@ -33,20 +33,16 @@
 #'  dataset (i.e., quadratic entropy). 
 #' @param FDcut_number (argument for \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.
 #' 
-#' @import tidyverse
 #' @import magrittr
 #' @import ggplot2
 #' @import abind
-#' @import ape
-#' @import phytools
-#' @import phyclust
-#' @import tidytree
-#' @import colorRamps
 #' @import iNEXT.3D
 #' @import future.apply
-#' @import ade4
-#' @import tidyr
 #' @import tibble
+#' @import dplyr
+#' @import tidytree
+#' @importFrom tidyr gather
+#' @importFrom phyclust get.rooted.tree.height
 #' 
 #' @return For \code{base = "coverage"}, return a list of seven data frames with three diversity (gamma, alpha, and beta
 #'  diversity) and four dissimilarity measures. For \code{base = "size"}, return a list of two matrices with two diversity
@@ -66,13 +62,14 @@
 #'  
 #'  
 #' @examples
+#' \donttest{
 #' ## Taxonomic diversity for abundance data
 #' # Coverage-based standardized TD estimates and related statistics
 #' data(Brazil_rainforests)
 #' output1c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
 #'                        datatype = 'abundance', base = "coverage", nboot = 10)
 #' output1c
-#' 
+#' }
 #' 
 #' # Size-based standardized TD estimates and related statistics
 #' data(Brazil_rainforests)
@@ -80,7 +77,7 @@
 #'                        datatype = 'abundance', base = "size", nboot = 10)
 #' output1s
 #' 
-#' 
+#' \donttest{
 #' ## Phylogenetic diversity for abundance data
 #' # Coverage-based standardized PD estimates and related statistics
 #' data(Brazil_rainforests)
@@ -89,6 +86,7 @@
 #'                        datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                        PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' output2c
+#' 
 #' 
 #' # Size-based standardized PD estimates and related statistics
 #' data(Brazil_rainforests)
@@ -124,7 +122,7 @@
 #' output4c = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
 #'                        base = "coverage", level = NULL, nboot = 10)
 #' output4c
-#' 
+#' }
 #' 
 #' # Size-based standardized TD estimates and related statistics
 #' data(Second_growth_forests)
@@ -192,7 +190,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     stop("FDcut_number only accept a value instead of a vector.", call. = FALSE)
   
   ##
-  
   
   
   if (datatype == 'abundance') {
@@ -1258,6 +1255,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           })
           
           gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+          if (is.vector(gamma_over_tau)) gamma_over_tau = matrix(gamma_over_tau, nrow = 1)
           
           left_limit  = apply(gamma_over_tau, 1, function(x) x[-FDcut_number]*width)
           right_limit = apply(gamma_over_tau, 1, function(x) x[-1]*width)
@@ -1265,6 +1263,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma = colSums((left_limit + right_limit)/2)
           
           alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+          if (is.vector(alpha_over_tau)) alpha_over_tau = matrix(alpha_over_tau, nrow = 1)
           
           left_limit  = apply(alpha_over_tau, 1, function(x) x[-FDcut_number]*width)
           right_limit = apply(alpha_over_tau, 1, function(x) x[-1]*width)
@@ -1318,6 +1317,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           })
           
           gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+          if (is.vector(gamma_over_tau)) gamma_over_tau = matrix(gamma_over_tau, nrow = 1)
           
           left_limit  = apply(gamma_over_tau, 1, function(x) x[-FDcut_number]*width)
           right_limit = apply(gamma_over_tau, 1, function(x) x[-1]*width)
@@ -1325,6 +1325,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma = colSums((left_limit + right_limit)/2)
           
           alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+          if (is.vector(alpha_over_tau)) alpha_over_tau = matrix(alpha_over_tau, nrow = 1)
           
           left_limit  = apply(alpha_over_tau, 1, function(x) x[-FDcut_number]*width)
           right_limit = apply(alpha_over_tau, 1, function(x) x[-1]*width)
@@ -1441,6 +1442,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               })
               
               gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+              if (is.vector(gamma_over_tau)) gamma_over_tau = matrix(gamma_over_tau, nrow = 1)
               
               left_limit  = apply(gamma_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(gamma_over_tau, 1, function(x) x[-1]*width)
@@ -1448,6 +1450,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               gamma = colSums((left_limit + right_limit)/2)
               
               alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+              if (is.vector(alpha_over_tau)) alpha_over_tau = matrix(alpha_over_tau, nrow = 1)
               
               left_limit  = apply(alpha_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(alpha_over_tau, 1, function(x) x[-1]*width)
@@ -1543,6 +1546,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               })
               
               gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+              if (is.vector(gamma_over_tau)) gamma_over_tau = matrix(gamma_over_tau, nrow = 1)
               
               left_limit  = apply(gamma_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(gamma_over_tau, 1, function(x) x[-1]*width)
@@ -1550,6 +1554,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               gamma = colSums((left_limit + right_limit)/2)
               
               alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+              if (is.vector(alpha_over_tau)) alpha_over_tau = matrix(alpha_over_tau, nrow = 1)
               
               left_limit  = apply(alpha_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(alpha_over_tau, 1, function(x) x[-1]*width)
@@ -2489,6 +2494,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           })
           
           gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+          if (is.vector(gamma_over_tau)) gamma_over_tau = matrix(gamma_over_tau, nrow = 1)
           
           left_limit  = apply(gamma_over_tau, 1, function(x) x[-FDcut_number]*width)
           right_limit = apply(gamma_over_tau, 1, function(x) x[-1]*width)
@@ -2496,6 +2502,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma = colSums((left_limit + right_limit)/2)
           
           alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+          if (is.vector(alpha_over_tau)) alpha_over_tau = matrix(alpha_over_tau, nrow = 1)
           
           left_limit  = apply(alpha_over_tau, 1, function(x) x[-FDcut_number]*width)
           right_limit = apply(alpha_over_tau, 1, function(x) x[-1]*width)
@@ -2536,6 +2543,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           })
           
           gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+          if (is.vector(gamma_over_tau)) gamma_over_tau = matrix(gamma_over_tau, nrow = 1)
           
           left_limit  = apply(gamma_over_tau, 1, function(x) x[-FDcut_number]*width)
           right_limit = apply(gamma_over_tau, 1, function(x) x[-1]*width)
@@ -2543,6 +2551,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma = colSums((left_limit + right_limit)/2)
           
           alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+          if (is.vector(alpha_over_tau)) alpha_over_tau = matrix(alpha_over_tau, nrow = 1)
           
           left_limit  = apply(alpha_over_tau, 1, function(x) x[-FDcut_number]*width)
           right_limit = apply(alpha_over_tau, 1, function(x) x[-1]*width)
@@ -2632,6 +2641,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               })
               
               gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+              if (is.vector(gamma_over_tau)) gamma_over_tau = matrix(gamma_over_tau, nrow = 1)
               
               left_limit  = apply(gamma_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(gamma_over_tau, 1, function(x) x[-1]*width)
@@ -2639,6 +2649,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               gamma = colSums((left_limit + right_limit)/2)
               
               alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+              if (is.vector(alpha_over_tau)) alpha_over_tau = matrix(alpha_over_tau, nrow = 1)
               
               left_limit  = apply(alpha_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(alpha_over_tau, 1, function(x) x[-1]*width)
@@ -2702,6 +2713,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               })
               
               gamma_over_tau = sapply(gamma_alpha_over_tau, function(x) x$gamma)
+              if (is.vector(gamma_over_tau)) gamma_over_tau = matrix(gamma_over_tau, nrow = 1)
               
               left_limit  = apply(gamma_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(gamma_over_tau, 1, function(x) x[-1]*width)
@@ -2709,6 +2721,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
               gamma = colSums((left_limit + right_limit)/2)
               
               alpha_over_tau = sapply(gamma_alpha_over_tau, function(x) x$alpha)
+              if (is.vector(alpha_over_tau)) alpha_over_tau = matrix(alpha_over_tau, nrow = 1)
               
               left_limit  = apply(alpha_over_tau, 1, function(x) x[-FDcut_number]*width)
               right_limit = apply(alpha_over_tau, 1, function(x) x[-1]*width)
@@ -2831,7 +2844,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' @return a figure for gamma, alpha, and beta diversity, or a figure for four dissimilarity indices for \code{base = "coverage"}; 
 #' or a figure for gamma and alpha diversity when \code{base = "size"}.\cr
 #' 
+#' 
 #' @examples
+#' \donttest{
 #' ## Taxonomic diversity for abundance data
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
@@ -2840,7 +2855,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' ggiNEXTbeta3D(output1c, type = 'B')
 #' ggiNEXTbeta3D(output1c, type = 'D')
-#'  
+#' }
 #' 
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
@@ -2849,7 +2864,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' ggiNEXTbeta3D(output1s)
 #' 
-#' 
+#' \donttest{
 #' ## Phylogenetic diversity for abundance data
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
@@ -2902,7 +2917,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' ggiNEXTbeta3D(output4c, type = 'B')
 #' ggiNEXTbeta3D(output4c, type = 'D')
-#' 
+#' }
 #' 
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Second_growth_forests)
@@ -2910,7 +2925,6 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                        base = "size", level = NULL, nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output4s)
-#' 
 #' 
 #' 
 #' @export
@@ -3617,12 +3631,14 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' output1
 #' 
 #' 
+#' \donttest{
 #' ## Mean phylogenetic diversity for abundance data
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
 #' output2 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
 #'                          datatype = 'abundance', PDtree = Brazil_tree, PDreftime = NULL)
 #' output2
+#' }
 #' 
 #' 
 #' ## Functional diversity for abundance data under a specified threshold level
@@ -4181,6 +4197,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
 #' \code{print.iNEXTbeta3D}: Print method for objects inheriting from class \code{iNEXTbeta3D}
 #' @param x an \code{iNEXTbeta3D} object computed by \code{\link{iNEXTbeta3D}}.
 #' @param ... additional arguments.
+#' @return a list of multiple objects (see \code{iNEXTbeta3D} for more details) with simplified outputs.
 #' @export
 print.iNEXTbeta3D <- function(x, ...){
   

@@ -67,12 +67,14 @@ output1 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'TD', datatype =
 output1
 
 
+\donttest{
 ## Mean phylogenetic diversity for abundance data
 data(Brazil_rainforests)
 data(Brazil_tree)
 output2 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
                          datatype = 'abundance', PDtree = Brazil_tree, PDreftime = NULL)
 output2
+}
 
 
 ## Functional diversity for abundance data under a specified threshold level

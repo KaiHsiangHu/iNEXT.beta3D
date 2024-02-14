@@ -23,6 +23,7 @@ or a figure for gamma and alpha diversity when \code{base = "size"}.\cr
 object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 }
 \examples{
+\donttest{
 ## Taxonomic diversity for abundance data
 # Coverage-based rarefaction and extrapolation sampling curves 
 data(Brazil_rainforests)
@@ -31,7 +32,7 @@ output1c = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD',
 
 ggiNEXTbeta3D(output1c, type = 'B')
 ggiNEXTbeta3D(output1c, type = 'D')
- 
+}
 
 # Size-based rarefaction and extrapolation sampling curves 
 data(Brazil_rainforests)
@@ -40,7 +41,7 @@ output1s = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD',
 
 ggiNEXTbeta3D(output1s)
 
-
+\donttest{
 ## Phylogenetic diversity for abundance data
 # Coverage-based rarefaction and extrapolation sampling curves 
 data(Brazil_rainforests)
@@ -93,7 +94,7 @@ output4c = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype 
 
 ggiNEXTbeta3D(output4c, type = 'B')
 ggiNEXTbeta3D(output4c, type = 'D')
-
+}
 
 # Size-based rarefaction and extrapolation sampling curves 
 data(Second_growth_forests)
@@ -101,7 +102,6 @@ output4s = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype 
                        base = "size", level = NULL, nboot = 10)
 
 ggiNEXTbeta3D(output4s)
-
 
 
 }
