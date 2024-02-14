@@ -63,40 +63,41 @@ and the mean distance between any two individuals randomly selected from the dat
 \examples{
 ## Taxonomic diversity for abundance data
 data(Brazil_rainforests)
-output1 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance')
-output1
+info_TD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance')
+info_TD_abun
 
 
 \donttest{
 ## Mean phylogenetic diversity for abundance data
 data(Brazil_rainforests)
 data(Brazil_tree)
-output2 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
-                         datatype = 'abundance', PDtree = Brazil_tree, PDreftime = NULL)
-output2
+info_PD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
+                              datatype = 'abundance', PDtree = Brazil_tree, PDreftime = NULL)
+info_PD_abun
 }
 
 
 ## Functional diversity for abundance data under a specified threshold level
 data(Brazil_rainforests)
 data(Brazil_distM)
-output3 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
-                         datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'tau_value', FDtau = NULL)
-output3
+info_FDtau_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
+                                 datatype = 'abundance', FDdistM = Brazil_distM, 
+                                 FDtype = 'tau_value', FDtau = NULL)
+info_FDtau_abun
 
 
 ## Functional diversity for abundance data when all threshold levels from 0 to 1 are considered
 data(Brazil_rainforests)
 data(Brazil_distM)
-output4 = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
-                         datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'AUC')
-output4
+info_FDAUC_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
+                                 datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'AUC')
+info_FDAUC_abun
 
 
 ## Taxonomic diversity for incidence data
 data(Second_growth_forests)
-output5 = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw')
-output5
+info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw')
+info_TD_inci
 
 
 }

@@ -55,11 +55,8 @@ The `iNEXT.beta3D` package is available from CRAN and can be downloaded from Ann
 
 
 ```{r eval=FALSE}
-# install_github('AnneChao/iNEXT.3D')
-# library(iNEXT.3D)
-
 ## install iNEXT.beta3D package from CRAN
-# install.packages("iNEXT.beta3D")  
+install.packages("iNEXT.beta3D")
 
 ## install the latest version from github
 install.packages('devtools')
@@ -290,9 +287,9 @@ First, we run the `iNEXTbeta3D()` function with `Brazil rainforests` abundance d
 data(Brazil_rainforests)
 
 # Abundance data
-Abundance_TD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = "abundance", 
-                           base = 'coverage', nboot = 30)
-Abundance_TD
+output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = "abundance", 
+                              base = 'coverage', nboot = 30)
+output_TDc_abun
 ```
 The output contains seven data frames: `gamma`, `alpha`, `beta`, `1-C`, `1-U`, `1-V`, `1-S`. For each data frame, it includes the name of dataset (`Dataset`), the diversity order of q (`Order.q`), the target standardized coverage value (`SC`), the corresponding sample size (`Size`), the estimated diversity/dissimilarity estimate (`Alpha/Beta/Gamma/Dissimilarity`), `Method` (Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample), standard error of standardized estimate (`s.e.`), the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95 (`LCL`, `UCL`). These estimates with confidence intervals in the output are then used for plotting rarefaction and extrapolation curves.
 
@@ -302,9 +299,9 @@ Because all the diversity/dissimilarity estimates are computed for the standardi
 
 
 ```{r echo=FALSE}
-Abundance_TD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = "abundance", base = 'coverage', nboot = 30)
+output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = "abundance", base = 'coverage', nboot = 30)
 
-# lapply(Abundance_TD, function(x) 
+# lapply(output_TDc_abun, function(x) 
 #   
 #   lapply(x[1:3], function(y) {
 #     
@@ -322,7 +319,7 @@ Abundance_TD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype
 # )
 
 
-tmp = Abundance_TD$Marim$beta
+tmp = output_TDc_abun$Marim$beta
 tmp[,c(3:5, 7:9)] = round(tmp[,c(3:5, 7:9)], 3)
 tmp = tmp[,-ncol(tmp)]
 tmp
@@ -336,17 +333,17 @@ We can also use incidence raw data (`Second_growth_forests`) to compute coverage
 # Incidence raw data
 data(Second_growth_forests)
 
-Incidence_TD = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = "incidence_raw",
-                           base = 'coverage', nboot = 30)
-Incidence_TD
+output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = "incidence_raw",
+                              base = 'coverage', nboot = 30)
+output_TDc_inci
 ```
 
 
 ```{r echo=FALSE}
-# Incidence_TD = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = "incidence_raw",
-#                            base = 'coverage', nboot = 30)
+# output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = "incidence_raw",
+#                               base = 'coverage', nboot = 30)
 # 
-# lapply(Incidence_TD, function(x) 
+# lapply(output_TDc_inci, function(x) 
 #   
 #   lapply(x[1:3], function(y) {
 #     
@@ -378,9 +375,9 @@ The required argument for performing PD analysis is `PDtree`. For example, the p
 data(Brazil_rainforests)
 data(Brazil_tree)
 
-Abundance_PD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', datatype = "abundance", 
-                           base = 'coverage', nboot = 30, PDtree = Brazil_tree)
-Abundance_PD
+output_PDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', datatype = "abundance", 
+                              base = 'coverage', nboot = 30, PDtree = Brazil_tree)
+output_PDc_abun
 
 ```
 
@@ -397,10 +394,10 @@ data(Brazil_rainforests)
 data(Brazil_distM)
 
 ## Functional diversity - FDtype = 'AUC' (area under curve) by considering all threshold values between zero and one
-Abundance_FD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
-                           datatype = "abundance", base = 'coverage', nboot = 30, 
-                           FDdistM = Brazil_distM, FDtype = 'AUC')
-Abundance_FD
+output_FDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
+                              datatype = "abundance", base = 'coverage', nboot = 30, 
+                              FDdistM = Brazil_distM, FDtype = 'AUC')
+output_FDc_abun
 
 ```
 
@@ -442,15 +439,16 @@ The `ggiNEXTbeta3D()` function is a wrapper around the `ggplot2` package to crea
 
 ```{r, fig.align='center', fig.height=5.5, fig.width=5.5}
 ## Coverage-based R/E curves for taxonomic gamma, alpha and beta diversity 
-Abundance_TD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance', 
-                           base = "coverage", nboot = 30, conf = 0.95)
-ggiNEXTbeta3D(Abundance_TD, type = 'B')
+output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance', 
+                              base = "coverage", nboot = 30, conf = 0.95)
+
+ggiNEXTbeta3D(output_TDc_abun, type = 'B')
 ```
 
 
 ```{r, fig.align='center', fig.height=7, fig.width=5.5}
 ## Coverage-based R/E curves for four taxonomic dissimilarity indices
-ggiNEXTbeta3D(Abundance_TD, type = 'D')
+ggiNEXTbeta3D(output_TDc_abun, type = 'D')
 ```
 
 
@@ -458,9 +456,10 @@ The following commands return the size-based R/E sampling curves for gamma and a
 
 ```{r, fig.align='center', fig.height=4, fig.width=5.5}
 ## Size-based R/E curves for taxonomic gamma and alpha diversity
-output = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance', 
+output_TDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance', 
                      base = "size", nboot = 30, conf = 0.95)
-ggiNEXTbeta3D(output)
+
+ggiNEXTbeta3D(output_TDs_abun)
 ```
 
 
@@ -469,15 +468,18 @@ The same procedures can be applied to incidence data. Based on the demo dataset,
 
 ```{r, fig.align='center', fig.height=5.5, fig.width=5.5}
 ## (Incidence data) Coverage-based R/E curves for taxonomic gamma, alpha and beta diversity 
-Incidence_cov = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', base = "coverage", nboot = 30, conf = 0.95)
-ggiNEXTbeta3D(Incidence_cov, type = 'B')
+output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
+                              base = "coverage", nboot = 30, conf = 0.95)
+
+ggiNEXTbeta3D(output_TDc_inci, type = 'B')
 ```
 
 ```{r, fig.align='center', fig.height=4, fig.width=5.5}
 ## (Incidence data) Size-based R/E curves for taxonomic gamma and alpha diversity
-Incidence_size = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-                             base = "size", nboot = 30, conf = 0.95)
-ggiNEXTbeta3D(Incidence_size)
+output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
+                              base = "size", nboot = 30, conf = 0.95)
+
+ggiNEXTbeta3D(output_TDs_inci)
 ```
 
 
@@ -487,11 +489,11 @@ The above coverage- and size-based R/E curves can also be shown for phylogenetic
 ## Coverage-based R/E sampling curves for Phylogenetic gamma, alpha and beta diversity
 data(Brazil_rainforests)
 data(Brazil_tree)
-Abundance_PD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', datatype = 'abundance', 
-                           base = "coverage", nboot = 30, conf = 0.95, 
-                           PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
+output_PDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', datatype = 'abundance', 
+                              base = "coverage", nboot = 30, conf = 0.95, 
+                              PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 
-ggiNEXTbeta3D(Abundance_PD, type = 'B')
+ggiNEXTbeta3D(output_PDc_abun, type = 'B')
 ```
 
 
@@ -500,11 +502,11 @@ ggiNEXTbeta3D(Abundance_PD, type = 'B')
 ## Coverage-based R/E sampling curves for functional gamma, alpha and beta diversity
 data(Brazil_rainforests)
 data(Brazil_distM)
-Abundance_FD = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', datatype = 'abundance', 
-                       base = "coverage", nboot = 30, conf = 0.95, 
-                       FDdistM = Brazil_distM, FDtype = 'AUC')
+output_FDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', datatype = 'abundance', 
+                              base = "coverage", nboot = 30, conf = 0.95, 
+                              FDdistM = Brazil_distM, FDtype = 'AUC')
 
-ggiNEXTbeta3D(Abundance_FD, type = 'B')
+ggiNEXTbeta3D(output_FDc_abun, type = 'B')
 ```
 
 
@@ -681,6 +683,7 @@ Information description:
 
 ## License and feedback
 The iNEXT.beta3D package is licensed under the GPLv3. To help refine `iNEXT.beta3D`, users' comments or feedback would be welcome (please send them to Anne Chao or report an issue on the iNEXT.beta3D github [iNEXT.beta3D_github](https://github.com/AnneChao/iNEXT.beta3D). 
+
 
 ## References
 - Chao, A., Chiu, C.-H., Hu, K.-H., and Zeleny, D. (2023a). Revisiting Alwyn H. Gentry's forest transect data: a statistical sampling-model-based approach. <i>Japanese Journal of Statistics and Data Science</i>. (https://doi.org/10.1007/s42081-023-00214-1) 
