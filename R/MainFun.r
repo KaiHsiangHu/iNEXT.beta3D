@@ -7,8 +7,8 @@
 #' @param data (a) For \code{datatype = "abundance"}, species abundance data for a single dataset can be input as a \code{matrix/data.frame} (species-by-assemblage); data for multiple datasets can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-assemblage abundance matrix for one of the datasets.\cr
 #' (b) For \code{datatype = "incidence_raw"}, data for a single dataset with N assemblages can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-sampling-unit incidence matrix for one of the assemblages; data for multiple datasets can be input as multiple lists.
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
-#' @param q a numerical vector specifying the diversity orders. Default is \code{q = c(0, 1, 2)}.
-#' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).
+#' @param q a numerical vector specifying the diversity orders. Default is \code{c(0, 1, 2)}.
+#' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence/occurrence matrix (\code{datatype = "incidence_raw"}) with all entries being 0 (non-detection) or 1 (detection).
 #' @param base standardization base: coverage-based rarefaction and extrapolation for gamma, alpha, beta diversity, and four classes of dissimilarity indices (\code{base = "coverage"}), or sized-based rarefaction and extrapolation for gamma and alpha diversity (\code{base = "size"}). Default is \code{base = "coverage"}.
 #' @param level a numerical vector specifying the particular values of sample coverage (between 0 and 1 when 
 #' \code{base = "coverage"}) or sample sizes (\code{base = "size"}) that will be used to compute standardized
@@ -20,18 +20,18 @@
 #'    for alpha diversity. If users set \code{base = "size"}, this function computes the size-based standardized
 #'     3D gamma and alpha diversity estimates based on 40 equally-spaced sample sizes/knots from sample size 1 
 #'     up to double the reference sample size.
-#' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).
-#' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{conf = 0.95}.
-#' @param PDtree (required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled dataset. 
-#' @param PDreftime (argument for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).  
-#' @param PDtype (argument for \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.
+#' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Set \code{nboot = 0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nbbot = 100} (or \code{nboot = 200}).
+#' @param conf a positive number < 1 specifying the level of confidence interval. Default is 0.95.
+#' @param PDtree (required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
+#' @param PDreftime (argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of \code{PDtree}).  
+#' @param PDtype (argument only for \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.
 #' @param FDdistM (required argument for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled dataset. 
-#' @param FDtype (argument for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
-#' @param FDtau (argument for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
+#' @param FDtype (argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
+#' @param FDtau (argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
 #'  1 specifying the tau value (threshold level) that will be used to compute FD. If \code{FDtype = NULL} (default), 
 #'  then threshold level is set to be the mean distance between any two individuals randomly selected from the pooled 
 #'  dataset (i.e., quadratic entropy). 
-#' @param FDcut_number (argument for \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.
+#' @param FDcut_number (argument only for \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.
 #' 
 #' @import magrittr
 #' @import ggplot2
@@ -43,6 +43,11 @@
 #' @import tidytree
 #' @importFrom tidyr gather
 #' @importFrom phyclust get.rooted.tree.height
+#' @importFrom stats rmultinom
+#' @importFrom stats rbinom
+#' @importFrom stats qnorm
+#' @importFrom stats sd
+#' @importFrom stats optimize
 #' 
 #' @return For \code{base = "coverage"}, return a list of seven data frames with three diversity (gamma, alpha, and beta
 #'  diversity) and four dissimilarity measures. For \code{base = "size"}, return a list of two matrices with two diversity
@@ -119,22 +124,23 @@
 #' ## Taxonomic diversity for incidence data
 #' # Coverage-based standardized TD estimates and related statistics
 #' data(Second_growth_forests)
-#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-#'                               base = "coverage", level = NULL, nboot = 10)
+#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                               datatype = 'incidence_raw', base = "coverage", nboot = 10)
 #' output_TDc_inci
 #' }
 #' 
 #' # Size-based standardized TD estimates and related statistics
 #' data(Second_growth_forests)
-#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-#'                               base = "size", level = NULL, nboot = 10)
+#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                               datatype = 'incidence_raw', base = "size", nboot = 10)
 #' output_TDs_inci
 #' 
 #' 
 #' @references
-#' Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zeleny, D., Colwell, 
-#' R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers:
-#'  the iNEXT.beta3D standardization. Ecological Monographs e1588.
+#' Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Magnago, 
+#' L. F. S., Dornelas, M., Zeleny, D., Colwell, R. K., and Magurran, A. E. (2023). 
+#' Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: 
+#' the iNEXT.beta3D standardization. Ecological Monographs e1588.
 #' @export
 iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abundance', 
                        base = 'coverage', level = NULL, nboot = 10, conf = 0.95, 
@@ -196,7 +202,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     if ( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Dataset_1 = data)
     
-    if (class(data) == "list"){
+    if ( inherits(data, "list") ){
       
       if (is.null(names(data))) dataset_names = paste0("Dataset_", 1:length(data)) else dataset_names = names(data)
       Ns = sapply(data, ncol)
@@ -213,6 +219,43 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     data_list = data
     
   }
+  
+  
+  ##
+  if (datatype == 'abundance') {
+    
+    pool.name <- lapply(data_list, function(x) rownames(x)) %>% unlist %>% unique
+    
+  } else if (datatype == 'incidence_raw') {
+    
+    pool.name <- lapply(data_list, function(x) lapply(x, function(y) rownames(y))) %>% unlist %>% unique
+    
+  }
+  
+  if (diversity == "PD") {
+    
+    if (sum(c(duplicated(PDtree$tip.label), duplicated(PDtree$node.label[PDtree$node.label!=""])))>0)
+      stop("The phylo tree should not contains duplicated tip or node labels, please remove them.", call. = FALSE)
+    
+    if ( is.null(pool.name) )
+      stop("Row names of data must be the species names that match tip names in tree and thus can not be empty.", call. = FALSE)
+    
+    if (sum(pool.name %in% PDtree$tip.label) != length(pool.name))
+      stop("Data and tree tip label contain unmatched species", call. = FALSE)
+  }
+  
+  if (diversity == "FD") {
+    
+    if (is.null(rownames(FDdistM)))
+      stop('The species names are not provided in distance matrix.', call. = FALSE)
+    
+    if( is.null(pool.name) )
+      stop("Row names of data must be the species names that match row names in distance matrix and thus can not be empty.", call. = FALSE)
+    
+    if (sum(pool.name %in% rownames(FDdistM)) != length(pool.name))
+      stop("Data and distance matrix contain unmatched species", call. = FALSE)
+  }
+  ##
   
   
   if (is.null(conf)) conf = 0.95
@@ -263,7 +306,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
     } else {
       
-      if (class(level) == "numeric" | class(level) == "integer" | class(level) == "double") {
+      if (inherits(level, "numeric") | inherits(level, "integer") | inherits(level, "double")) {
         level <- list(level = level)
       }
       
@@ -301,7 +344,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         
       } else {
         
-        if (class(level) == "numeric" | class(level) == "integer" | class(level) == "double") {
+        if (inherits(level, "numeric") | inherits(level, "integer") | inherits(level, "double")) {
           level <- list(level = level)
         }
         
@@ -375,8 +418,10 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     pool.name = names(pool.data[pool.data>0])
     tip = PDtree$tip.label[-match(pool.name, PDtree$tip.label)]
-    mytree = drop.tip(PDtree, tip)
-    H_max = get.rooted.tree.height(mytree)
+    mytree = ape::drop.tip(PDtree, tip)
+    
+    # H_max = get.rooted.tree.height(mytree)
+    H_max = max(ape::node.depth.edgelength(mytree))
     
     if(is.null(PDreftime)) { reft = H_max
     } else if (PDreftime <= 0) { stop("Reference time must be greater than 0. Use NULL to set it to pooled tree height.", call. = FALSE)
@@ -2835,7 +2880,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' \code{ggiNEXTbeta3D} is an \code{ggplot2} extension for \code{iNEXTbeta3D} 
 #' object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 #' 
-#' @param output output from the function iNEXTbeta3D
+#' @param output output from the function iNEXTbeta3D.
 #' @param type (argument only for \code{base = "coverage"}),\cr
 #' \code{type = 'B'} for plotting the rarefaction and extrapolation sampling curves for gamma, alpha, and beta diversity;  \cr
 #' \code{type = 'D'} for plotting the rarefaction and extrapolation sampling curves for four dissimilarity indices.\cr
@@ -2912,8 +2957,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' ## Taxonomic diversity for incidence data
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Second_growth_forests)
-#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-#'                               base = "coverage", level = NULL, nboot = 10)
+#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                               datatype = 'incidence_raw', base = "coverage", nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output_TDc_inci, type = 'B')
 #' ggiNEXTbeta3D(output_TDc_inci, type = 'D')
@@ -2921,8 +2966,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Second_growth_forests)
-#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-#'                               base = "size", level = NULL, nboot = 10)
+#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                               datatype = 'incidence_raw', base = "size", nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output_TDs_inci)
 #' 
@@ -3596,11 +3641,11 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' @param data (a) For \code{datatype = "abundance"}, species abundance data for a single dataset can be input as a \code{matrix/data.frame} (species-by-assemblage); data for multiple datasets can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-assemblage abundance matrix for one of the datasets.\cr
 #' (b) For \code{datatype = "incidence_raw"}, data for a single dataset with N assemblages can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-sampling-unit incidence matrix for one of the assemblages; data for multiple datasets can be input as multiple lists.
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
-#' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).
-#' @param PDtree (required argument only for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled dataset. 
+#' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence/occurrence matrix (\code{datatype = "incidence_raw"}) with all entries being 0 (non-detection) or 1 (detection).
+#' @param PDtree (required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
 #' @param PDreftime (argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of \code{PDtree}).  
-#' @param FDdistM (required argument only for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled dataset. 
-#' @param FDtype (argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
+#' @param FDdistM (required argument for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage. 
+#' @param FDtype (argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.  
 #' @param FDtau (argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled dataset (i.e., quadratic entropy). 
 #' 
 #' @return a data.frame including basic data information.\cr\cr 
@@ -3660,7 +3705,8 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' 
 #' ## Taxonomic diversity for incidence data
 #' data(Second_growth_forests)
-#' info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw')
+#' info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
+#'                               datatype = 'incidence_raw')
 #' info_TD_inci
 #' 
 #' 
@@ -3695,7 +3741,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     
     if ( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Dataset_1 = data)
     
-    if (class(data) == "list") data = lapply(data, as.matrix)
+    if ( inherits(data, "list")) data = lapply(data, as.matrix)
   }
   
   if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
@@ -4234,6 +4280,11 @@ print.iNEXTbeta3D <- function(x, ...){
 }
 
 
+## ========== no visible global function definition for R CMD check ========== ##
+utils::globalVariables(c(".", "branch.abun", "branch.length", "tgroup", "Method", 
+                         "Size", "SC", "Estimate", "Dataset", "div_type", "LCL", "UCL",
+                         "Order.q", "s.e.", "label"
+))
 
 
 

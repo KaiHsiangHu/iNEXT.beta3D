@@ -28,9 +28,9 @@ iNEXTbeta3D(
 
 \item{diversity}{selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.}
 
-\item{q}{a numerical vector specifying the diversity orders. Default is \code{q = c(0, 1, 2)}.}
+\item{q}{a numerical vector specifying the diversity orders. Default is \code{c(0, 1, 2)}.}
 
-\item{datatype}{data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}) with all entries being \code{0} (non-detection) or \code{1} (detection).}
+\item{datatype}{data type of input data: individual-based abundance data (\code{datatype = "abundance"}) or species by sampling-units incidence/occurrence matrix (\code{datatype = "incidence_raw"}) with all entries being 0 (non-detection) or 1 (detection).}
 
 \item{base}{standardization base: coverage-based rarefaction and extrapolation for gamma, alpha, beta diversity, and four classes of dissimilarity indices (\code{base = "coverage"}), or sized-based rarefaction and extrapolation for gamma and alpha diversity (\code{base = "size"}). Default is \code{base = "coverage"}.}
 
@@ -45,26 +45,26 @@ iNEXTbeta3D(
     3D gamma and alpha diversity estimates based on 40 equally-spaced sample sizes/knots from sample size 1 
     up to double the reference sample size.}
 
-\item{nboot}{a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter \code{0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nboot = 100} (or \code{200}).}
+\item{nboot}{a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Set \code{nboot = 0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nbbot = 100} (or \code{nboot = 200}).}
 
-\item{conf}{a positive number < 1 specifying the level of confidence interval. Default is \code{conf = 0.95}.}
+\item{conf}{a positive number < 1 specifying the level of confidence interval. Default is 0.95.}
 
-\item{PDtree}{(required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled dataset.}
+\item{PDtree}{(required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage.}
 
-\item{PDreftime}{(argument for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of PDtree).}
+\item{PDreftime}{(argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of \code{PDtree}).}
 
-\item{PDtype}{(argument for \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.}
+\item{PDtype}{(argument only for \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"} (effective total branch length) or \code{PDtype = "meanPD"} (effective number of equally divergent lineages). Default is \code{PDtype = "meanPD"}, where \code{meanPD = PD/tree depth}.}
 
 \item{FDdistM}{(required argument for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled dataset.}
 
-\item{FDtype}{(argument for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.}
+\item{FDtype}{(argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.}
 
-\item{FDtau}{(argument for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
+\item{FDtau}{(argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
 1 specifying the tau value (threshold level) that will be used to compute FD. If \code{FDtype = NULL} (default), 
 then threshold level is set to be the mean distance between any two individuals randomly selected from the pooled 
 dataset (i.e., quadratic entropy).}
 
-\item{FDcut_number}{(argument for \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.}
+\item{FDcut_number}{(argument only for \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.}
 }
 \value{
 For \code{base = "coverage"}, return a list of seven data frames with three diversity (gamma, alpha, and beta
@@ -146,21 +146,22 @@ output_FDs_abun
 ## Taxonomic diversity for incidence data
 # Coverage-based standardized TD estimates and related statistics
 data(Second_growth_forests)
-output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-                              base = "coverage", level = NULL, nboot = 10)
+output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                              datatype = 'incidence_raw', base = "coverage", nboot = 10)
 output_TDc_inci
 }
 
 # Size-based standardized TD estimates and related statistics
 data(Second_growth_forests)
-output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-                              base = "size", level = NULL, nboot = 10)
+output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                              datatype = 'incidence_raw', base = "size", nboot = 10)
 output_TDs_inci
 
 
 }
 \references{
-Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zeleny, D., Colwell, 
-R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers:
- the iNEXT.beta3D standardization. Ecological Monographs e1588.
+Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Magnago, 
+L. F. S., Dornelas, M., Zeleny, D., Colwell, R. K., and Magurran, A. E. (2023). 
+Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: 
+the iNEXT.beta3D standardization. Ecological Monographs e1588.
 }

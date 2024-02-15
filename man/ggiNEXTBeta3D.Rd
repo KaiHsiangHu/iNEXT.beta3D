@@ -7,7 +7,7 @@
 ggiNEXTbeta3D(output, type = "B")
 }
 \arguments{
-\item{output}{output from the function iNEXTbeta3D}
+\item{output}{output from the function iNEXTbeta3D.}
 
 \item{type}{(argument only for \code{base = "coverage"}),\cr
 \code{type = 'B'} for plotting the rarefaction and extrapolation sampling curves for gamma, alpha, and beta diversity;  \cr
@@ -89,8 +89,8 @@ ggiNEXTbeta3D(output_FDs_abun)
 ## Taxonomic diversity for incidence data
 # Coverage-based rarefaction and extrapolation sampling curves 
 data(Second_growth_forests)
-output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-                              base = "coverage", level = NULL, nboot = 10)
+output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                              datatype = 'incidence_raw', base = "coverage", nboot = 10)
 
 ggiNEXTbeta3D(output_TDc_inci, type = 'B')
 ggiNEXTbeta3D(output_TDc_inci, type = 'D')
@@ -98,8 +98,8 @@ ggiNEXTbeta3D(output_TDc_inci, type = 'D')
 
 # Size-based rarefaction and extrapolation sampling curves 
 data(Second_growth_forests)
-output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', datatype = 'incidence_raw', 
-                              base = "size", level = NULL, nboot = 10)
+output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                              datatype = 'incidence_raw', base = "size", nboot = 10)
 
 ggiNEXTbeta3D(output_TDs_inci)
 
