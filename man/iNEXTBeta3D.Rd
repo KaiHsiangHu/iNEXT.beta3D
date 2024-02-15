@@ -77,7 +77,7 @@ For \code{base = "coverage"}, return a list of seven data frames with three dive
  \item{Dataset}{the name of dataset.}
  \item{Order.q}{the diversity order of q.} 
  \item{SC}{the target standardized coverage value.}
- \item{Size}{the corresponding sample size.}
+ \item{Size/mT}{the corresponding sample size.}
  \item{Alpha/Beta/Gamma/Dissimilarity}{the estimated diversity/dissimilarity estimate.}
  \item{Method}{Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample.} 
  \item{s.e.}{standard error of standardized estimate.}

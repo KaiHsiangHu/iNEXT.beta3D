@@ -59,7 +59,7 @@
 #'  \item{Dataset}{the name of dataset.}
 #'  \item{Order.q}{the diversity order of q.} 
 #'  \item{SC}{the target standardized coverage value.}
-#'  \item{Size}{the corresponding sample size.}
+#'  \item{Size/mT}{the corresponding sample size.}
 #'  \item{Alpha/Beta/Gamma/Dissimilarity}{the estimated diversity/dissimilarity estimate.}
 #'  \item{Method}{Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample.} 
 #'  \item{s.e.}{standard error of standardized estimate.}
@@ -2849,8 +2849,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     if (datatype == 'incidence_raw') {
       
-      gamma = gamma %>% rename("T" = "Size")
-      alpha = alpha %>% rename("T" = "Size")
+      gamma = gamma %>% rename("mT" = "Size")
+      alpha = alpha %>% rename("mT" = "Size")
     }
     
     if (diversity == "FD" & FDtype == "tau_value") {
@@ -3284,11 +3284,11 @@ ggiNEXTbeta3D = function(output, type = 'B'){
     gamma = lapply(output, function(y) y[["gamma"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Gamma") %>% mutate(div_type = "Gamma") %>% as_tibble()
     alpha = lapply(output, function(y) y[["alpha"]]) %>% do.call(rbind,.) %>% rename("Estimate" = "Alpha") %>% mutate(div_type = "Alpha") %>% as_tibble()
     
-    if ('T' %in% colnames(gamma)) {
+    if ('mT' %in% colnames(gamma)) {
       
       xlab = 'Number of sampling units'
-      colnames(gamma)[colnames(gamma) == 'T'] = 'Size'
-      colnames(alpha)[colnames(alpha) == 'T'] = 'Size'
+      colnames(gamma)[colnames(gamma) == 'mT'] = 'Size'
+      colnames(alpha)[colnames(alpha) == 'mT'] = 'Size'
       
     } else xlab = 'Number of individuals'
     
