@@ -3747,6 +3747,42 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
   if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
   
   
+  ##
+  if (datatype == 'abundance') {
+    
+    pool.name <- lapply(data_list, function(x) rownames(x)) %>% unlist %>% unique
+    
+  } else if (datatype == 'incidence_raw') {
+    
+    pool.name <- lapply(data_list, function(x) lapply(x, function(y) rownames(y))) %>% unlist %>% unique
+    
+  }
+  
+  if (diversity == "PD") {
+    
+    if (sum(c(duplicated(PDtree$tip.label), duplicated(PDtree$node.label[PDtree$node.label!=""])))>0)
+      stop("The phylo tree should not contains duplicated tip or node labels, please remove them.", call. = FALSE)
+    
+    if ( is.null(pool.name) )
+      stop("Row names of data must be the species names that match tip names in tree and thus can not be empty.", call. = FALSE)
+    
+    if (sum(pool.name %in% PDtree$tip.label) != length(pool.name))
+      stop("Data and tree tip label contain unmatched species", call. = FALSE)
+  }
+  
+  if (diversity == "FD") {
+    
+    if (is.null(rownames(FDdistM)))
+      stop('The species names are not provided in distance matrix.', call. = FALSE)
+    
+    if( is.null(pool.name) )
+      stop("Row names of data must be the species names that match row names in distance matrix and thus can not be empty.", call. = FALSE)
+    
+    if (sum(pool.name %in% rownames(FDdistM)) != length(pool.name))
+      stop("Data and distance matrix contain unmatched species", call. = FALSE)
+  }
+  ##
+  
   
   if (diversity == "TD") {
     
