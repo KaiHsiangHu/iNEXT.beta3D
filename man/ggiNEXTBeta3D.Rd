@@ -7,7 +7,7 @@
 ggiNEXTbeta3D(output, type = "B")
 }
 \arguments{
-\item{output}{output from the function iNEXTbeta3D.}
+\item{output}{output from the function \code{iNEXTbeta3D}.}
 
 \item{type}{(argument only for \code{base = "coverage"}),\cr
 \code{type = 'B'} for plotting the rarefaction and extrapolation sampling curves for gamma, alpha, and beta diversity;  \cr

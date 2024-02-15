@@ -13,14 +13,16 @@
 #' @param level a numerical vector specifying the particular values of sample coverage (between 0 and 1 when 
 #' \code{base = "coverage"}) or sample sizes (\code{base = "size"}) that will be used to compute standardized
 #'  diversity/dissimilarity. Asymptotic diversity estimator can be obtained by setting \code{level = 1}
-#'   ( i.e., complete coverage for \code{base = "coverage"}). By default (with \code{base = "coverage"}), 
+#'   ( i.e., complete coverage for \code{base = "coverage"}). \cr
+#'   By default (with \code{base = "coverage"}), 
 #'   this function computes the standardized 3D gamma, alpha, beta diversity, and four dissimilarity indices 
 #'   for coverage up to one (for \code{q = 1, 2}) or up to the coverage of double the reference sample size 
 #'   (for \code{q = 0}), in increments of 0.025. The extrapolation limit for beta diversity is defined as that
-#'    for alpha diversity. If users set \code{base = "size"}, this function computes the size-based standardized
+#'    for alpha diversity. \cr
+#'    If users set \code{base = "size"}, this function computes the size-based standardized
 #'     3D gamma and alpha diversity estimates based on 40 equally-spaced sample sizes/knots from sample size 1 
 #'     up to double the reference sample size.
-#' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Set \code{nboot = 0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nbbot = 100} (or \code{nboot = 200}).
+#' @param nboot a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Set \code{nboot = 0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nboot = 100} (or \code{nboot = 200}).
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is 0.95.
 #' @param PDtree (required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
 #' @param PDreftime (argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of \code{PDtree}).  
@@ -2880,7 +2882,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' \code{ggiNEXTbeta3D} is an \code{ggplot2} extension for \code{iNEXTbeta3D} 
 #' object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 #' 
-#' @param output output from the function iNEXTbeta3D.
+#' @param output output from the function \code{iNEXTbeta3D}.
 #' @param type (argument only for \code{base = "coverage"}),\cr
 #' \code{type = 'B'} for plotting the rarefaction and extrapolation sampling curves for gamma, alpha, and beta diversity;  \cr
 #' \code{type = 'D'} for plotting the rarefaction and extrapolation sampling curves for four dissimilarity indices.\cr
@@ -3645,8 +3647,11 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' @param PDtree (required argument for \code{diversity = "PD"}), a phylogenetic tree in Newick format for all observed species in the pooled assemblage. 
 #' @param PDreftime (argument only for \code{diversity = "PD"}), a numerical value specifying reference time for PD. Default is \code{PDreftime = NULL} (i.e., the age of the root of \code{PDtree}).  
 #' @param FDdistM (required argument for \code{diversity = "FD"}), a species pairwise distance matrix for all species in the pooled assemblage. 
-#' @param FDtype (argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.  
-#' @param FDtau (argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and 1 specifying the tau value (threshold level). If \code{FDtype = NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled dataset (i.e., quadratic entropy). 
+#' @param FDtype (argument only for \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under a specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{FDtype = "AUC"}.  
+#' @param FDtau (argument only for \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical value between 0 and
+#'  1 specifying the tau value (threshold level) that will be used to compute FD. If \code{FDtype = NULL} (default), 
+#'  then threshold level is set to be the mean distance between any two individuals randomly selected from the pooled 
+#'  dataset (i.e., quadratic entropy). 
 #' 
 #' @return a data.frame including basic data information.\cr\cr 
 #' For abundance data, basic information shared by TD, mean-PD and FD

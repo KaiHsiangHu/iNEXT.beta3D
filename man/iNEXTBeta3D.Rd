@@ -37,15 +37,17 @@ iNEXTbeta3D(
 \item{level}{a numerical vector specifying the particular values of sample coverage (between 0 and 1 when 
 \code{base = "coverage"}) or sample sizes (\code{base = "size"}) that will be used to compute standardized
  diversity/dissimilarity. Asymptotic diversity estimator can be obtained by setting \code{level = 1}
-  ( i.e., complete coverage for \code{base = "coverage"}). By default (with \code{base = "coverage"}), 
+  ( i.e., complete coverage for \code{base = "coverage"}). \cr
+  By default (with \code{base = "coverage"}), 
   this function computes the standardized 3D gamma, alpha, beta diversity, and four dissimilarity indices 
   for coverage up to one (for \code{q = 1, 2}) or up to the coverage of double the reference sample size 
   (for \code{q = 0}), in increments of 0.025. The extrapolation limit for beta diversity is defined as that
-   for alpha diversity. If users set \code{base = "size"}, this function computes the size-based standardized
+   for alpha diversity. \cr
+   If users set \code{base = "size"}, this function computes the size-based standardized
     3D gamma and alpha diversity estimates based on 40 equally-spaced sample sizes/knots from sample size 1 
     up to double the reference sample size.}
 
-\item{nboot}{a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Set \code{nboot = 0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nbbot = 100} (or \code{nboot = 200}).}
+\item{nboot}{a positive integer specifying the number of bootstrap replications when assessing sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Set \code{nboot = 0} to skip the bootstrap procedures. Default is \code{nboot = 10}. If more accurate results are required, set \code{nboot = 100} (or \code{nboot = 200}).}
 
 \item{conf}{a positive number < 1 specifying the level of confidence interval. Default is 0.95.}
 
