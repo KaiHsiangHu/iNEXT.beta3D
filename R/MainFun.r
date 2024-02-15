@@ -3750,11 +3750,11 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
   ##
   if (datatype == 'abundance') {
     
-    pool.name <- lapply(data_list, function(x) rownames(x)) %>% unlist %>% unique
+    pool.name <- lapply(data, function(x) rownames(x)) %>% unlist %>% unique
     
   } else if (datatype == 'incidence_raw') {
     
-    pool.name <- lapply(data_list, function(x) lapply(x, function(y) rownames(y))) %>% unlist %>% unique
+    pool.name <- lapply(data, function(x) lapply(x, function(y) rownames(y))) %>% unlist %>% unique
     
   }
   
