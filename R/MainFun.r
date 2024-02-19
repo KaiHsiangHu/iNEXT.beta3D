@@ -1852,6 +1852,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       gamma$Method[gamma$SC == ref_gamma] = "Observed_SC(T, gamma)"
       
+      
+      gamma = gamma %>% rename("mT" = "Size")
+      alpha = alpha %>% rename("mT" = "Size")
+      beta  = beta  %>% rename("mT" = "Size")
+      C     = C     %>% rename("mT" = "Size")
+      U     = U     %>% rename("mT" = "Size")
+      V     = V     %>% rename("mT" = "Size")
+      S     = S     %>% rename("mT" = "Size")
     }
     
     
@@ -3005,6 +3013,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       gamma = lapply(output, function(y) {
         
         tmp = y[["gamma"]]
+        if ('mT' %in% colnames(tmp)) tmp = tmp %>% rename("Size" = "mT")
         
         tmp[tmp == 'Observed_SC(n, gamma)'] = tmp[tmp == 'Observed_SC(T, gamma)'] = 'Observed'
         tmp[tmp == 'Extrap_SC(2n, gamma)'] = tmp[tmp == 'Extrap_SC(2T, gamma)'] = 'Extrapolation'
@@ -3026,6 +3035,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       alpha = lapply(output, function(y) {
         
         tmp = y[["alpha"]]
+        if ('mT' %in% colnames(tmp)) tmp = tmp %>% rename("Size" = "mT")
         
         tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
         tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
@@ -3047,6 +3057,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       beta =  lapply(output, function(y) {
         
         tmp = y[["beta"]]
+        if ('mT' %in% colnames(tmp)) tmp = tmp %>% rename("Size" = "mT")
         
         tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
         tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
@@ -3114,6 +3125,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       C = lapply(output, function(y) {
         
         tmp = y[["1-C"]]
+        if ('mT' %in% colnames(tmp)) tmp = tmp %>% rename("Size" = "mT")
         
         tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
         tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
@@ -3135,6 +3147,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       U = lapply(output, function(y) {
         
         tmp = y[["1-U"]]
+        if ('mT' %in% colnames(tmp)) tmp = tmp %>% rename("Size" = "mT")
         
         tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
         tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
@@ -3156,6 +3169,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       V = lapply(output, function(y) {
         
         tmp = y[["1-V"]]
+        if ('mT' %in% colnames(tmp)) tmp = tmp %>% rename("Size" = "mT")
         
         tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
         tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
@@ -3177,6 +3191,7 @@ ggiNEXTbeta3D = function(output, type = 'B'){
       S = lapply(output, function(y) {
         
         tmp = y[["1-S"]]
+        if ('mT' %in% colnames(tmp)) tmp = tmp %>% rename("Size" = "mT")
         
         tmp[tmp == 'Observed_SC(n, alpha)'] = tmp[tmp == 'Observed_SC(T, alpha)'] = 'Observed'
         tmp[tmp == 'Extrap_SC(2n, alpha)'] = tmp[tmp == 'Extrap_SC(2T, alpha)'] = 'Extrapolation'
