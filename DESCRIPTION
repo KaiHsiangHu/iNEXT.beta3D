@@ -17,7 +17,7 @@ URL: https://sites.google.com/view/chao-lab-website/software/inext-beta3d
 Description: As a sequel to 'iNEXT', the 'iNEXT.beta3D' package provides functions to compute 
               standardized taxonomic, phylogenetic, and functional diversity (3D) estimates 
               with a common sample size (for alpha and gamma diversity) or sample coverage 
-              (for alpha, beta, gamma diversity as well as dissimilarity or turnover indices. 
+              (for alpha, beta, gamma diversity as well as dissimilarity or turnover indices). 
               Hill numbers and their generalizations are used to quantify 3D and to make 
               multiplicative decomposition (gamma = alpha x beta). The package also features 
               size- and coverage-based rarefaction and extrapolation sampling curves to 

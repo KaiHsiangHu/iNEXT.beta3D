@@ -1,9 +1,10 @@
 #' iNterpolation and EXTrapolation with beta diversity for TD, PD and FD 
 #' 
-#' \code{iNEXTbeta3D} compute standardized 3D estimates with a common sample size
-#'(for alpha and gamma diversity) or sample coverage (for alpha, beta, gamma diversity as well as
-#' dissimilarity indices; see Chao et al. (2023) for the theory.
-#'                      
+#' \code{iNEXTbeta3D} computes standardized 3D estimates with a common sample size
+#' (for alpha and gamma diversity) or sample coverage (for alpha, beta, gamma diversity as well as
+#' dissimilarity indices) for default sizes or coverage values. This function also computes standardized 3D estimates
+#' with a particular vector of user-specified sample sizes or coverage values. See Chao et al. (2023) for the theory.
+#' 
 #' @param data (a) For \code{datatype = "abundance"}, species abundance data for a single dataset can be input as a \code{matrix/data.frame} (species-by-assemblage); data for multiple datasets can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-assemblage abundance matrix for one of the datasets.\cr
 #' (b) For \code{datatype = "incidence_raw"}, data for a single dataset with N assemblages can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-sampling-unit incidence matrix for one of the assemblages; data for multiple datasets can be input as multiple lists.
 #' @param diversity selection of diversity type: \code{'TD'} = Taxonomic diversity, \code{'PD'} = Phylogenetic diversity, and \code{'FD'} = Functional diversity.
@@ -65,12 +66,14 @@
 #'  \item{s.e.}{standard error of standardized estimate.}
 #'  \item{LCL, UCL}{the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95.}
 #'  \item{Diversity}{'TD' = 'Taxonomic diversity', 'PD' = 'Phylogenetic diversity', 'meanPD' = 'Mean phylogenetic diversity', 'FD_tau' = 'Functional diversity (given tau)', 'FD_AUC' = 'Functional diversity (AUC)'}
+#'  \item{Reftime}{the reference times for PD.}
+#'  \item{Tau}{the threshold of functional distinctiveness between any two species for FD (under \code{FDtype = tau_values}).}
 #'  Similar output is obtained for \code{base = "size"}.\cr
 #'  
 #'  
 #' @examples
 #' \donttest{
-#' ## Taxonomic diversity for abundance data
+#' ## (R/E Analysis) Taxonomic diversity for abundance data
 #' # Coverage-based standardized TD estimates and related statistics
 #' data(Brazil_rainforests)
 #' output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
@@ -78,14 +81,46 @@
 #' output_TDc_abun
 #' }
 #' 
+#' # Coverage-based standardized TD estimates and related statistics by 
+#' # user-specified coverage values
+#' data(Brazil_rainforests)
+#' output_TDc_abun_byuser = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+#'                                      datatype = 'abundance', base = "coverage", nboot = 10,
+#'                                      level = c(0.85, 0.9))
+#' output_TDc_abun_byuser
+#' 
+#' 
 #' # Size-based standardized TD estimates and related statistics
 #' data(Brazil_rainforests)
 #' output_TDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
 #'                               datatype = 'abundance', base = "size", nboot = 10)
 #' output_TDs_abun
 #' 
+#' 
+#' # Size-based standardized TD estimates and related statistics by user-specified sample sizes
+#' data(Brazil_rainforests)
+#' output_TDs_abun_byuser = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+#'                                      datatype = 'abundance', base = "size", nboot = 10,
+#'                                      level = c(300, 500))
+#' output_TDs_abun_byuser
+#' 
 #' \donttest{
-#' ## Phylogenetic diversity for abundance data
+#' ## (R/E Analysis) Taxonomic diversity for incidence data
+#' # Coverage-based standardized TD estimates and related statistics
+#' data(Second_growth_forests)
+#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                               datatype = 'incidence_raw', base = "coverage", nboot = 10)
+#' output_TDc_inci
+#' }
+#' 
+#' # Size-based standardized TD estimates and related statistics
+#' data(Second_growth_forests)
+#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                               datatype = 'incidence_raw', base = "size", nboot = 10)
+#' output_TDs_inci
+#' 
+#' \donttest{
+#' ## (R/E Analysis) Phylogenetic diversity for abundance data
 #' # Coverage-based standardized PD estimates and related statistics
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
@@ -104,7 +139,7 @@
 #' output_PDs_abun
 #' 
 #' 
-#' ## Functional diversity for abundance data when all thresholds from 0 to 1 are considered
+#' ## (R/E Analysis) Functional diversity for abundance data when all thresholds from 0 to 1 are considered
 #' # Coverage-based standardized FD estimates and related statistics
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
@@ -121,21 +156,7 @@
 #'                               datatype = 'abundance', base = "size", nboot = 10, 
 #'                               FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output_FDs_abun
-#' 
-#' 
-#' ## Taxonomic diversity for incidence data
-#' # Coverage-based standardized TD estimates and related statistics
-#' data(Second_growth_forests)
-#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
-#'                               datatype = 'incidence_raw', base = "coverage", nboot = 10)
-#' output_TDc_inci
 #' }
-#' 
-#' # Size-based standardized TD estimates and related statistics
-#' data(Second_growth_forests)
-#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
-#'                               datatype = 'incidence_raw', base = "size", nboot = 10)
-#' output_TDs_inci
 #' 
 #' 
 #' @references
@@ -1755,6 +1776,22 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
     }
     
+    if (diversity == "PD") {
+      
+      gamma = gamma %>% mutate(Reftime = reft)
+      
+      alpha = alpha %>% mutate(Reftime = reft)
+      
+      beta  = beta  %>% mutate(Reftime = reft)
+      
+      C     =  C    %>% mutate(Reftime = reft)
+      
+      U     =  U    %>% mutate(Reftime = reft)
+      
+      V     =  V    %>% mutate(Reftime = reft)
+      
+      S     =  S    %>% mutate(Reftime = reft)
+    }
     
     if (diversity == "FD" & FDtype == "tau_value") {
       
@@ -1764,16 +1801,14 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       beta  = beta  %>% mutate(Tau = FDtau)
       
-      C    =  C    %>% mutate(Tau = FDtau)
+      C     =  C    %>% mutate(Tau = FDtau)
       
-      U    =  U    %>% mutate(Tau = FDtau)
+      U     =  U    %>% mutate(Tau = FDtau)
       
-      V    =  V    %>% mutate(Tau = FDtau)
+      V     =  V    %>% mutate(Tau = FDtau)
       
-      S    =  S    %>% mutate(Tau = FDtau)
-      
+      S     =  S    %>% mutate(Tau = FDtau)
     }
-    
     
     if (datatype == "abundance") {
       
@@ -2861,6 +2896,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       alpha = alpha %>% rename("mT" = "Size")
     }
     
+    if (diversity == "PD") {
+      
+      gamma = gamma %>% mutate(Reftime = reft)
+      
+      alpha = alpha %>% mutate(Reftime = reft)
+    }
+    
     if (diversity == "FD" & FDtype == "tau_value") {
       
       gamma = gamma %>% mutate(Tau = FDtau)
@@ -2885,9 +2927,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 
 
 
-#' ggplot2 extension for an iNEXTbeta3D object
+#' ggplot2 extension for the iNEXTbeta3D object
 #' 
-#' \code{ggiNEXTbeta3D} is an \code{ggplot2} extension for \code{iNEXTbeta3D} 
+#' \code{ggiNEXTbeta3D} is an \code{ggplot2} extension for the \code{iNEXTbeta3D} 
 #' object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
 #' 
 #' @param output output from the function \code{iNEXTbeta3D}.
@@ -2902,7 +2944,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' @examples
 #' \donttest{
-#' ## Taxonomic diversity for abundance data
+#' ## (Graphic Display) Taxonomic diversity for abundance data
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
@@ -2920,7 +2962,25 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' ggiNEXTbeta3D(output_TDs_abun)
 #' 
 #' \donttest{
-#' ## Phylogenetic diversity for abundance data
+#' ## (Graphic Display) Taxonomic diversity for incidence data
+#' # Coverage-based rarefaction and extrapolation sampling curves 
+#' data(Second_growth_forests)
+#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                               datatype = 'incidence_raw', base = "coverage", nboot = 10)
+#' 
+#' ggiNEXTbeta3D(output_TDc_inci, type = 'B')
+#' ggiNEXTbeta3D(output_TDc_inci, type = 'D')
+#' }
+#' 
+#' # Size-based rarefaction and extrapolation sampling curves 
+#' data(Second_growth_forests)
+#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                               datatype = 'incidence_raw', base = "size", nboot = 10)
+#' 
+#' ggiNEXTbeta3D(output_TDs_inci)
+#' 
+#' \donttest{
+#' ## (Graphic Display) Phylogenetic diversity for abundance data
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
@@ -2942,7 +3002,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' ggiNEXTbeta3D(output_PDs_abun)
 #' 
 #' 
-#' ## Functional diversity for abundance data when all threshold levels from 0 to 1 are considered
+#' ## (Graphic Display) Functional diversity for abundance data when all threshold levels from 0 to 1 are considered
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
@@ -2962,24 +3022,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #'                               FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
 #' ggiNEXTbeta3D(output_FDs_abun)
-#' 
-#' 
-#' ## Taxonomic diversity for incidence data
-#' # Coverage-based rarefaction and extrapolation sampling curves 
-#' data(Second_growth_forests)
-#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
-#'                               datatype = 'incidence_raw', base = "coverage", nboot = 10)
-#' 
-#' ggiNEXTbeta3D(output_TDc_inci, type = 'B')
-#' ggiNEXTbeta3D(output_TDc_inci, type = 'D')
 #' }
-#' 
-#' # Size-based rarefaction and extrapolation sampling curves 
-#' data(Second_growth_forests)
-#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
-#'                               datatype = 'incidence_raw', base = "size", nboot = 10)
-#' 
-#' ggiNEXTbeta3D(output_TDs_inci)
 #' 
 #' 
 #' @export
@@ -3653,7 +3696,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' 
 #' \code{DataInfobeta3D} provides basic data information for (1) the reference sample in each assemblage, 
 #' (2) the gamma reference sample in the pooled assemblage, and (3) the alpha reference sample in the
-#'  joint assemblage for TD, mean-PD and FD. 
+#'  joint assemblage for TD, PD and FD. 
 #' 
 #' @param data (a) For \code{datatype = "abundance"}, species abundance data for a single dataset can be input as a \code{matrix/data.frame} (species-by-assemblage); data for multiple datasets can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-assemblage abundance matrix for one of the datasets.\cr
 #' (b) For \code{datatype = "incidence_raw"}, data for a single dataset with N assemblages can be input as a \code{list} of \code{matrices/data.frames}, with each matrix representing a species-by-sampling-unit incidence matrix for one of the assemblages; data for multiple datasets can be input as multiple lists.
@@ -3690,14 +3733,20 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #'  for abundance data.   
 #' 
 #' @examples
-#' ## Taxonomic diversity for abundance data
+#' ## (Data Information) Taxonomic diversity for abundance data
 #' data(Brazil_rainforests)
 #' info_TD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance')
 #' info_TD_abun
 #' 
 #' 
+#' ## (Data Information) Taxonomic diversity for incidence data
+#' data(Second_growth_forests)
+#' info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
+#'                               datatype = 'incidence_raw')
+#' info_TD_inci
+#' 
 #' \donttest{
-#' ## Mean phylogenetic diversity for abundance data
+#' ## (Data Information) Mean phylogenetic diversity for abundance data
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
 #' info_PD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
@@ -3705,8 +3754,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' info_PD_abun
 #' }
 #' 
-#' 
-#' ## Functional diversity for abundance data under a specified threshold level
+#' ## (Data Information) Functional diversity for abundance data under a specified threshold level
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
 #' info_FDtau_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
@@ -3715,19 +3763,13 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #' info_FDtau_abun
 #' 
 #' 
-#' ## Functional diversity for abundance data when all threshold levels from 0 to 1 are considered
+#' ## (Data Information) Functional diversity for abundance data when all threshold levels
+#' ## from 0 to 1 are considered
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
 #' info_FDAUC_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
 #'                                  datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'AUC')
 #' info_FDAUC_abun
-#' 
-#' 
-#' ## Taxonomic diversity for incidence data
-#' data(Second_growth_forests)
-#' info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
-#'                               datatype = 'incidence_raw')
-#' info_TD_inci
 #' 
 #' 
 #' @export

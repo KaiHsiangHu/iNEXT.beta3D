@@ -6,8 +6,8 @@
   Interpolation and extrapolation with beta diversity for three dimensions of biodiversity
 }
 \description{
-  \code{iNEXT.beta3D} (iNterpolation and EXTrapolation with beta diversity for three dimensions of biodiversity)
-  is a sequel to iNEXT. Here the three dimensions (3D) of diversity includes taxonomic diversity (TD),
+  This package \code{iNEXT.beta3D} (iNterpolation and EXTrapolation with beta diversity for three dimensions of biodiversity)
+  is a sequel to \code{iNEXT}. Here the three dimensions (3D) of diversity includes taxonomic diversity (TD),
   phylogenetic diversity (PD) and functional diversity (FD). An online version "iNEXT.beta3D Online"
   (https://chao.shinyapps.io/iNEXT_beta3D/) is also available for users without an R background.\cr
   
@@ -18,7 +18,7 @@
   groups (or functional "species"). Thus, TD, mean-PD, and FD are all in the same units of species/lineage equivalents
   and can be meaningfully compared; see Chao et al. (2021) for a review of the unified framework. \cr
   
-  For each of the three dimensions, iNEXT.beta3D focuses on the multiplicative diversity decomposition 
+  For each of the three dimensions, \code{iNEXT.beta3D} focuses on the multiplicative diversity decomposition 
   (gamma = alpha x beta) of orders q = 0, 1 and 2 based on sampling data. Beta diversity quantifies the extent 
   of among-assemblage differentiation, or the changes in species/lineages/functional-groups composition and
   their abundance among assemblages. \code{iNEXT.beta3D} features standardized 3D estimates with a common sample size
@@ -47,8 +47,10 @@
   This package contains three main functions: \cr
   
   1. \code{iNEXTbeta3D} computes standardized 3D estimates with a common sample size (for alpha and gamma diversity)
-  or sample coverage (for alpha, beta and gamma diversity). This function also computes coverage-based standardized 
-  3D estimates of four classes of dissimilarity measures. \cr
+  or sample coverage (for alpha, beta and gamma diversity) for default sample sizes or coverage values. This function 
+  also computes coverage-based standardized 3D estimates of four classes of dissimilarity measures for default sample 
+  sizes or coverage values. Besides, this function also computes standardized 3D 
+  estimates with a particular vector of user-specified sample sizes or coverage values. \cr
   
   2. \code{ggiNEXTbeta3D} visualizes the output from the function \code{iNEXTbeta3D}. \cr
   
@@ -62,7 +64,7 @@ Maintainer: Anne Chao <chao@stat.nthu.edu.tw>
 }
 \references{
 Chao, A., Chiu, C.-H., Hu, K.-H., and Zeleny, D. (2023a). Revisiting Alwyn H. Gentry's forest transect data: 
-  a statistical sampling-model-based approach. Japanese Journal of Statistics and Data Science. 
+  a statistical sampling-model-based approach. Japanese Journal of Statistics and Data Science, 6, 861-884. 
 https://doi.org/10.1007/s42081-023-00214-1 \cr\cr
 Chao, A., Henderson, P. A., Chiu, C.-H., Moyes, F., Hu, K.-H., Dornelas, M. and Magurran, A. E. (2021).
 Measuring temporal change in alpha diversity: a framework integrating taxonomic, phylogenetic and functional diversity 

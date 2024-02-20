@@ -83,16 +83,19 @@ For \code{base = "coverage"}, return a list of seven data frames with three dive
  \item{s.e.}{standard error of standardized estimate.}
  \item{LCL, UCL}{the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95.}
  \item{Diversity}{'TD' = 'Taxonomic diversity', 'PD' = 'Phylogenetic diversity', 'meanPD' = 'Mean phylogenetic diversity', 'FD_tau' = 'Functional diversity (given tau)', 'FD_AUC' = 'Functional diversity (AUC)'}
+ \item{Reftime}{the reference times for PD.}
+ \item{Tau}{the threshold of functional distinctiveness between any two species for FD (under \code{FDtype = tau_values}).}
  Similar output is obtained for \code{base = "size"}.\cr
 }
 \description{
-\code{iNEXTbeta3D} compute standardized 3D estimates with a common sample size
+\code{iNEXTbeta3D} computes standardized 3D estimates with a common sample size
 (for alpha and gamma diversity) or sample coverage (for alpha, beta, gamma diversity as well as
-dissimilarity indices; see Chao et al. (2023) for the theory.
+dissimilarity indices) for default sizes or coverage values. This function also computes standardized 3D estimates
+with a particular vector of user-specified sample sizes or coverage values. See Chao et al. (2023) for the theory.
 }
 \examples{
 \donttest{
-## Taxonomic diversity for abundance data
+## (R/E Analysis) Taxonomic diversity for abundance data
 # Coverage-based standardized TD estimates and related statistics
 data(Brazil_rainforests)
 output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
@@ -100,14 +103,46 @@ output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD',
 output_TDc_abun
 }
 
+# Coverage-based standardized TD estimates and related statistics by 
+# user-specified coverage values
+data(Brazil_rainforests)
+output_TDc_abun_byuser = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+                                     datatype = 'abundance', base = "coverage", nboot = 10,
+                                     level = c(0.85, 0.9))
+output_TDc_abun_byuser
+
+
 # Size-based standardized TD estimates and related statistics
 data(Brazil_rainforests)
 output_TDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
                               datatype = 'abundance', base = "size", nboot = 10)
 output_TDs_abun
 
+
+# Size-based standardized TD estimates and related statistics by user-specified sample sizes
+data(Brazil_rainforests)
+output_TDs_abun_byuser = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+                                     datatype = 'abundance', base = "size", nboot = 10,
+                                     level = c(300, 500))
+output_TDs_abun_byuser
+
 \donttest{
-## Phylogenetic diversity for abundance data
+## (R/E Analysis) Taxonomic diversity for incidence data
+# Coverage-based standardized TD estimates and related statistics
+data(Second_growth_forests)
+output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                              datatype = 'incidence_raw', base = "coverage", nboot = 10)
+output_TDc_inci
+}
+
+# Size-based standardized TD estimates and related statistics
+data(Second_growth_forests)
+output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                              datatype = 'incidence_raw', base = "size", nboot = 10)
+output_TDs_inci
+
+\donttest{
+## (R/E Analysis) Phylogenetic diversity for abundance data
 # Coverage-based standardized PD estimates and related statistics
 data(Brazil_rainforests)
 data(Brazil_tree)
@@ -126,7 +161,7 @@ output_PDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD',
 output_PDs_abun
 
 
-## Functional diversity for abundance data when all thresholds from 0 to 1 are considered
+## (R/E Analysis) Functional diversity for abundance data when all thresholds from 0 to 1 are considered
 # Coverage-based standardized FD estimates and related statistics
 data(Brazil_rainforests)
 data(Brazil_distM)
@@ -143,21 +178,7 @@ output_FDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD',
                               datatype = 'abundance', base = "size", nboot = 10, 
                               FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 output_FDs_abun
-
-
-## Taxonomic diversity for incidence data
-# Coverage-based standardized TD estimates and related statistics
-data(Second_growth_forests)
-output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
-                              datatype = 'incidence_raw', base = "coverage", nboot = 10)
-output_TDc_inci
 }
-
-# Size-based standardized TD estimates and related statistics
-data(Second_growth_forests)
-output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
-                              datatype = 'incidence_raw', base = "size", nboot = 10)
-output_TDs_inci
 
 
 }

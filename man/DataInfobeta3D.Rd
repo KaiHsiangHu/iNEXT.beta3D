@@ -61,17 +61,23 @@ and the mean distance between any two individuals randomly selected from the dat
 \description{
 \code{DataInfobeta3D} provides basic data information for (1) the reference sample in each assemblage, 
 (2) the gamma reference sample in the pooled assemblage, and (3) the alpha reference sample in the
- joint assemblage for TD, mean-PD and FD.
+ joint assemblage for TD, PD and FD.
 }
 \examples{
-## Taxonomic diversity for abundance data
+## (Data Information) Taxonomic diversity for abundance data
 data(Brazil_rainforests)
 info_TD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance')
 info_TD_abun
 
 
+## (Data Information) Taxonomic diversity for incidence data
+data(Second_growth_forests)
+info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
+                              datatype = 'incidence_raw')
+info_TD_inci
+
 \donttest{
-## Mean phylogenetic diversity for abundance data
+## (Data Information) Mean phylogenetic diversity for abundance data
 data(Brazil_rainforests)
 data(Brazil_tree)
 info_PD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
@@ -79,8 +85,7 @@ info_PD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD',
 info_PD_abun
 }
 
-
-## Functional diversity for abundance data under a specified threshold level
+## (Data Information) Functional diversity for abundance data under a specified threshold level
 data(Brazil_rainforests)
 data(Brazil_distM)
 info_FDtau_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
@@ -89,19 +94,13 @@ info_FDtau_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD',
 info_FDtau_abun
 
 
-## Functional diversity for abundance data when all threshold levels from 0 to 1 are considered
+## (Data Information) Functional diversity for abundance data when all threshold levels
+## from 0 to 1 are considered
 data(Brazil_rainforests)
 data(Brazil_distM)
 info_FDAUC_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
                                  datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'AUC')
 info_FDAUC_abun
-
-
-## Taxonomic diversity for incidence data
-data(Second_growth_forests)
-info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
-                              datatype = 'incidence_raw')
-info_TD_inci
 
 
 }
