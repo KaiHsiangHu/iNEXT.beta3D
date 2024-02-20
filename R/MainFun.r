@@ -67,7 +67,7 @@
 #'  \item{LCL, UCL}{the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95.}
 #'  \item{Diversity}{'TD' = 'Taxonomic diversity', 'PD' = 'Phylogenetic diversity', 'meanPD' = 'Mean phylogenetic diversity', 'FD_tau' = 'Functional diversity (given tau)', 'FD_AUC' = 'Functional diversity (AUC)'}
 #'  \item{Reftime}{the reference times for PD.}
-#'  \item{Tau}{the threshold of functional distinctiveness between any two species for FD (under \code{FDtype = tau_values}).}
+#'  \item{Tau}{the threshold of functional distinctiveness between any two species for FD (under \code{FDtype = "tau_value"}).}
 #'  Similar output is obtained for \code{base = "size"}.\cr
 #'  
 #'  
