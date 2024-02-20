@@ -65,7 +65,7 @@
 #'  \item{Method}{Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample.} 
 #'  \item{s.e.}{standard error of standardized estimate.}
 #'  \item{LCL, UCL}{the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95.}
-#'  \item{Diversity}{'TD' = 'Taxonomic diversity', 'PD' = 'Phylogenetic diversity', 'meanPD' = 'Mean phylogenetic diversity', 'FD_tau' = 'Functional diversity (given tau)', 'FD_AUC' = 'Functional diversity (AUC)'}
+#'  \item{Diversity}{\code{'TD'} = 'Taxonomic diversity', \code{'PD'} = 'Phylogenetic diversity', \code{'meanPD'} = 'Mean phylogenetic diversity', \code{'FD_tau'} = 'Functional diversity (given tau)', \code{'FD_AUC'} = 'Functional diversity (AUC)'}
 #'  \item{Reftime}{the reference times for PD.}
 #'  \item{Tau}{the threshold of functional distinctiveness between any two species for FD (under \code{FDtype = "tau_value"}).}
 #'  Similar output is obtained for \code{base = "size"}.\cr
@@ -262,7 +262,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
     if ( sum( sapply(1:length(data), function(i) ( length(unique(sapply(data[[i]], nrow))) != 1 | 
                                                    length(unique(sapply(data[[i]], ncol))) != 1 ) ) ) > 0 )
-      stop("Number of rows or columns should be the same within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
+      stop("Number of species (row) or sampling units (column) should be the same within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
     
     if (is.null(names(data))) dataset_names = paste0("Dataset_", 1:length(data)) else dataset_names = names(data)
     Ns = sapply(data, length)
@@ -3742,7 +3742,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #'  includes dataset name (\code{Dataset}), individual/pooled/joint assemblage (\code{Assemblage}),
 #' sample size (\code{n}), observed species richness (\code{S.obs}), sample coverage estimates of the reference sample (\code{SC(n)}), 
 #' sample coverage estimate for twice the reference sample size (\code{SC(2n)}). Other additional information is given below.\cr\cr
-#' (1) TD: the first five species abundance frequency counts in the reference sample (\code{f1}-\code{f5}).\cr\cr
+#' (1) TD: the first five species abundance frequency counts in the reference sample (\code{f1}--\code{f5}).\cr\cr
 #' (2) Mean-PD: the the observed total branch length in the phylogenetic tree (\code{PD.obs}), 
 #' the number of singletons (\code{f1*}) and doubletons (\code{f2*}) in the node/branch abundance set, as well as the total branch length 
 #' of those singletons (\code{g1}) and of those doubletons (\code{g2}), and the reference time (\code{Reftime}).\cr\cr
@@ -3755,7 +3755,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
 #'  For incidence data, the basic information for TD includes dataset name (\code{Dataset}), individual/pooled/joint assemblage 
 #'  (\code{Assemblage}), number of sampling units (\code{T}), total number of incidences (\code{U}), observed species richness (\code{S.obs}), 
 #'  sample coverage estimates of the reference sample (\code{SC(T)}), sample coverage estimate for twice the reference sample size
-#'  (\code{SC(2T)}), as well as the first species incidence frequency counts (\code{Q1}-\code{Q5}) in the reference sample. For mean-PD and FD, output is similar to that
+#'  (\code{SC(2T)}), as well as the first five species incidence frequency counts (\code{Q1}--\code{Q5}) in the reference sample. For mean-PD and FD, output is similar to that
 #'  for abundance data.   
 #' 
 #' @examples
@@ -3846,7 +3846,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     
     if ( sum( sapply(1:length(data), function(i) ( length(unique(sapply(data[[i]], nrow))) != 1 | 
                                                    length(unique(sapply(data[[i]], ncol))) != 1 ) ) ) > 0 )
-      stop("Number of rows or columns should be the same within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
+      stop("Number of species (row) or sampling units (column) should be the same within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
     
     if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
   }
@@ -3912,6 +3912,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
       
       Dat = lapply(data, function(x) {
         
+        x = lapply(x, as.matrix)
         data_gamma = Reduce('+', x)
         data_gamma[data_gamma > 1] = 1
         
@@ -4007,7 +4008,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
       
       output = lapply(1:length(data), function(i) {
         
-        x = data[[i]]
+        x = lapply(data[[i]], as.matrix)
         if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
         
         data_gamma = Reduce('+', x)
@@ -4096,9 +4097,13 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         tmp <- lapply(data, function(x) {tmp = Reduce('+', x); tmp[tmp > 1] = 1; rowSums(tmp) })
         tmp = lapply(tmp, function(i) data.frame('value' = i) %>% rownames_to_column(var = "Species"))
         pdata = tmp[[1]]
-        for(i in 2:length(tmp)){
-          pdata = full_join(pdata, tmp[[i]], by = "Species")
+        
+        if (length(tmp) > 1) {
+          for(i in 2:length(tmp)){
+            pdata = full_join(pdata, tmp[[i]], by = "Species")
+          }
         }
+        
         pdata[is.na(pdata)] = 0
         pdata = pdata %>% column_to_rownames("Species")
         pdata = rowSums(pdata)
@@ -4171,7 +4176,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
       
       output = lapply(1:length(data), function(i) {
         
-        x = data[[i]]
+        x = lapply(data[[i]], as.matrix)
         if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
         
         nT = ncol(x[[1]])
@@ -4310,6 +4315,8 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
       } else if (datatype == 'incidence_raw') {
         
+        x = lapply(x, as.matrix)
+        
         tmp = Reduce('+', x)
         tmp[tmp > 1] = 1
         pdata = data.frame(rowSums(tmp))
@@ -4347,6 +4354,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         
         if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
         
+        x = lapply(x, as.matrix)
         data_gamma = Reduce('+', x)
         data_gamma[data_gamma > 1] = 1
         
@@ -4381,8 +4389,8 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
 
 #' Printing \code{iNEXTbeta3D} object
 #' 
-#' \code{print.iNEXTbeta3D}: Print method for objects inheriting from class \code{iNEXTbeta3D}
-#' @param x an \code{iNEXTbeta3D} object computed by \code{\link{iNEXTbeta3D}}.
+#' \code{print.iNEXTbeta3D}: Print method for objects inheriting from class \code{"iNEXTbeta3D"}
+#' @param x an \code{iNEXTbeta3D} object computed by \code{iNEXTbeta3D}.
 #' @param ... additional arguments.
 #' @return a list of multiple objects (see \code{iNEXTbeta3D} for more details) with simplified outputs.
 #' @export
