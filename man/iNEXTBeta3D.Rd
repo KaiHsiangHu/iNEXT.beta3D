@@ -135,11 +135,28 @@ output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD',
 output_TDc_inci
 }
 
+# Coverage-based standardized TD estimates and related statistics by 
+# user-specified coverage values
+data(Second_growth_forests)
+output_TDc_inci_byuser = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                                     datatype = 'incidence_raw', base = "coverage", 
+                                     nboot = 10, level = c(0.9, 0.95))
+output_TDc_inci_byuser
+
+
 # Size-based standardized TD estimates and related statistics
 data(Second_growth_forests)
 output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
                               datatype = 'incidence_raw', base = "size", nboot = 10)
 output_TDs_inci
+
+
+# Size-based standardized TD estimates and related statistics by user-specified sample sizes
+data(Second_growth_forests)
+output_TDs_inci_byuser = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                                     datatype = 'incidence_raw', base = "size", 
+                                     nboot = 10, level = c(100, 200))
+output_TDs_inci_byuser
 
 \donttest{
 ## (R/E Analysis) Phylogenetic diversity for abundance data

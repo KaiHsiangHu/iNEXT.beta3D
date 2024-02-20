@@ -397,11 +397,12 @@ ggiNEXTbeta3D(output_TDs_abun)
 ```
 
 
-### EXAMPLE 2: Abundance data with user-specified sizes or coverage values
+### EXAMPLE 2: Abundance data with user-specified sample sizes or coverage values
 
 Besides the default sample sizes or coverage values, `iNEXTbeta3D` also computes standardized 3D 
 estimates with a particular vector of user-specified sample sizes or coverage values. The following 
 commands return the TD estimates with two specified levels of sample coverage (85% and 90%).
+Only the output for gamma, alpha and beta is shown below in each dataset; the output for 1-C, 1-U, 1-V, 1-S is omitted.
 
 ```{r eval=FALSE}
 ## R/E Analysis with taxonomic diversity for abundance data
@@ -420,7 +421,7 @@ output_TDc_abun_byuser = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD'
                                      level = c(0.85, 0.9))
 
 tmp = output_TDc_abun_byuser
-tmp = lapply(tmp, function(x) lapply(x, function(y) {
+tmp = lapply(tmp, function(x) lapply(x[1:3], function(y) {
   y[,c(3:5, 7:9)] = round(y[,c(3:5, 7:9)], 3)
   y = y[,-ncol(y)]
   y
@@ -433,7 +434,7 @@ tmp
 The following commands return the TD estimates with two specified levels of sample sizes (300 and 500).
 
 ```{r eval=FALSE}
-## Size-based R/E curves for taxonomic gamma and alpha diversity
+## Size-based R/E for taxonomic gamma and alpha diversity
 output_TDs_abun_byuser = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
                                      datatype = 'abundance', base = "size", nboot = 10,
                                      level = c(300, 500))
@@ -513,9 +514,37 @@ ggiNEXTbeta3D(output_TDs_inci)
 ```
 
 
+### EXAMPLE 4: Incidence data with user-specified sample sizes or coverage values
+
+As with abundance data, user can also specify sample sizes (i.e. number of sampling units) or coverage values to obtain the pertinent output. The code for examples is given below, but the output is omitted.
+
+```{r eval=FALSE}
+## R/E Analysis with taxonomic diversity for incidence data
+data(Second_growth_forests)
+
+output_TDc_inci_byuser = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                                     datatype = 'incidence_raw', base = "coverage", 
+                                     nboot = 10, level = c(0.9, 0.95))
+output_TDc_inci_byuser
+```
+
+
+The following commands return the TD estimates with two specified levels of sample sizes (100 and 200).
+
+```{r eval=FALSE}
+## Size-based R/E for taxonomic gamma and alpha diversity
+data(Second_growth_forests)
+
+output_TDs_inci_byuser = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+                                     datatype = 'incidence_raw', base = "size", 
+                                     nboot = 10, level = c(100, 200))
+output_TDs_inci_byuser
+```
+
+
 ## <span style="color:blue;">PHYLOGENETIC DIVERSITY (PD): RAREFACTION/EXTRAPOLATION VIA EXAMPLES</span>
 
-### EXAMPLE 4: Abundance data with default sample sizes or coverage values 
+### EXAMPLE 5: Abundance data with default sample sizes or coverage values 
 
 As with taxonomic diversity, `iNEXT.beta3D` computes coverage-based standardized phylogenetic gamma, alpha, beta diversity as well as four classes of phylogenetic dissimilarity indices; it also computes size-based standardized phylogenetic gamma and alpha diversity. The species names (or identification codes) in the phylogenetic tree must exactly match with those in the corresponding species abundance/incidence data. Two types of phylogenetic rarefaction and extrapolation curves (coverage- and size-based sampling curves) are also provided. 
 
@@ -568,7 +597,7 @@ ggiNEXTbeta3D(output_PDs_abun)
 
 ## <span style="color:blue;">FUNCTIONAL DIVERSITY (FD): RAREFACTION/EXTRAPOLATION VIA EXAMPLES</span>
 
-### EXAMPLE 5: Abundance data with default sample sizes or coverage values 
+### EXAMPLE 6: Abundance data with default sample sizes or coverage values 
 
 As with taxonomic and phylogenetic diversity, `iNEXT.beta3D` computes coverage-based standardized functional gamma, alpha, beta diversity as well as four classes of phylogenetic dissimilarity indices; it also computes size-based standardized functional gamma and alpha diversity. The species names (or identification codes) in the distance matrix must exactly match with those in the corresponding species abundance/incidence data. Two types of functional rarefaction and extrapolation curves (coverage- and size-based sampling curves) are also provided. 
 

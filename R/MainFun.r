@@ -113,11 +113,28 @@
 #' output_TDc_inci
 #' }
 #' 
+#' # Coverage-based standardized TD estimates and related statistics by 
+#' # user-specified coverage values
+#' data(Second_growth_forests)
+#' output_TDc_inci_byuser = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                                      datatype = 'incidence_raw', base = "coverage", 
+#'                                      nboot = 10, level = c(0.9, 0.95))
+#' output_TDc_inci_byuser
+#' 
+#' 
 #' # Size-based standardized TD estimates and related statistics
 #' data(Second_growth_forests)
 #' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
 #'                               datatype = 'incidence_raw', base = "size", nboot = 10)
 #' output_TDs_inci
+#' 
+#' 
+#' # Size-based standardized TD estimates and related statistics by user-specified sample sizes
+#' data(Second_growth_forests)
+#' output_TDs_inci_byuser = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#'                                      datatype = 'incidence_raw', base = "size", 
+#'                                      nboot = 10, level = c(100, 200))
+#' output_TDs_inci_byuser
 #' 
 #' \donttest{
 #' ## (R/E Analysis) Phylogenetic diversity for abundance data
@@ -4358,8 +4375,8 @@ print.iNEXTbeta3D <- function(x, ...){
       # if (length(index) > 0) out = y[[i]][index,] else out = y[[i]]
       
       out = y[[i]]
-      out[,c(3,5,7,8,9)] = round(out[,c(3,5,7,8,9)], 4)
-      out[,4] = round(out[,4], 1)
+      out[,c(3,4,7,8,9)] = round(out[,c(3,4,7,8,9)], 4)
+      out[,5] = round(out[,5], 4)
       lapply(unique(out$Order.q), function(q) rbind(matrix(c("", paste("Order q = ", q, sep = ""), rep("", ncol(out)-2)), nrow = 1) %>% 
                                                       set_colnames(colnames(out)), 
                                                     out %>% filter(Order.q == q))) %>% do.call(rbind,.)
