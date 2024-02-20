@@ -178,7 +178,8 @@ output_PDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD',
 output_PDs_abun
 
 
-## (R/E Analysis) Functional diversity for abundance data when all thresholds from 0 to 1 are considered
+## (R/E Analysis) Functional diversity for abundance data when all thresholds from 0 to 1 
+## are considered
 # Coverage-based standardized FD estimates and related statistics
 data(Brazil_rainforests)
 data(Brazil_distM)

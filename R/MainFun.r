@@ -156,7 +156,8 @@
 #' output_PDs_abun
 #' 
 #' 
-#' ## (R/E Analysis) Functional diversity for abundance data when all thresholds from 0 to 1 are considered
+#' ## (R/E Analysis) Functional diversity for abundance data when all thresholds from 0 to 1 
+#' ## are considered
 #' # Coverage-based standardized FD estimates and related statistics
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
@@ -197,7 +198,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     q <- q[q >= 0]
   }
   
-  if (datatype == "incidence" | datatype == "incidence_freq") stop('Please try datatype = "incidence_raw".')  
+  if (datatype == "incidence" | datatype == "incidence_freq") stop('Please use datatype = "incidence_raw".')  
   if(is.na(pmatch(datatype, c("abundance", "incidence_raw"))))
     stop("invalid datatype")
   
@@ -254,14 +255,21 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   
   if (datatype == 'incidence_raw') {
     
+    if (!inherits(data, "list"))
+      stop("invalid data format for incidence raw data. Please refer to example of iNEXTbeta3D.", call. = FALSE)
+    
+    if ( inherits(data, "list") & (inherits(data[[1]], "data.frame") | inherits(data[[1]], "matrix")) ) data = list(Dataset_1 = data)
+    
+    if ( sum( sapply(1:length(data), function(i) ( length(unique(sapply(data[[i]], nrow))) != 1 | 
+                                                   length(unique(sapply(data[[i]], ncol))) != 1 ) ) ) > 0 )
+      stop("Number of rows or columns should be the same within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
+    
     if (is.null(names(data))) dataset_names = paste0("Dataset_", 1:length(data)) else dataset_names = names(data)
     Ns = sapply(data, length)
     data_list = data
-    
   }
   
   
-  ##
   if (datatype == 'abundance') {
     
     pool.name <- lapply(data_list, function(x) rownames(x)) %>% unlist %>% unique
@@ -3019,7 +3027,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' ggiNEXTbeta3D(output_PDs_abun)
 #' 
 #' 
-#' ## (Graphic Display) Functional diversity for abundance data when all threshold levels from 0 to 1 are considered
+#' ## (Graphic Display) Functional diversity for abundance data when all threshold levels 
+#' ## from 0 to 1 are considered
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
@@ -3813,6 +3822,7 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     stop("invalid class of tau value, FDtau should be a postive value between zero and one.", call. = FALSE)
   if (length(FDtau) > 1)
     stop("FDtau only accept a value instead of a vector.", call. = FALSE)
+  
   ##
   
   
@@ -3820,13 +3830,28 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     
     if ( inherits(data, "data.frame") | inherits(data, "matrix") ) data = list(Dataset_1 = data)
     
-    if ( inherits(data, "list")) data = lapply(data, as.matrix)
+    if ( inherits(data, "list")) {
+      
+      data = lapply(data, as.matrix)
+      if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
+    }
   }
   
-  if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
+  if (datatype == 'incidence_raw') {
+    
+    if (!inherits(data, "list"))
+      stop("invalid data format for incidence raw data. Please refer to example of iNEXTbeta3D.", call. = FALSE)
+    
+    if ( inherits(data, "list") & (inherits(data[[1]], "data.frame") | inherits(data[[1]], "matrix")) ) data = list(Dataset_1 = data)
+    
+    if ( sum( sapply(1:length(data), function(i) ( length(unique(sapply(data[[i]], nrow))) != 1 | 
+                                                   length(unique(sapply(data[[i]], ncol))) != 1 ) ) ) > 0 )
+      stop("Number of rows or columns should be the same within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
+    
+    if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
+  }
   
   
-  ##
   if (datatype == 'abundance') {
     
     pool.name <- lapply(data, function(x) rownames(x)) %>% unlist %>% unique

@@ -82,7 +82,8 @@ output_PDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD',
 ggiNEXTbeta3D(output_PDs_abun)
 
 
-## (Graphic Display) Functional diversity for abundance data when all threshold levels from 0 to 1 are considered
+## (Graphic Display) Functional diversity for abundance data when all threshold levels 
+## from 0 to 1 are considered
 # Coverage-based rarefaction and extrapolation sampling curves 
 data(Brazil_rainforests)
 data(Brazil_distM)

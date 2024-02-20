@@ -42,7 +42,7 @@ If you publish your work based on results from `iNEXT.beta3D`, you should make r
 
 - Chao, A., Chiu, C.-H., Hu, K.-H., and Zeleny, D. (2023a). Revisiting Alwyn H. Gentry's forest transect data: a statistical sampling-model-based approach. <i>Japanese Journal of Statistics and Data Science</i>, 6, 861-884. (https://doi.org/10.1007/s42081-023-00214-1) 
 
-- Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Magnago, L. F. S., Dornelas, M., Zelený, D., Colwell, R. K., and Magurran, A. E. (2023b). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i> e1588.(https://doi.org/10.1002/ecm.1588) 
+- Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Magnago, L. F. S., Dornelas, M., Zelen??, D., Colwell, R. K., and Magurran, A. E. (2023b). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i> e1588.(https://doi.org/10.1002/ecm.1588) 
 
 - Chao, A. and Hu, K.-H. (2023). The iNEXT.beta3D package: interpolation and extrapolation with beta diversity for three dimensions of biodiversity. R package available from CRAN.  
 
@@ -73,7 +73,7 @@ There are three main functions in this package:
 - **iNEXTbeta3D**: computes standardized 3D estimates with a common sample size (for alpha and gamma diversity)
   or sample coverage (for alpha, beta and gamma diversity) for default sample sizes or coverage values. This function 
   also computes coverage-based standardized 3D estimates of four classes of dissimilarity measures for default sample 
-  sizes or coverage values. Besides, this function also computes standardized 3D 
+  sizes or coverage values. In addition, this function also computes standardized 3D 
   estimates with a particular vector of user-specified sample sizes or coverage values.
 
 - **ggiNEXTbeta3D**: Visualizes the output from the function `iNEXTbeta3D`.
@@ -829,7 +829,7 @@ The `iNEXT.beta3D` package is licensed under the GPLv3. To help refine `iNEXT.be
 
 - Chao, A., Henderson, P. A., Chiu, C.-H., Moyes, F., Hu, K.-H., Dornelas, M and Magurran, A. E. (2021). Measuring temporal change in alpha diversity: a framework integrating taxonomic, phylogenetic and functional diversity and the iNEXT.3D standardization. Methods in Ecology and Evolution, 12, 1926-1940.
 
-- Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Magnago, L. F. S., Dornelas, M., Zelený, D., Colwell, R. K., and Magurran, A. E. (2023b). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i> e1588.
+- Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Magnago, L. F. S., Dornelas, M., Zelen??, D., Colwell, R. K., and Magurran, A. E. (2023b). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. <i>Ecological Monographs</i> e1588.
 
 
 
