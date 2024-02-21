@@ -66,7 +66,7 @@
 #'  \item{s.e.}{standard error of standardized estimate.}
 #'  \item{LCL, UCL}{the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95.}
 #'  \item{Diversity}{\code{'TD'} = 'Taxonomic diversity', \code{'PD'} = 'Phylogenetic diversity', \code{'meanPD'} = 'Mean phylogenetic diversity', \code{'FD_tau'} = 'Functional diversity (given tau)', \code{'FD_AUC'} = 'Functional diversity (AUC)'}
-#'  \item{Reftime}{the reference times for PD.}
+#'  \item{Reftime}{the reference time for PD.}
 #'  \item{Tau}{the threshold of functional distinctiveness between any two species for FD (under \code{FDtype = "tau_value"}).}
 #'  Similar output is obtained for \code{base = "size"}.\cr
 #'  
@@ -1194,7 +1194,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma_v_int = gamma_x/gamma_a_int
           
           ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
-          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          # ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
           gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
           # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
@@ -1202,11 +1202,12 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           alpha_x = as.vector(as.matrix(zik))
           alpha_a = as.vector(aik)
-          # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
+          alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
           # alpha_v = alpha_x/alpha_a
-          alpha_v = rep(gamma_v,N)
+          # alpha_v = rep(gamma_v,N)
+          alpha_v = rep(gamma_v_int,N)
           alpha_v = alpha_v[alpha_a>0]
           alpha_a = alpha_a[alpha_a>0]
           
@@ -1249,7 +1250,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma_v_int = gamma_Y/gamma_a_int
           
           ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
-          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          # ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
           gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
           # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
@@ -1270,12 +1271,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             alpha_a = (1 - dij/tau) %*% as.matrix(alpha_Y)
           }
           
-          # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
+          alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           alpha_a[alpha_a > n] = n
           alpha_a = as.vector(alpha_a)
           # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
-          alpha_v = rep(gamma_v, N)
+          # alpha_v = rep(gamma_v, N)
+          alpha_v = rep(gamma_v_int,N)
           alpha_v = alpha_v[alpha_a > 0]
           alpha_a = alpha_a[alpha_a > 0]
           
@@ -2467,7 +2469,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma_v_int = gamma_x/gamma_a_int
           
           ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
-          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          # ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
           gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
           # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
@@ -2475,11 +2477,12 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           alpha_x = as.vector(as.matrix(zik))
           alpha_a = as.vector(aik)
-          # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
+          alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
           # alpha_v = alpha_x/alpha_a
-          alpha_v = rep(gamma_v,N)
+          # alpha_v = rep(gamma_v,N)
+          alpha_v = rep(gamma_v_int,N)
           alpha_v = alpha_v[alpha_a>0]
           alpha_a = alpha_a[alpha_a>0]
           
@@ -2522,7 +2525,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           gamma_v_int = gamma_Y/gamma_a_int
           
           ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
-          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          # ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
           gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
           # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
@@ -2543,12 +2546,13 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             alpha_a = (1 - dij/tau) %*% as.matrix(alpha_Y)
           }
           
-          # alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
+          alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           alpha_a[alpha_a > n] = n
           alpha_a = as.vector(alpha_a)
           # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
-          alpha_v = rep(gamma_v, N)
+          # alpha_v = rep(gamma_v, N)
+          alpha_v = rep(gamma_v_int, N)
           alpha_v = alpha_v[alpha_a > 0]
           alpha_a = alpha_a[alpha_a > 0]
           
@@ -3693,7 +3697,7 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
   obs <- iNEXT.3D:::FD_mle(ai_vi, q)
   out <- sapply(1:ncol(ai_vi$ai), function(i) {
     ai <- ai_vi$ai[, i]
-    ai[ai < 1] <- 1
+    # ai[ai < 1] <- 1
     av = cbind(ai = round(ai), vi = ai_vi$vi[, i])
     RFD_m = iNEXT.3D:::RFD(av, nT, nT - 1, q, V_bar)
     beta <- rep(0, length(q))

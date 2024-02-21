@@ -48,8 +48,8 @@
   
   1. \code{iNEXTbeta3D} computes standardized 3D estimates with a common sample size (for alpha and gamma diversity)
   or sample coverage (for alpha, beta and gamma diversity) for default sample sizes or coverage values. This function 
-  also computes coverage-based standardized 3D estimates of four classes of dissimilarity measures for default sample 
-  sizes or coverage values. In addition, this function also computes standardized 3D 
+  also computes coverage-based standardized 3D estimates of four classes of dissimilarity measures for default coverage 
+  values. In addition, this function also computes standardized 3D 
   estimates with a particular vector of user-specified sample sizes or coverage values. \cr
   
   2. \code{ggiNEXTbeta3D} visualizes the output from the function \code{iNEXTbeta3D}. \cr
