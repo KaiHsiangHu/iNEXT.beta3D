@@ -256,13 +256,39 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
   if (datatype == 'incidence_raw') {
     
     if (!inherits(data, "list"))
-      stop("invalid data format for incidence raw data. Please refer to example of iNEXTbeta3D.", call. = FALSE)
+      stop("Invalid data format for incidence raw data. Please refer to example of iNEXTbeta3D.", call. = FALSE)
     
     if ( inherits(data, "list") & (inherits(data[[1]], "data.frame") | inherits(data[[1]], "matrix")) ) data = list(Dataset_1 = data)
+    
+    if (! ( inherits(data[[1]][[1]], "data.frame") | inherits(data[[1]][[1]], "matrix") ) )
+      stop("Invalid data format for incidence raw data. Please refer to example of iNEXTbeta3D.", call. = FALSE)
     
     if ( sum( sapply(1:length(data), function(i) ( length(unique(sapply(data[[i]], nrow))) != 1 | 
                                                    length(unique(sapply(data[[i]], ncol))) != 1 ) ) ) > 0 )
       stop("Number of species (row) or sampling units (column) should be the same within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
+    
+    data = lapply(data, function(x) {
+      
+      if (is.null(rownames(x[[1]]))) tmp = x else {
+        
+        nT = ncol(x[[1]])
+        tmp = lapply(x, function(i) data.frame(i) %>% rownames_to_column(var = "Species"))
+        
+        tmp1 = tmp[[1]]
+        for (i in 2:length(tmp)) {
+          tmp1 = full_join(tmp1, tmp[[i]], by = "Species")
+        }
+        tmp1 = tmp1 %>% column_to_rownames(var = "Species")
+        
+        if (sum(!as.matrix(tmp1) %in% c(0,1)) > 0)
+          stop("The data for datatype = 'incidence_raw' can only contain values zero (undetected) or one (detected). Please transform values to zero or one.", call. = FALSE)
+        
+        tmp = lapply(1:length(tmp), function(i) tmp1[, ((i-1)*nT+1):(i*nT)])
+        names(tmp) = if (is.null(data)) paste0("Assemblage_", 1:length(data)) else names(x)
+      }
+      
+      return(tmp)
+    })
     
     if (is.null(names(data))) dataset_names = paste0("Dataset_", 1:length(data)) else dataset_names = names(data)
     Ns = sapply(data, length)
@@ -3840,13 +3866,39 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
   if (datatype == 'incidence_raw') {
     
     if (!inherits(data, "list"))
-      stop("invalid data format for incidence raw data. Please refer to example of iNEXTbeta3D.", call. = FALSE)
+      stop("Invalid data format for incidence raw data. Please refer to example of iNEXTbeta3D.", call. = FALSE)
     
     if ( inherits(data, "list") & (inherits(data[[1]], "data.frame") | inherits(data[[1]], "matrix")) ) data = list(Dataset_1 = data)
+    
+    if (! ( inherits(data[[1]][[1]], "data.frame") | inherits(data[[1]][[1]], "matrix") ) )
+      stop("Invalid data format for incidence raw data. Please refer to example of iNEXTbeta3D.", call. = FALSE)
     
     if ( sum( sapply(1:length(data), function(i) ( length(unique(sapply(data[[i]], nrow))) != 1 | 
                                                    length(unique(sapply(data[[i]], ncol))) != 1 ) ) ) > 0 )
       stop("Number of species (row) or sampling units (column) should be the same within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
+    
+    data = lapply(data, function(x) {
+      
+      if (is.null(rownames(x[[1]]))) tmp = x else {
+        
+        nT = ncol(x[[1]])
+        tmp = lapply(x, function(i) data.frame(i) %>% rownames_to_column(var = "Species"))
+        
+        tmp1 = tmp[[1]]
+        for (i in 2:length(tmp)) {
+          tmp1 = full_join(tmp1, tmp[[i]], by = "Species")
+        }
+        tmp1 = tmp1 %>% column_to_rownames(var = "Species")
+        
+        if (sum(!as.matrix(tmp1) %in% c(0,1)) > 0)
+          stop("The data for datatype = 'incidence_raw' can only contain values zero (undetected) or one (detected). Please transform values to zero or one.", call. = FALSE)
+        
+        tmp = lapply(1:length(tmp), function(i) tmp1[, ((i-1)*nT+1):(i*nT)])
+        names(tmp) = if (is.null(data)) paste0("Assemblage_", 1:length(data)) else names(x)
+      }
+      
+      return(tmp)
+    })
     
     if (is.null(names(data))) names(data) = paste0("Dataset_", 1:length(data))
   }
