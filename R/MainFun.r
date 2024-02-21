@@ -1189,38 +1189,47 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma_x = rowSums(zik)[positive_id]
           gamma_a = rowSums(aik)[positive_id]
+          gamma_a = ifelse(gamma_a < 1 & gamma_a > 0, 1, round(gamma_a))
           gamma_v = gamma_x/gamma_a
-          gamma_a_int = ifelse(gamma_a < 1, 1, round(gamma_a))
-          gamma_v_int = gamma_x/gamma_a_int
           
-          ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
-          # ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          ai_vi_gamma = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
-          gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
-          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
+          # gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
           
+          
+          ## Add MLE
+          gamma_a_MLE = rowSums(aik)[positive_id]
+          gamma_v_MLE = gamma_x/gamma_a_MLE
+          
+          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a_MLE), vi = data.frame(gamma_v_MLE))
+          
+          gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
+          ##
           
           alpha_x = as.vector(as.matrix(zik))
           alpha_a = as.vector(aik)
-          alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
-          # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
+          alpha_a = ifelse(alpha_a < 1 & alpha_a > 0, 1, round(alpha_a))
           
-          # alpha_v = alpha_x/alpha_a
-          # alpha_v = rep(gamma_v,N)
-          alpha_v = rep(gamma_v_int,N)
+          alpha_v = rep(gamma_v, N)
           alpha_v = alpha_v[alpha_a>0]
           alpha_a = alpha_a[alpha_a>0]
           
-          # alpha_v_int = rep(gamma_v_int,N)
-          # alpha_v_int = alpha_v_int[alpha_a_int>0]
-          # alpha_a_int = alpha_a_int[alpha_a_int>0]
-          
           ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
-          # ai_vi_alpha = list(ai = data.frame(alpha_a_int), vi = data.frame(alpha_v_int))
-          # ai_vi_alpha_MLE = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
           
-          alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
-          # alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
+          # alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
+          
+          
+          ## Add MLE
+          alpha_a_MLE = as.vector(aik)
+          
+          alpha_v_MLE = rep(gamma_v_MLE, N)
+          alpha_v_MLE = alpha_v_MLE[alpha_a_MLE>0]
+          alpha_a_MLE = alpha_a_MLE[alpha_a_MLE>0]
+          
+          ai_vi_alpha_MLE = list(ai = data.frame(alpha_a_MLE), vi = data.frame(alpha_v_MLE))
+          
+          alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
+          ##
           
         }
         
@@ -1245,16 +1254,22 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           }
           
           gamma_a[gamma_a > n] = n
+          gamma_a_MLE = gamma_a
+          gamma_a = ifelse(gamma_a < 1 & gamma_a > 0, 1, round(gamma_a))
           gamma_v = gamma_Y/gamma_a
-          gamma_a_int = ifelse(gamma_a < 1, 1, round(gamma_a))
-          gamma_v_int = gamma_Y/gamma_a_int
           
-          ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
-          # ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          ai_vi_gamma = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
-          gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
-          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
+          # gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
           
+          
+          ## Add MLE
+          gamma_v_MLE = gamma_Y/gamma_a_MLE
+          
+          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a_MLE), vi = data.frame(gamma_v_MLE))
+          
+          gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
+          ##
           
           alpha_Y = data_2D[-1,]
           
@@ -1271,27 +1286,31 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             alpha_a = (1 - dij/tau) %*% as.matrix(alpha_Y)
           }
           
-          alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           alpha_a[alpha_a > n] = n
+          alpha_a_MLE = alpha_a
+          alpha_a = ifelse(alpha_a < 1 & alpha_a > 0, 1, round(alpha_a))
           alpha_a = as.vector(alpha_a)
-          # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
-          # alpha_v = rep(gamma_v, N)
-          alpha_v = rep(gamma_v_int,N)
+          alpha_v = rep(gamma_v, N)
           alpha_v = alpha_v[alpha_a > 0]
           alpha_a = alpha_a[alpha_a > 0]
           
-          # alpha_v_int = rep(gamma_v_int, N)
-          # alpha_v_int = alpha_v_int[alpha_a_int > 0]
-          # alpha_a_int = alpha_a_int[alpha_a_int > 0]
-          
           ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
-          # ai_vi_alpha = list(ai = data.frame(alpha_a_int), vi = data.frame(alpha_v_int))
-          # ai_vi_alpha_MLE = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
           
-          alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
-          # alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
+          # alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
           
+          
+          ## Add MLE
+          alpha_a_MLE = as.vector(alpha_a_MLE)
+          
+          alpha_v_MLE = rep(gamma_v_MLE, N)
+          alpha_v_MLE = alpha_v_MLE[alpha_a_MLE > 0]
+          alpha_a_MLE = alpha_a_MLE[alpha_a_MLE > 0]
+          
+          ai_vi_alpha_MLE = list(ai = data.frame(alpha_a_MLE), vi = data.frame(alpha_v_MLE))
+          
+          alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
+          ##
         }
         
         return(data.frame(gamma,alpha))
@@ -2464,38 +2483,47 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           
           gamma_x = rowSums(zik)[positive_id]
           gamma_a = rowSums(aik)[positive_id]
+          gamma_a = ifelse(gamma_a < 1 & gamma_a > 0, 1, round(gamma_a))
           gamma_v = gamma_x/gamma_a
-          gamma_a_int = ifelse(gamma_a < 1, 1, round(gamma_a))
-          gamma_v_int = gamma_x/gamma_a_int
           
-          ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
-          # ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          ai_vi_gamma = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
-          gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
-          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
+          # gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
           
+          
+          ## Add MLE
+          gamma_a_MLE = rowSums(aik)[positive_id]
+          gamma_v_MLE = gamma_x/gamma_a_MLE
+          
+          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a_MLE), vi = data.frame(gamma_v_MLE))
+          
+          gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
+          ##
           
           alpha_x = as.vector(as.matrix(zik))
           alpha_a = as.vector(aik)
-          alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
-          # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
+          alpha_a = ifelse(alpha_a < 1 & alpha_a > 0, 1, round(alpha_a))
           
-          # alpha_v = alpha_x/alpha_a
-          # alpha_v = rep(gamma_v,N)
-          alpha_v = rep(gamma_v_int,N)
+          alpha_v = rep(gamma_v, N)
           alpha_v = alpha_v[alpha_a>0]
           alpha_a = alpha_a[alpha_a>0]
           
-          # alpha_v_int = rep(gamma_v_int,N)
-          # alpha_v_int = alpha_v_int[alpha_a_int>0]
-          # alpha_a_int = alpha_a_int[alpha_a_int>0]
-          
           ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
-          # ai_vi_alpha = list(ai = data.frame(alpha_a_int), vi = data.frame(alpha_v_int))
-          # ai_vi_alpha_MLE = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
           
-          alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
-          # alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
+          # alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
+          
+          
+          ## Add MLE
+          alpha_a_MLE = as.vector(aik)
+          
+          alpha_v_MLE = rep(gamma_v_MLE, N)
+          alpha_v_MLE = alpha_v_MLE[alpha_a_MLE>0]
+          alpha_a_MLE = alpha_a_MLE[alpha_a_MLE>0]
+          
+          ai_vi_alpha_MLE = list(ai = data.frame(alpha_a_MLE), vi = data.frame(alpha_v_MLE))
+          
+          alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
+          ##
           
         }
         
@@ -2520,16 +2548,22 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           }
           
           gamma_a[gamma_a > n] = n
+          gamma_a_MLE = gamma_a
+          gamma_a = ifelse(gamma_a < 1 & gamma_a > 0, 1, round(gamma_a))
           gamma_v = gamma_Y/gamma_a
-          gamma_a_int = ifelse(gamma_a < 1, 1, round(gamma_a))
-          gamma_v_int = gamma_Y/gamma_a_int
           
-          ai_vi_gamma = list(ai = data.frame(gamma_a_int), vi = data.frame(gamma_v_int))
-          # ai_vi_gamma_MLE = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
+          ai_vi_gamma = list(ai = data.frame(gamma_a), vi = data.frame(gamma_v))
           
-          gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
-          # gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
+          # gamma = FD.m.est_0(ai_vi_gamma, m_gamma, q, n) %>% as.vector
           
+          
+          ## Add MLE
+          gamma_v_MLE = gamma_Y/gamma_a_MLE
+          
+          ai_vi_gamma_MLE = list(ai = data.frame(gamma_a_MLE), vi = data.frame(gamma_v_MLE))
+          
+          gamma = iNEXT.3D:::FD.m.est(ai_vi_gamma, m_gamma, q, n, ai_vi_gamma_MLE) %>% as.vector
+          ##
           
           alpha_Y = data_2D[-1,]
           
@@ -2546,27 +2580,31 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             alpha_a = (1 - dij/tau) %*% as.matrix(alpha_Y)
           }
           
-          alpha_a = ifelse(alpha_a < 1, 1, round(alpha_a))
           alpha_a[alpha_a > n] = n
+          alpha_a_MLE = alpha_a
+          alpha_a = ifelse(alpha_a < 1 & alpha_a > 0, 1, round(alpha_a))
           alpha_a = as.vector(alpha_a)
-          # alpha_a_int = ifelse(alpha_a < 1, 1, round(alpha_a))
           
-          # alpha_v = rep(gamma_v, N)
-          alpha_v = rep(gamma_v_int, N)
+          alpha_v = rep(gamma_v, N)
           alpha_v = alpha_v[alpha_a > 0]
           alpha_a = alpha_a[alpha_a > 0]
           
-          # alpha_v_int = rep(gamma_v_int, N)
-          # alpha_v_int = alpha_v_int[alpha_a_int > 0]
-          # alpha_a_int = alpha_a_int[alpha_a_int > 0]
-          
           ai_vi_alpha = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
-          # ai_vi_alpha = list(ai = data.frame(alpha_a_int), vi = data.frame(alpha_v_int))
-          # ai_vi_alpha_MLE = list(ai = data.frame(alpha_a), vi = data.frame(alpha_v))
           
-          alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
-          # alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
+          # alpha = (FD.m.est_0(ai_vi_alpha, m_alpha, q, n)/N) %>% as.vector
           
+          
+          ## Add MLE
+          alpha_a_MLE = as.vector(alpha_a_MLE)
+          
+          alpha_v_MLE = rep(gamma_v_MLE, N)
+          alpha_v_MLE = alpha_v_MLE[alpha_a_MLE > 0]
+          alpha_a_MLE = alpha_a_MLE[alpha_a_MLE > 0]
+          
+          ai_vi_alpha_MLE = list(ai = data.frame(alpha_a_MLE), vi = data.frame(alpha_v_MLE))
+          
+          alpha = (iNEXT.3D:::FD.m.est(ai_vi_alpha, m_alpha, q, n, ai_vi_alpha_MLE)/N) %>% as.vector
+          ##
         }
         
         return(data.frame(gamma,alpha))
@@ -2625,8 +2663,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       if (FDtype == 'AUC'){
         
-        # cut = seq(0.00000001, 1, length.out = FDcut_number)
-        cut = seq(0, 1, length.out = FDcut_number)
+        cut = seq(0.00000001, 1, length.out = FDcut_number)
+        # cut = seq(0, 1, length.out = FDcut_number)
         width = diff(cut)
         
         if (datatype == 'abundance') {
