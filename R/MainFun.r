@@ -280,6 +280,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         }
         tmp1 = tmp1 %>% column_to_rownames(var = "Species")
         
+        if (nrow(tmp1) != nrow(x[[1]]))
+          stop("Species names (rownames) should be matched within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
+        
         if (sum(!as.matrix(tmp1) %in% c(0,1)) > 0)
           stop("The data for datatype = 'incidence_raw' can only contain values zero (undetected) or one (detected). Please transform values to zero or one.", call. = FALSE)
         
@@ -3889,6 +3892,9 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
           tmp1 = full_join(tmp1, tmp[[i]], by = "Species")
         }
         tmp1 = tmp1 %>% column_to_rownames(var = "Species")
+        
+        if (nrow(tmp1) != nrow(x[[1]]))
+          stop("Species names (rownames) should be matched within each dataset. Please check you data or refer to example of iNEXTbeta3D.", call. = FALSE)
         
         if (sum(!as.matrix(tmp1) %in% c(0,1)) > 0)
           stop("The data for datatype = 'incidence_raw' can only contain values zero (undetected) or one (detected). Please transform values to zero or one.", call. = FALSE)
