@@ -272,6 +272,8 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       if (is.null(rownames(x[[1]]))) tmp = x else {
         
         nT = ncol(x[[1]])
+        if (nT <= 3) stop("Number of sampling units of some datasets is too less. Please add more sampling units data.", call. = FALSE)
+        
         tmp = lapply(x, function(i) data.frame(i) %>% rownames_to_column(var = "Species"))
         
         tmp1 = tmp[[1]]
@@ -3927,6 +3929,8 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
       if (is.null(rownames(x[[1]]))) tmp = x else {
         
         nT = ncol(x[[1]])
+        if (nT <= 3) stop("Number of sampling units of some datasets is too less. Please add more sampling units data.", call. = FALSE)
+        
         tmp = lapply(x, function(i) data.frame(i) %>% rownames_to_column(var = "Species"))
         
         tmp1 = tmp[[1]]
