@@ -2,4 +2,6 @@
 Publish public version to CRAN
 - Create functions 'iNEXTbeta3D', 'ggiNEXTbeta3D', 'DataInfobeta3D'.
 
+# iNEXT 1.0.1
+- Improved color palette generation in `ggiNEXTbeta3D`. This update addresses the limitation of the fixed 8-color palette, enhancing clarity and user experience in data representation.
 

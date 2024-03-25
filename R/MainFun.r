@@ -3128,8 +3128,18 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 ggiNEXTbeta3D = function(output, type = 'B'){
   
   transp = 0.4
-  cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
-                     "#330066", "#CC79A7", "#0072B2", "#D55E00"))
+  
+  # Check if the number of unique 'Assemblage' is 8 or less
+  if (length(output) <= 8){
+    cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
+                       "#330066", "#CC79A7", "#0072B2", "#D55E00"))
+  }else{
+    # If there are more than 8 assemblages, start with the same predefined color palette
+    # Then extend the palette by generating additional colors using the 'ggplotColors' function
+    cbPalette <- rev(c("#999999", "#E69F00", "#56B4E9", "#009E73", 
+                       "#330066", "#CC79A7", "#0072B2", "#D55E00"))
+    cbPalette <- c(cbPalette, ggplotColors(length(output)-8))
+  }
   
   if ((length(output[[1]]) == 7 & type == "B") | (length(output[[1]]) == 2)) {
     
@@ -3787,6 +3797,30 @@ FD.m.est_0 = function (ai_vi, m, q, nT) {
     }) %>% t %>% as.numeric
   })
   matrix(out, ncol = ncol(ai_vi$ai))
+}
+
+
+# Generate Color Palette for ggplot2
+#
+# This function creates a color palette suitable for ggplot2 visualizations by evenly spacing colors in the HCL color space. The function ensures that the colors are well-distributed and visually distinct, making it ideal for categorical data where each category needs to be represented by a different color.
+#
+# @param g An integer indicating the number of distinct colors to generate. This value should be a positive integer, with higher values resulting in a broader range of colors.
+# @return A vector of color codes in hexadecimal format, suitable for use in ggplot2 charts and plots. The length of the vector will match the input parameter `g`.
+# @examples
+# # Generate a palette of 5 distinct colors
+# ggplotColors(5)
+#
+# # Use the generated colors in a ggplot2 chart
+# library(ggplot2)
+# df <- data.frame(x = 1:5, y = rnorm(5), group = factor(1:5))
+# ggplot(df, aes(x, y, color = group)) +
+#   geom_point() +
+#   scale_color_manual(values = ggplotColors(5))
+#
+ggplotColors <- function(g){
+  d <- 360/g # Calculate the distance between colors in HCL color space
+  h <- cumsum(c(15, rep(d,g - 1))) # Create cumulative sums to define hue values
+  hcl(h = h, c = 100, l = 65) # Convert HCL values to hexadecimal color codes
 }
 
 
