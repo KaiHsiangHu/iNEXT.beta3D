@@ -51,6 +51,7 @@
 #' @importFrom stats qnorm
 #' @importFrom stats sd
 #' @importFrom stats optimize
+#' @importFrom grDevices hcl
 #' 
 #' @return For \code{base = "coverage"}, return a list of seven data frames with three diversity (gamma, alpha, and beta
 #'  diversity) and four dissimilarity measures. For \code{base = "size"}, return a list of two matrices with two diversity
