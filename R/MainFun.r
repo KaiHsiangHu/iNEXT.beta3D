@@ -868,7 +868,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             if ( nrow(p_bt) > nrow(data) & sum(unseen_p) > 0 ){
               
               unseen = unseen_p[which(rowSums(unseen_p) > 0),]
-              unseen = matrix(unseen, ncol = ncol(unseen_p), byrow = T)
+              unseen = matrix(unseen, ncol = ncol(unseen_p))
               p_bt = rbind(p_bt[(1:nrow(data)),], unseen)
               unseen_name = sapply(1:nrow(unseen), function(i) paste0('unseen_', i))
               rownames(p_bt) = c(rownames(data), unseen_name)
@@ -914,7 +914,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                 g0_hat[g0_hat < 0] = 0
                 
                 unseen_sample = x_bt[-(1:nrow(data)),]
-                if (is.vector(unseen_sample)) unseen_sample = matrix(unseen_sample, ncol = ncol(x_bt), byrow = T)
+                if (is.vector(unseen_sample)) unseen_sample = matrix(unseen_sample, ncol = ncol(x_bt))
                 
                 L0_hat = sapply(1:length(g0_hat), function(i) if(sum(unseen_sample[,i] > 0) > 0) (g0_hat[i] / nrow(unseen)) else 0 )
                 
@@ -999,7 +999,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             if ( nrow(p_bt) > nrow(data[[1]]) & sum(unseen_p)>0 ){
               
               unseen = unseen_p[which(rowSums(unseen_p)>0),]
-              unseen = matrix(unseen, ncol = ncol(unseen_p), byrow = T)
+              unseen = matrix(unseen, ncol = ncol(unseen_p))
               p_bt = rbind(p_bt[(1:nrow(data[[1]])),], unseen)
               unseen_name = sapply(1:nrow(unseen), function(i) paste0('unseen_', i))
               rownames(p_bt) = c(rownames(data[[1]]), unseen_name)
@@ -1048,7 +1048,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                 R0_hat[R0_hat < 0] = 0
                 
                 unseen_sample = sapply(raw, rowSums)[-(1:nrow(data[[1]])),]
-                if (is.vector(unseen_sample)) unseen_sample = matrix(unseen_sample, ncol = N, byrow = T)
+                if (is.vector(unseen_sample)) unseen_sample = matrix(unseen_sample, ncol = N)
                 
                 L0_hat = sapply(1:length(R0_hat), function(i) if(sum(unseen_sample[,i] > 0) > 0) (R0_hat[i] / nrow(unseen)) else 0 )
                 
@@ -2174,7 +2174,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             if ( nrow(p_bt) > nrow(data) & sum(unseen_p) > 0 ){
               
               unseen = unseen_p[which(rowSums(unseen_p) > 0),]
-              unseen = matrix(unseen, ncol = ncol(unseen_p), byrow = T)
+              unseen = matrix(unseen, ncol = ncol(unseen_p))
               p_bt = rbind(p_bt[(1:nrow(data)),], unseen)
               unseen_name = sapply(1:nrow(unseen), function(i) paste0('unseen_', i))
               rownames(p_bt) = c(rownames(data), unseen_name)
@@ -2219,7 +2219,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                 g0_hat[g0_hat < 0] = 0
                 
                 unseen_sample = x_bt[-(1:nrow(data)),]
-                if (is.vector(unseen_sample)) unseen_sample = matrix(unseen_sample, ncol = ncol(x_bt), byrow = T)
+                if (is.vector(unseen_sample)) unseen_sample = matrix(unseen_sample, ncol = ncol(x_bt))
                 
                 L0_hat = sapply(1:length(g0_hat), function(i) if(sum(unseen_sample[,i] > 0) > 0) (g0_hat[i] / nrow(unseen)) else 0 )
                 
@@ -2299,7 +2299,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
             if ( nrow(p_bt) > nrow(data[[1]]) & sum(unseen_p)>0 ){
               
               unseen = unseen_p[which(rowSums(unseen_p)>0),]
-              unseen = matrix(unseen, ncol = ncol(unseen_p), byrow = T)
+              unseen = matrix(unseen, ncol = ncol(unseen_p))
               p_bt = rbind(p_bt[(1:nrow(data[[1]])),], unseen)
               unseen_name = sapply(1:nrow(unseen), function(i) paste0('unseen_', i))
               rownames(p_bt) = c(rownames(data[[1]]), unseen_name)
@@ -2347,7 +2347,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
                 R0_hat[R0_hat < 0] = 0
                 
                 unseen_sample = sapply(raw, rowSums)[-(1:nrow(data[[1]])),]
-                if (is.vector(unseen_sample)) unseen_sample = matrix(unseen_sample, ncol = N, byrow = T)
+                if (is.vector(unseen_sample)) unseen_sample = matrix(unseen_sample, ncol = N)
                 
                 L0_hat = sapply(1:length(R0_hat), function(i) if(sum(unseen_sample[,i] > 0) > 0) (R0_hat[i] / nrow(unseen)) else 0 )
                 
