@@ -35,6 +35,7 @@
 #'  then threshold level is set to be the mean distance between any two individuals randomly selected from the pooled 
 #'  dataset (i.e., quadratic entropy). 
 #' @param FDcut_number (argument only for \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtain the AUC value by integrating the tau-profile. Equivalently, the number of tau values that will be considered to compute the integrated AUC value. Default is \code{FDcut_number = 30}. A larger value can be set to obtain more accurate AUC value.
+#' @param by_pair a logical variable specifying whether to perform diversity decomposition for all pairs of assemblages or not. If \code{by_pair = TRUE}, alpha/beta/gamma diversity will be computed for all pairs of assemblages in the input data; if \code{by_pair = FALSE}, alpha/beta/gamma diversity will be computed for multiple assemblages (i.e, more than two assemblages) in the input data. Default is \code{FALSE}. 
 #' 
 #' @import magrittr
 #' @import ggplot2
@@ -52,6 +53,7 @@
 #' @importFrom stats sd
 #' @importFrom stats optimize
 #' @importFrom grDevices hcl
+#' @importFrom utils combn
 #' 
 #' @return For \code{base = "coverage"}, return a list of seven data frames with three diversity (gamma, alpha, and beta
 #'  diversity) and four dissimilarity measures. For \code{base = "size"}, return a list of two matrices with two diversity
@@ -59,6 +61,7 @@
 #'  
 #'  For \code{base = "coverage"}, the output in each data frame includes: 
 #'  \item{Dataset}{the name of dataset.}
+#'  \item{Pair}{combinations of assemblage pairs; if calculating not by pairs, then there is no such column}
 #'  \item{Order.q}{the diversity order of q.} 
 #'  \item{SC}{the target standardized coverage value.}
 #'  \item{Size/mT}{the corresponding sample size.}
@@ -75,83 +78,93 @@
 #' @examples
 #' \donttest{
 #' ## (R/E Analysis) Taxonomic diversity for abundance data
-#' # Coverage-based standardized TD estimates and related statistics
+#' # Coverage-based standardized TD estimates and related statistics (not by pairs)
 #' data(Brazil_rainforests)
-#' output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+#' output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'TD', 
 #'                               datatype = 'abundance', base = "coverage", nboot = 10)
 #' output_TDc_abun
 #' }
 #' 
-#' # Coverage-based standardized TD estimates and related statistics by 
-#' # user-specified coverage values
+#' # Coverage-based standardized TD estimates and related statistics for all pairs of 
+#' # assemblages by user-specified coverage values
 #' data(Brazil_rainforests)
-#' output_TDc_abun_byuser = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+#' data = list("Edge"     = sapply(Brazil_rainforests, function(x) x[,1]),
+#'             "Interior" = sapply(Brazil_rainforests, function(x) x[,2]))
+#' output_TDc_abun_byuser = iNEXTbeta3D(data = data, diversity = 'TD', 
 #'                                      datatype = 'abundance', base = "coverage", nboot = 10,
-#'                                      level = c(0.85, 0.9))
+#'                                      level = c(0.85, 0.9), by_pair = TRUE)
 #' output_TDc_abun_byuser
 #' 
 #' 
-#' # Size-based standardized TD estimates and related statistics
+#' # Size-based standardized TD estimates and related statistics (not by pairs)
 #' data(Brazil_rainforests)
-#' output_TDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+#' output_TDs_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'TD', 
 #'                               datatype = 'abundance', base = "size", nboot = 10)
 #' output_TDs_abun
 #' 
 #' 
-#' # Size-based standardized TD estimates and related statistics by user-specified sample sizes
+#' # Size-based standardized TD estimates and related statistics for all pairs of 
+#' # assemblages by user-specified sample sizes
 #' data(Brazil_rainforests)
-#' output_TDs_abun_byuser = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+#' data = list("Edge"     = sapply(Brazil_rainforests, function(x) x[,1]),
+#'             "Interior" = sapply(Brazil_rainforests, function(x) x[,2]))
+#' output_TDs_abun_byuser = iNEXTbeta3D(data = data, diversity = 'TD', 
 #'                                      datatype = 'abundance', base = "size", nboot = 10,
-#'                                      level = c(300, 500))
+#'                                      level = c(300, 500), by_pair = TRUE)
 #' output_TDs_abun_byuser
 #' 
 #' \donttest{
 #' ## (R/E Analysis) Taxonomic diversity for incidence data
-#' # Coverage-based standardized TD estimates and related statistics
+#' # Coverage-based standardized TD estimates and related statistics (not by pairs)
 #' data(Second_growth_forests)
-#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#' data = list("CR 2005 vs. 2017" = Second_growth_forests[[1]][c(1,3)],
+#'             "JE 2005 vs. 2017" = Second_growth_forests[[2]][c(1,3)])
+#' output_TDc_inci = iNEXTbeta3D(data = data, diversity = 'TD', 
 #'                               datatype = 'incidence_raw', base = "coverage", nboot = 10)
 #' output_TDc_inci
 #' }
 #' 
-#' # Coverage-based standardized TD estimates and related statistics by 
-#' # user-specified coverage values
+#' # Coverage-based standardized TD estimates and related statistics for all pairs of 
+#' # assemblages by user-specified coverage values
 #' data(Second_growth_forests)
 #' output_TDc_inci_byuser = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
 #'                                      datatype = 'incidence_raw', base = "coverage", 
-#'                                      nboot = 10, level = c(0.9, 0.95))
+#'                                      nboot = 10, level = c(0.9, 0.95), by_pair = TRUE)
 #' output_TDc_inci_byuser
 #' 
 #' 
-#' # Size-based standardized TD estimates and related statistics
+#' # Size-based standardized TD estimates and related statistics (not by pairs)
 #' data(Second_growth_forests)
-#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#' data = list("CR 2005 vs. 2017" = Second_growth_forests[[1]][c(1,3)],
+#'             "JE 2005 vs. 2017" = Second_growth_forests[[2]][c(1,3)])
+#' output_TDs_inci = iNEXTbeta3D(data = data, diversity = 'TD', 
 #'                               datatype = 'incidence_raw', base = "size", nboot = 10)
 #' output_TDs_inci
 #' 
 #' 
-#' # Size-based standardized TD estimates and related statistics by user-specified sample sizes
+#' # Size-based standardized TD estimates and related statistics for all pairs of 
+#' # assemblages by user-specified sample sizes
 #' data(Second_growth_forests)
 #' output_TDs_inci_byuser = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
 #'                                      datatype = 'incidence_raw', base = "size", 
-#'                                      nboot = 10, level = c(100, 200))
+#'                                      nboot = 10, level = c(100, 200), by_pair = TRUE)
 #' output_TDs_inci_byuser
 #' 
 #' \donttest{
 #' ## (R/E Analysis) Phylogenetic diversity for abundance data
-#' # Coverage-based standardized PD estimates and related statistics
+#' # Coverage-based standardized PD estimates and related statistics (not by pairs)
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
-#' output_PDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
+#' output_PDc_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'PD', 
 #'                               datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                               PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' output_PDc_abun
 #' 
 #' 
-#' # Size-based standardized PD estimates and related statistics
+#' # Size-based standardized PD estimates and related statistics (not by pairs)
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
-#' output_PDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
+#' output_PDs_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'PD', 
 #'                               datatype = 'abundance', base = "size", nboot = 10, 
 #'                               PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' output_PDs_abun
@@ -159,19 +172,19 @@
 #' 
 #' ## (R/E Analysis) Functional diversity for abundance data when all thresholds from 0 to 1 
 #' ## are considered
-#' # Coverage-based standardized FD estimates and related statistics
+#' # Coverage-based standardized FD estimates and related statistics (not by pairs)
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
-#' output_FDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
+#' output_FDc_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'FD', 
 #'                               datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                               FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output_FDc_abun
 #' 
 #' 
-#' # Size-based standardized FD estimates and related statistics
+#' # Size-based standardized FD estimates and related statistics (not by pairs)
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
-#' output_FDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
+#' output_FDs_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'FD', 
 #'                               datatype = 'abundance', base = "size", nboot = 10, 
 #'                               FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' output_FDs_abun
@@ -187,7 +200,8 @@
 iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abundance', 
                        base = 'coverage', level = NULL, nboot = 10, conf = 0.95, 
                        PDtree = NULL, PDreftime = NULL, PDtype = 'meanPD',
-                       FDdistM = NULL, FDtype = 'AUC', FDtau = NULL, FDcut_number = 30) {
+                       FDdistM = NULL, FDtype = 'AUC', FDtau = NULL, FDcut_number = 30,
+                       by_pair = FALSE) {
   
   ## Check parameter setting
   if (is.na(pmatch(diversity, c("TD", "PD", "FD")))) stop("invalid diversity")
@@ -349,38 +363,92 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       
       level <- lapply(1:length(data_list), function(i) {
         
-        level = seq(0.5, 1, 0.025)
-        
-        if(datatype == "abundance") {
+        if (by_pair == FALSE) {
           
-          n = sum(data_list[[i]])
-          data_gamma = rowSums(data_list[[i]])
-          data_gamma = data_gamma[data_gamma>0]
-          data_alpha = as.matrix(data_list[[i]]) %>% as.vector
+          level = seq(0.5, 1, 0.025)
           
-          ref_gamma = iNEXT.3D:::Coverage(data_gamma, 'abundance', n)
-          ref_alpha = iNEXT.3D:::Coverage(data_alpha, 'abundance', n)
-          ref_alpha_max = iNEXT.3D:::Coverage(data_alpha, 'abundance', n*2)
-          ref_gamma_max = iNEXT.3D:::Coverage(data_gamma, 'abundance', n*2)
+          if(datatype == "abundance") {
+            
+            n = sum(data_list[[i]])
+            data_gamma = rowSums(data_list[[i]])
+            data_gamma = data_gamma[data_gamma>0]
+            data_alpha = as.matrix(data_list[[i]]) %>% as.vector
+            
+            ref_gamma = iNEXT.3D:::Coverage(data_gamma, 'abundance', n)
+            ref_alpha = iNEXT.3D:::Coverage(data_alpha, 'abundance', n)
+            ref_alpha_max = iNEXT.3D:::Coverage(data_alpha, 'abundance', n*2)
+            ref_gamma_max = iNEXT.3D:::Coverage(data_gamma, 'abundance', n*2)
+            
+          }else if(datatype == "incidence_raw"){
+            
+            n = unique(sapply(data_list[[i]], ncol))
+            gamma = Reduce('+', data_list[[i]])
+            gamma[gamma>1] = 1
+            data_gamma_raw = gamma
+            data_gamma_freq = c(n, rowSums(gamma))
+            
+            data_alpha_freq = sapply(data_list[[i]], rowSums) %>% c(n, .)
+            
+            ref_gamma = iNEXT.3D:::Coverage(data_gamma_freq, 'incidence_freq', n)
+            ref_alpha = iNEXT.3D:::Coverage(data_alpha_freq, 'incidence_freq', n)
+            ref_alpha_max = iNEXT.3D:::Coverage(data_alpha_freq, 'incidence_freq', n*2)
+            ref_gamma_max = iNEXT.3D:::Coverage(data_gamma_freq, 'incidence_freq', n*2)
+            
+          }
           
-        }else if(datatype == "incidence_raw"){
+          c(level, ref_gamma, ref_alpha, ref_alpha_max, ref_gamma_max) %>% sort %>% unique
           
-          n = unique(sapply(data_list[[i]], ncol))
-          gamma = Reduce('+', data_list[[i]])
-          gamma[gamma>1] = 1
-          data_gamma_raw = gamma
-          data_gamma_freq = c(n, rowSums(gamma))
+        } else {
           
-          data_alpha_freq = sapply(data_list[[i]], rowSums) %>% c(n, .)
+          level = seq(0.5, 1, 0.025)
           
-          ref_gamma = iNEXT.3D:::Coverage(data_gamma_freq, 'incidence_freq', n)
-          ref_alpha = iNEXT.3D:::Coverage(data_alpha_freq, 'incidence_freq', n)
-          ref_alpha_max = iNEXT.3D:::Coverage(data_alpha_freq, 'incidence_freq', n*2)
-          ref_gamma_max = iNEXT.3D:::Coverage(data_gamma_freq, 'incidence_freq', n*2)
+          if(datatype == "abundance") {
+            
+            two_idx <- combn(1:ncol(data_list[[i]]), 2)
+            
+            lapply(1:ncol(two_idx), function(j) {
+              
+              n = sum(data_list[[i]][,two_idx[,j]])
+              data_gamma = rowSums(data_list[[i]][,two_idx[,j]])
+              data_gamma = data_gamma[data_gamma>0]
+              data_alpha = as.matrix(data_list[[i]][,two_idx[,j]]) %>% as.vector
+              
+              ref_gamma = iNEXT.3D:::Coverage(data_gamma, 'abundance', n)
+              ref_alpha = iNEXT.3D:::Coverage(data_alpha, 'abundance', n)
+              ref_alpha_max = iNEXT.3D:::Coverage(data_alpha, 'abundance', n*2)
+              ref_gamma_max = iNEXT.3D:::Coverage(data_gamma, 'abundance', n*2)
+              
+              c(level, ref_gamma, ref_alpha, ref_alpha_max, ref_gamma_max) %>% sort %>% unique
+              
+            })
+            
+            
+          }else if(datatype == "incidence_raw"){
+            
+            two_idx <- combn(1:length(data_list[[i]]), 2)
+            
+            lapply(1:ncol(two_idx), function(j) {
+              
+              n = unique(sapply(data_list[[i]][two_idx[,j]], ncol))
+              gamma = Reduce('+', data_list[[i]][two_idx[,j]])
+              gamma[gamma>1] = 1
+              data_gamma_raw = gamma
+              data_gamma_freq = c(n, rowSums(gamma))
+              
+              data_alpha_freq = sapply(data_list[[i]][two_idx[,j]], rowSums) %>% c(n, .)
+              
+              ref_gamma = iNEXT.3D:::Coverage(data_gamma_freq, 'incidence_freq', n)
+              ref_alpha = iNEXT.3D:::Coverage(data_alpha_freq, 'incidence_freq', n)
+              ref_alpha_max = iNEXT.3D:::Coverage(data_alpha_freq, 'incidence_freq', n*2)
+              ref_gamma_max = iNEXT.3D:::Coverage(data_gamma_freq, 'incidence_freq', n*2)
+              
+              c(level, ref_gamma, ref_alpha, ref_alpha_max, ref_gamma_max) %>% sort %>% unique
+              
+            })
+            
+          }
           
         }
-        
-        c(level, ref_gamma, ref_alpha, ref_alpha_max, ref_gamma_max) %>% sort %>% unique
         
       })
       
@@ -390,37 +458,86 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
         level <- list(level = level)
       }
       
-      if (length(level) != length(data_list)) level <- lapply(1:length(data_list), function(x) level[[1]])
+      if ( (length(level) != length(data_list)) & (by_pair == FALSE) ) level <- lapply(1:length(data_list), function(x) level[[1]])
       
-    }
+      
+      
+      if ( (length(level) != length(data_list)) & (by_pair == TRUE) ) level <- lapply(1:length(data_list), function(x) {
+        
+        if (datatype == "abundance") two_idx <- combn(1:ncol(data_list[[x]]), 2)
+        if (datatype == "incidence_raw") two_idx <- combn(1:length(data_list[[x]]), 2)
+        
+        lapply(1:ncol(two_idx), function(y) level[[1]])
+      })
+      
+      }
     
     } else if ( base == 'size' ) {
     
       if ( is.null(level) ) {
         
-        if (datatype == "abundance") {
+        if (by_pair == FALSE) {
           
-          endpoint <- sapply(data_list, function(x) 2*sum(x))
-          
-        } else if (datatype == "incidence_raw") {
-          
-          endpoint <- sapply(data_list, function(x) 2*ncol(x[[1]]))
-          
-        }
-        
-        level <- lapply(1:length(data_list), function(i) {
-          
-          if(datatype == "abundance") {
+          if (datatype == "abundance") {
             
-            ni <- sum(data_list[[i]])
+            endpoint <- sapply(data_list, function(x) 2*sum(x))
             
-          }else if(datatype == "incidence_raw"){
+          } else if (datatype == "incidence_raw") {
             
-            ni <- ncol(data_list[[i]][[1]])
+            endpoint <- sapply(data_list, function(x) 2*ncol(x[[1]]))
+            
           }
           
-          mi <- floor(c(seq(1, ni-1, length.out = 20), ni, seq(ni+1, endpoint[i], length.out = 20)))
-        })
+          level <- lapply(1:length(data_list), function(i) {
+            
+            if(datatype == "abundance") {
+              
+              ni <- sum(data_list[[i]])
+              
+            }else if(datatype == "incidence_raw"){
+              
+              ni <- ncol(data_list[[i]][[1]])
+            }
+            
+            mi <- floor(c(seq(1, ni-1, length.out = 20), ni, seq(ni+1, endpoint[i], length.out = 20)))
+          })
+          
+        } else {
+          
+          level <- lapply(1:length(data_list), function(i) {
+            
+            if(datatype == "abundance") {
+              
+              two_idx <- combn(1:ncol(data_list[[i]]), 2)
+              
+              mi <- lapply(1:ncol(two_idx), function(j) {
+                
+                endpoint <- 2*sum(data_list[[i]][,two_idx[,j]])
+                
+                ni <- sum(data_list[[i]][,two_idx[,j]])
+                
+                floor(c(seq(1, ni-1, length.out = 20), ni, seq(ni+1, endpoint, length.out = 20)))
+                
+              })
+              
+            }else if(datatype == "incidence_raw"){
+              
+              two_idx <- combn(1:length(data_list[[i]]), 2)
+              
+              mi <- lapply(1:ncol(two_idx), function(j) {
+                
+                endpoint <- 2*ncol(data_list[[i]][[two_idx[1,j]]])
+                
+                ni <- ncol(data_list[[i]][[two_idx[1,j]]])
+                
+                floor(c(seq(1, ni-1, length.out = 20), ni, seq(ni+1, endpoint, length.out = 20)))
+                
+              })
+            }
+            
+          })
+          
+        }
         
       } else {
         
@@ -428,8 +545,16 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
           level <- list(level = level)
         }
         
-        if (length(level) != length(data_list)) level <- lapply(1:length(data_list), function(x) level[[1]])
+        if ( (length(level) != length(data_list)) & (by_pair == FALSE) ) level <- lapply(1:length(data_list), function(x) level[[1]])
         
+        if ( (length(level) != length(data_list)) & (by_pair == TRUE) ) level <- lapply(1:length(data_list), function(x) {
+          
+          if (datatype == "abundance") two_idx <- combn(1:ncol(data_list[[x]]), 2)
+          if (datatype == "incidence_raw") two_idx <- combn(1:length(data_list[[x]]), 2)
+          
+          lapply(1:ncol(two_idx), function(y) level[[1]])
+        })
+          
       }
   }
   
@@ -509,7 +634,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     
   }
     
-  for_each_dataset = function(data, dataset_name, N, level) {
+  for_each_dataset = function(data, dataset_name, N, level, by_pair = FALSE) {
     
     #data
     if (datatype == 'abundance') {
@@ -1975,13 +2100,32 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       S     = S     %>% rename("mT" = "Size")
     }
     
+    if (by_pair) {
+      
+      if (datatype == "abundance") ab_name = colnames(data) else ab_name = names(data)
+      
+      gamma = gamma %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+      alpha = alpha %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+      beta  = beta  %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+      C    =  C    %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+      U    =  U    %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+      V    =  V    %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+      S    =  S    %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+    }
     
     
     list(gamma = gamma, alpha = alpha, beta = beta, `1-C` = C, `1-U` = U, `1-V` = V, `1-S` = S)
     
   }
   
-  for_each_dataset.size = function(data, dataset_name, N, level) {
+  for_each_dataset.size = function(data, dataset_name, N, level, by_pair = FALSE) {
     
     #data
     if (datatype == 'abundance') {
@@ -3009,20 +3153,86 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
       alpha = alpha %>% mutate(Tau = FDtau)
     }
     
+    if (by_pair) {
+      
+      if (datatype == "abundance") ab_name = colnames(data) else ab_name = names(data)
+      
+      gamma = gamma %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+      alpha = alpha %>% mutate('Pair' = paste(ab_name[1], ab_name[2], sep = " vs. "), .after = "Dataset")
+      
+    }
+    
+    
     list(gamma = gamma, alpha = alpha)
     
   }
-
-  if (base == 'coverage') output = lapply(1:length(data_list), function(i) for_each_dataset(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i], level = level[[i]]))
   
-  if (base == 'size') output = lapply(1:length(data_list), function(i) for_each_dataset.size(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i], level = level[[i]]))
+  
+  if (by_pair == FALSE) {
+    
+    if (base == 'coverage') output = lapply(1:length(data_list), function(i) for_each_dataset(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i], level = level[[i]]))
+    
+    if (base == 'size') output = lapply(1:length(data_list), function(i) for_each_dataset.size(data = data_list[[i]], dataset_name = dataset_names[i], N = Ns[i], level = level[[i]]))
+    
+  }
+  
+  
+  ## Added by KaiHsiang 2024/11/11
+  if (by_pair == TRUE) {
+    
+    if (base == 'coverage') output = lapply(1:length(data_list), function(i) {
+      
+      if (datatype == "abundance") {
+        
+        two_idx <- combn(1:ncol(data_list[[i]]), 2)
+        
+        pair_out = lapply(1:ncol(two_idx), function(j) for_each_dataset(data = data_list[[i]][,two_idx[,j]], dataset_name = dataset_names[i], N = Ns[i], 
+                                                                        level = level[[i]][[j]], by_pair = TRUE))
+      }
+      
+      if (datatype == "incidence_raw") {
+        
+        two_idx <- combn(1:length(data_list[[i]]), 2)
+        
+        pair_out = lapply(1:ncol(two_idx), function(j) for_each_dataset(data = data_list[[i]][two_idx[,j]], dataset_name = dataset_names[i], N = Ns[i], 
+                                                                        level = level[[i]][[j]], by_pair = TRUE))
+      }
+      
+      
+      lapply(1:7, function(k) lapply(pair_out, function(x) x[[k]]) %>% do.call(rbind,.)) %>% set_names(names(pair_out[[1]]))
+    })
+    
+    if (base == 'size') output = lapply(1:length(data_list), function(i) {
+      
+      if (datatype == "abundance") {
+        
+        two_idx <- combn(1:ncol(data_list[[i]]), 2)
+        
+        pair_out = lapply(1:ncol(two_idx), function(j) for_each_dataset.size(data = data_list[[i]][,two_idx[,j]], dataset_name = dataset_names[i], N = Ns[i], 
+                                                                             level = level[[i]][[j]], by_pair = TRUE))
+      }
+      
+      if (datatype == "incidence_raw") {
+        
+        two_idx <- combn(1:length(data_list[[i]]), 2)
+        
+        pair_out = lapply(1:ncol(two_idx), function(j) for_each_dataset.size(data = data_list[[i]][two_idx[,j]], dataset_name = dataset_names[i], N = Ns[i], 
+                                                                             level = level[[i]][[j]], by_pair = TRUE))
+      }
+      
+      
+      lapply(1:2, function(k) lapply(pair_out, function(x) x[[k]]) %>% do.call(rbind,.)) %>% set_names(names(pair_out[[1]]))
+    })
+    
+  }
   
   names(output) = dataset_names
   
   class(output) <- c("iNEXTbeta3D")
   return(output)
   
-}
+  }
 
 
 
@@ -3030,6 +3240,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' \code{ggiNEXTbeta3D} is an \code{ggplot2} extension for the \code{iNEXTbeta3D} 
 #' object to plot sample-size- and coverage-based rarefaction/extrapolation curves.
+#' (only accept the outcome from \code{iNEXTbeta3D} under \code{by_pair = FALSE})
 #' 
 #' @param output output from the function \code{iNEXTbeta3D}.
 #' @param type (argument only for \code{base = "coverage"}),\cr
@@ -3046,7 +3257,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' ## (Graphic Display) Taxonomic diversity for abundance data
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
-#' output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+#' output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'TD', 
 #'                               datatype = 'abundance', base = "coverage", nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output_TDc_abun, type = 'B')
@@ -3055,7 +3266,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
-#' output_TDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'TD', 
+#' output_TDs_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'TD', 
 #'                               datatype = 'abundance', base = "size", nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output_TDs_abun)
@@ -3064,7 +3275,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' ## (Graphic Display) Taxonomic diversity for incidence data
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Second_growth_forests)
-#' output_TDc_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#' data = list("CR 2005 vs. 2017" = Second_growth_forests[[1]][c(1,3)],
+#'             "JE 2005 vs. 2017" = Second_growth_forests[[2]][c(1,3)])
+#' output_TDc_inci = iNEXTbeta3D(data = data, diversity = 'TD', 
 #'                               datatype = 'incidence_raw', base = "coverage", nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output_TDc_inci, type = 'B')
@@ -3073,7 +3286,9 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' 
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Second_growth_forests)
-#' output_TDs_inci = iNEXTbeta3D(data = Second_growth_forests, diversity = 'TD', 
+#' data = list("CR 2005 vs. 2017" = Second_growth_forests[[1]][c(1,3)],
+#'             "JE 2005 vs. 2017" = Second_growth_forests[[2]][c(1,3)])
+#' output_TDs_inci = iNEXTbeta3D(data = data, diversity = 'TD', 
 #'                               datatype = 'incidence_raw', base = "size", nboot = 10)
 #' 
 #' ggiNEXTbeta3D(output_TDs_inci)
@@ -3083,7 +3298,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
-#' output_PDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
+#' output_PDc_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'PD', 
 #'                               datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                               PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
@@ -3094,7 +3309,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
-#' output_PDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'PD', 
+#' output_PDs_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'PD', 
 #'                               datatype = 'abundance', base = "size", nboot = 10, 
 #'                               PDtree = Brazil_tree, PDreftime = NULL, PDtype = 'meanPD')
 #' 
@@ -3106,7 +3321,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' # Coverage-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
-#' output_FDc_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
+#' output_FDc_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'FD', 
 #'                               datatype = 'abundance', base = "coverage", nboot = 10, 
 #'                               FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
@@ -3117,7 +3332,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
 #' # Size-based rarefaction and extrapolation sampling curves 
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
-#' output_FDs_abun = iNEXTbeta3D(data = Brazil_rainforests, diversity = 'FD', 
+#' output_FDs_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'FD', 
 #'                               datatype = 'abundance', base = "size", nboot = 10, 
 #'                               FDdistM = Brazil_distM, FDtype = 'AUC', FDcut_number = 30)
 #' 
@@ -3420,6 +3635,8 @@ ggiNEXTbeta3D = function(output, type = 'B'){
     double_size = unique(df[df$Method == "Observed",]$Size)*2
     double_extrapolation = df %>% filter(Method == "Extrapolation" & round(Size) %in% double_size)
     
+    if ("Pair" %in% colnames(df)) stop("Due to too much data points under 'by_pair = TRUE', 'ggiNEXTbeta3D' don't plot the figure.", call. = FALSE)
+    
     fig = ggplot(data = df, aes(x = SC, y = Estimate, col = Dataset)) +
       geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
       # geom_line(lty=2) + 
@@ -3487,6 +3704,8 @@ ggiNEXTbeta3D = function(output, type = 'B'){
     
     double_size = unique(df[df$Method == "Observed",]$Size)*2
     double_extrapolation = df %>% filter(Method == "Extrapolation" & round(Size) %in% double_size)
+    
+    if ("Pair" %in% colnames(df)) stop("Due to too much data points under 'by_pair = TRUE', 'ggiNEXTbeta3D' don't plot the figure.", call. = FALSE)
     
     fig = ggplot(data = df, aes(x = Size, y = Estimate, col = Dataset)) +
       geom_line(data = subset(df, Method != 'Observed'), aes(linetype = Method), size=1.1) + scale_linetype_manual(values = lty) +
@@ -3844,10 +4063,12 @@ ggplotColors <- function(g){
 #'  1 specifying the tau value (threshold level) that will be used to compute FD. If \code{FDtype = NULL} (default), 
 #'  then threshold level is set to be the mean distance between any two individuals randomly selected from the pooled 
 #'  dataset (i.e., quadratic entropy). 
+#' @param by_pair a logical variable specifying whether to perform diversity decomposition for all pairs of assemblages or not. If \code{by_pair = TRUE}, alpha/beta/gamma diversity will be computed for all pairs of assemblages in the input data; if \code{by_pair = FALSE}, alpha/beta/gamma diversity will be computed for multiple assemblages (i.e, more than two assemblages) in the input data. Default is \code{FALSE}. 
 #' 
 #' @return a data.frame including basic data information.\cr\cr 
 #' For abundance data, basic information shared by TD, mean-PD and FD
-#'  includes dataset name (\code{Dataset}), individual/pooled/joint assemblage (\code{Assemblage}),
+#'  includes dataset name (\code{Dataset}), combinations of assemblage pairs (\code{Pair}, if calculating not by pairs, then there is no such column), 
+#'  individual/pooled/joint assemblage (\code{Assemblage}),
 #' sample size (\code{n}), observed species richness (\code{S.obs}), sample coverage estimates of the reference sample (\code{SC(n)}), 
 #' sample coverage estimate for twice the reference sample size (\code{SC(2n)}). Other additional information is given below.\cr\cr
 #' (1) TD: the first five species abundance frequency counts in the reference sample (\code{f1}--\code{f5}).\cr\cr
@@ -3860,55 +4081,75 @@ ggplotColors <- function(g){
 #'  set at the specified threshold level \code{'Tau'}, as well as the total contribution of singletons (\code{h1}) and of doubletons (\code{h2})
 #'   at the specified threshold level \code{'Tau'}.\cr\cr
 #'  
-#'  For incidence data, the basic information for TD includes dataset name (\code{Dataset}), individual/pooled/joint assemblage 
-#'  (\code{Assemblage}), number of sampling units (\code{T}), total number of incidences (\code{U}), observed species richness (\code{S.obs}), 
+#'  For incidence data, the basic information for TD includes dataset name (\code{Dataset}), combinations of assemblage pairs (\code{Pair}, if calculating not by pairs, then there is no such column), 
+#'  individual/pooled/joint assemblage (\code{Assemblage}), number of sampling units (\code{T}), total number of incidences (\code{U}), observed species richness (\code{S.obs}), 
 #'  sample coverage estimates of the reference sample (\code{SC(T)}), sample coverage estimate for twice the reference sample size
 #'  (\code{SC(2T)}), as well as the first five species incidence frequency counts (\code{Q1}--\code{Q5}) in the reference sample. For mean-PD and FD, output is similar to that
 #'  for abundance data.   
 #' 
 #' @examples
-#' ## (Data Information) Taxonomic diversity for abundance data
+#' ## (Data Information) Taxonomic diversity for abundance data (not by pairs)
 #' data(Brazil_rainforests)
-#' info_TD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance')
+#' info_TD_abun = DataInfobeta3D(data = Brazil_rainforests[1:2], diversity = 'TD', 
+#'                               datatype = 'abundance')
 #' info_TD_abun
 #' 
 #' 
-#' ## (Data Information) Taxonomic diversity for incidence data
+#' ## (Data Information) Taxonomic diversity for abundance data for all pairs of assemblages
+#' data = list("Edge"     = sapply(Brazil_rainforests, function(x) x[,1]),
+#'             "Interior" = sapply(Brazil_rainforests, function(x) x[,2]))
+#' info_TD_abun_pair = DataInfobeta3D(data = data, diversity = 'TD', datatype = 'abundance',
+#'                                    by_pair = TRUE)
+#' info_TD_abun_pair
+#' 
+#' 
+#' ## (Data Information) Taxonomic diversity for incidence data (not by pairs)
 #' data(Second_growth_forests)
-#' info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
+#' data = list("CR 2005 vs. 2017" = Second_growth_forests[[1]][c(1,3)],
+#'             "JE 2005 vs. 2017" = Second_growth_forests[[2]][c(1,3)])
+#' info_TD_inci = DataInfobeta3D(data = data, diversity = 'TD',
 #'                               datatype = 'incidence_raw')
 #' info_TD_inci
 #' 
+#' 
+#' ## (Data Information) Taxonomic diversity for incidence data for all pairs of assemblages
+#' data(Second_growth_forests)
+#' info_TD_inci_pair = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
+#'                                    datatype = 'incidence_raw', by_pair = TRUE)
+#' info_TD_inci_pair
+#' 
 #' \donttest{
-#' ## (Data Information) Mean phylogenetic diversity for abundance data
+#' ## (Data Information) Mean phylogenetic diversity for abundance data (not by pairs)
 #' data(Brazil_rainforests)
 #' data(Brazil_tree)
-#' info_PD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
+#' info_PD_abun = DataInfobeta3D(data = Brazil_rainforests[1:2], diversity = 'PD', 
 #'                               datatype = 'abundance', PDtree = Brazil_tree, PDreftime = NULL)
 #' info_PD_abun
 #' }
 #' 
 #' ## (Data Information) Functional diversity for abundance data under a specified threshold level
+#' ## (not by pairs)
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
-#' info_FDtau_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
+#' info_FDtau_abun = DataInfobeta3D(data = Brazil_rainforests[1:2], diversity = 'FD', 
 #'                                  datatype = 'abundance', FDdistM = Brazil_distM, 
 #'                                  FDtype = 'tau_value', FDtau = NULL)
 #' info_FDtau_abun
 #' 
 #' 
 #' ## (Data Information) Functional diversity for abundance data when all threshold levels
-#' ## from 0 to 1 are considered
+#' ## from 0 to 1 are considered (not by pairs)
 #' data(Brazil_rainforests)
 #' data(Brazil_distM)
-#' info_FDAUC_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
+#' info_FDAUC_abun = DataInfobeta3D(data = Brazil_rainforests[1:2], diversity = 'FD', 
 #'                                  datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'AUC')
 #' info_FDAUC_abun
 #' 
 #' 
 #' @export
 DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance', 
-                          PDtree = NULL, PDreftime = NULL, FDdistM = NULL, FDtype = 'AUC', FDtau = NULL) {
+                          PDtree = NULL, PDreftime = NULL, FDdistM = NULL, FDtype = 'AUC', FDtau = NULL,
+                          by_pair = FALSE) {
   
   ## Check parameter setting
   if (is.na(pmatch(diversity, c("TD", "PD", "FD")))) stop("invalid diversity")
@@ -4031,16 +4272,33 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     
     if (datatype == "abundance") {
       
-      Dat = lapply(data, function(x) list("Pooled assemblage" = rowSums(x),
-                                          "Joint assemblage" = as.vector(x)))
-      
-      output = lapply(1:length(Dat), function(i) {
+      output = lapply(1:length(data), function(i) {
         
         if (is.null(colnames(data[[i]]))) colnames(data[[i]]) = paste('Assemblage_', 1:ncol(data[[i]]), sep = "")
         
-        multiple = DataInfo3D(Dat[[i]], datatype = "abundance")
         single = DataInfo3D(data[[i]], datatype = "abundance")
         
+        if (by_pair == FALSE) {
+          
+          multiple = DataInfo3D(list("Pooled assemblage" = rowSums(data[[i]]),
+                                     "Joint assemblage" = as.vector(data[[i]])), datatype = "abundance")
+          
+        } else {
+          
+          two_idx <- combn(1:ncol(data[[i]]), 2)
+          
+          multiple = lapply(1:ncol(two_idx), function(j) {
+            
+            ab_name = colnames(data[[i]])[two_idx[,j]]
+            
+            DataInfo3D(list("Pooled assemblage" = rowSums(data[[i]][,two_idx[,j]]),
+                            "Joint assemblage" = as.vector(data[[i]][,two_idx[,j]])), datatype = "abundance") %>% 
+              cbind(Pair = paste(ab_name[1], ab_name[2], sep = " vs. "),.)
+            
+          }) %>% do.call(rbind,.)
+          
+          single = single %>% cbind(Pair = "",.)
+        }
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.) %>% .[,1:11])
         
@@ -4049,24 +4307,47 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
     
     if (datatype == "incidence_raw") {
       
-      Dat = lapply(data, function(x) {
-        
-        x = lapply(x, as.matrix)
-        data_gamma = Reduce('+', x)
-        data_gamma[data_gamma > 1] = 1
-        
-        data_alpha = do.call(rbind, x)
-        
-        list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
-             "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha))))
-      })
-      
-      output = lapply(1:length(Dat), function(i) {
+      output = lapply(1:length(data), function(i) {
         
         if (is.null(names(data[[i]]))) names(data[[i]]) = paste('Assemblage_', 1:length(data[[i]]), sep = "")
         
-        multiple = DataInfo3D(Dat[[i]], datatype = "incidence_freq")
         single = DataInfo3D(data[[i]], datatype = "incidence_raw")
+        
+        if (by_pair == FALSE) {
+          
+          x = lapply(data[[i]], as.matrix)
+          data_gamma = Reduce('+', x)
+          data_gamma[data_gamma > 1] = 1
+          
+          data_alpha = do.call(rbind, x)
+          
+          multiple = DataInfo3D(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+                                     "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), 
+                                datatype = "incidence_freq")
+          
+        } else {
+          
+          two_idx <- combn(1:length(data[[i]]), 2)
+          
+          multiple = lapply(1:ncol(two_idx), function(j) {
+            
+            ab_name = names(data[[i]])[two_idx[,j]]
+            
+            x = lapply(data[[i]][two_idx[,j]], as.matrix)
+            data_gamma = Reduce('+', x)
+            data_gamma[data_gamma > 1] = 1
+            
+            data_alpha = do.call(rbind, x)
+            
+            DataInfo3D(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+                            "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), 
+                       datatype = "incidence_freq") %>% 
+              cbind(Pair = paste(ab_name[1], ab_name[2], sep = " vs. "),.)
+            
+          }) %>% do.call(rbind,.)
+          
+          single = single %>% cbind(Pair = "",.)
+        }
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.) %>% .[,1:12])
         
@@ -4089,54 +4370,120 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         x = data[[i]]
         if (is.null(colnames(x))) colnames(x) = paste('Assemblage_', 1:ncol(x), sep = "")
         
-        data_gamma = rowSums(x)
-        data_gamma = data_gamma[data_gamma > 0]
+        single = DataInfo3D(x, diversity = "PD", datatype = "abundance", PDtree = PDtree, PDreftime = PDreftime)
         
-        aL_table_gamma = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = data_gamma, rootExtend = T, refT = PDreftime)
-        aL_table_gamma$treeNabu$branch.length = aL_table_gamma$BLbyT[,1]
-        aL_table_gamma = aL_table_gamma$treeNabu %>% select(branch.abun, branch.length, tgroup)
         
-        N = ncol(x)
-        aL_table_alpha = c()
-        
-        for (j in 1:N) {
+        if (by_pair == FALSE) {
           
-          y = x[x[,j] > 0, j]
-          names(y) = rownames(x)[x[,j]>0]
+          data_gamma = rowSums(x)
+          data_gamma = data_gamma[data_gamma > 0]
           
-          aL_table = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = y, rootExtend = T, refT = PDreftime)
-          aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
-          aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
+          aL_table_gamma = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = data_gamma, rootExtend = T, refT = PDreftime)
+          aL_table_gamma$treeNabu$branch.length = aL_table_gamma$BLbyT[,1]
+          aL_table_gamma = aL_table_gamma$treeNabu %>% select(branch.abun, branch.length, tgroup)
           
-          aL_table_alpha = rbind(aL_table_alpha, aL_table)
+          N = ncol(x)
+          aL_table_alpha = c()
           
+          for (j in 1:N) {
+            
+            y = x[x[,j] > 0, j]
+            names(y) = rownames(x)[x[,j]>0]
+            
+            aL_table = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = y, rootExtend = T, refT = PDreftime)
+            aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
+            aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
+            
+            aL_table_alpha = rbind(aL_table_alpha, aL_table)
+            
+          }
+          
+          output <- sapply(list(aL_table_gamma, aL_table_alpha), function(y){
+            
+            ai = y$branch.abun
+            Li = y$branch.length
+            I1 <- which(ai == 1 & Li > 0)
+            I2 <- which(ai == 2 & Li > 0)
+            S.obs = y[y$branch.abun > 0,] %>% filter(tgroup == "Tip") %>% nrow
+            PD_obs <- sum(Li)
+            f1 <- length(I1)
+            f2 <- length(I2)
+            g1 <- sum(Li[I1])
+            g2 <- sum(Li[I2])
+            c(S.obs, PD_obs, f1, f2, g1, g2)
+            
+          }) %>% t()
+          
+          Chat = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", sum(y)))
+          mul_C2n = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
+          
+          multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                            'n' = sum(x), 'S.obs' = output[,1], 'SC(n)' = Chat, 'SC(2n)' = mul_C2n, 'PD.obs' = output[,2],
+                            'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
+                            'Reftime' = PDreftime)
+          
+        } else {
+          
+          two_idx <- combn(1:ncol(x), 2)
+          
+          multiple = lapply(1:ncol(two_idx), function(j) {
+            
+            x = x[,two_idx[,j]]
+            ab_name = colnames(x)
+            
+            data_gamma = rowSums(x)
+            data_gamma = data_gamma[data_gamma > 0]
+            
+            aL_table_gamma = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = data_gamma, rootExtend = T, refT = PDreftime)
+            aL_table_gamma$treeNabu$branch.length = aL_table_gamma$BLbyT[,1]
+            aL_table_gamma = aL_table_gamma$treeNabu %>% select(branch.abun, branch.length, tgroup)
+            
+            N = 2
+            aL_table_alpha = c()
+            
+            for (j in 1:N) {
+              
+              y = x[x[,j] > 0, j]
+              names(y) = rownames(x)[x[,j]>0]
+              
+              aL_table = iNEXT.3D:::phyBranchAL_Abu(phylo = PDtree, data = y, rootExtend = T, refT = PDreftime)
+              aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
+              aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
+              
+              aL_table_alpha = rbind(aL_table_alpha, aL_table)
+              
+            }
+            
+            output <- sapply(list(aL_table_gamma, aL_table_alpha), function(y){
+              
+              ai = y$branch.abun
+              Li = y$branch.length
+              I1 <- which(ai == 1 & Li > 0)
+              I2 <- which(ai == 2 & Li > 0)
+              S.obs = y[y$branch.abun > 0,] %>% filter(tgroup == "Tip") %>% nrow
+              PD_obs <- sum(Li)
+              f1 <- length(I1)
+              f2 <- length(I2)
+              g1 <- sum(Li[I1])
+              g2 <- sum(Li[I2])
+              c(S.obs, PD_obs, f1, f2, g1, g2)
+              
+            }) %>% t()
+            
+            Chat = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", sum(y)))
+            mul_C2n = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
+            
+            tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                   'n' = sum(x), 'S.obs' = output[,1], 'SC(n)' = Chat, 'SC(2n)' = mul_C2n, 'PD.obs' = output[,2],
+                   'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
+                   'Reftime' = PDreftime) %>% 
+              cbind(Pair = paste(ab_name[1], ab_name[2], sep = " vs. "),.)
+            
+          }) %>% do.call(rbind,.)
+          
+          single = single %>% cbind(Pair = "",.)
         }
         
-        output <- sapply(list(aL_table_gamma, aL_table_alpha), function(y){
-          
-          ai = y$branch.abun
-          Li = y$branch.length
-          I1 <- which(ai == 1 & Li > 0)
-          I2 <- which(ai == 2 & Li > 0)
-          S.obs = y[y$branch.abun > 0,] %>% filter(tgroup == "Tip") %>% nrow
-          PD_obs <- sum(Li)
-          f1 <- length(I1)
-          f2 <- length(I2)
-          g1 <- sum(Li[I1])
-          g2 <- sum(Li[I2])
-          c(S.obs, PD_obs, f1, f2, g1, g2)
-          
-        }) %>% t()
-        
-        Chat = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", sum(y)))
-        mul_C2n = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
-        
-        multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
-                          'n' = sum(x), 'S.obs' = output[,1], 'SC(n)' = Chat, 'SC(2n)' = mul_C2n, 'PD.obs' = output[,2],
-                          'f1*' = output[,3], 'f2*' = output[,4], 'g1' = output[,5], 'g2' = output[,6],
-                          'Reftime' = PDreftime)
-        
-        single = DataInfo3D(x, diversity = "PD", datatype = "abundance", PDtree = PDtree, PDreftime = PDreftime)
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -4150,51 +4497,113 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         x = lapply(data[[i]], as.matrix)
         if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
         
-        data_gamma = Reduce('+', x)
-        data_gamma[data_gamma > 1] = 1
-        
-        aL_table_gamma = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = as.matrix(data_gamma), datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
-        aL_table_gamma$treeNabu$branch.length = aL_table_gamma$BLbyT[,1]
-        aL_table_gamma = aL_table_gamma$treeNabu %>% select(branch.abun, branch.length, tgroup)
-        
-        N = length(x)
-        aL_table_alpha = c()
-        
-        for (j in 1:N) {
-          
-          aL_table = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = x[[j]], datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
-          aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
-          aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
-          
-          aL_table_alpha = rbind(aL_table_alpha, aL_table)
-          
-        }
-        
-        output <- sapply(list(aL_table_gamma, aL_table_alpha), function(y){
-          
-          ai = y$branch.abun
-          Li = y$branch.length
-          I1 <- which(ai == 1 & Li > 0)
-          I2 <- which(ai == 2 & Li > 0)
-          S.obs = y[y$branch.abun > 0,] %>% filter(tgroup == "Tip") %>% nrow
-          PD_obs <- sum(Li)
-          f1 <- length(I1)
-          f2 <- length(I2)
-          g1 <- sum(Li[I1])
-          g2 <- sum(Li[I2])
-          c(S.obs, PD_obs, f1, f2, g1, g2)
-          
-          }) %>% t()
-        
-        Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
-        mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
-                          'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
-                          'S.obs' = output[,1], 'SC(T)' = Chat, 'SC(2T)' = mul_C2T, 'PD.obs' = output[,2],
-                          'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
-                          'Reftime' = PDreftime)
-        
         single = DataInfo3D(x, diversity = "PD", datatype = "incidence_raw", PDtree = PDtree, PDreftime = PDreftime)
+        
+        if (by_pair == FALSE) {
+          
+          data_gamma = Reduce('+', x)
+          data_gamma[data_gamma > 1] = 1
+          
+          aL_table_gamma = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = as.matrix(data_gamma), datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
+          aL_table_gamma$treeNabu$branch.length = aL_table_gamma$BLbyT[,1]
+          aL_table_gamma = aL_table_gamma$treeNabu %>% select(branch.abun, branch.length, tgroup)
+          
+          N = length(x)
+          aL_table_alpha = c()
+          
+          for (j in 1:N) {
+            
+            aL_table = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = x[[j]], datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
+            aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
+            aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
+            
+            aL_table_alpha = rbind(aL_table_alpha, aL_table)
+            
+          }
+          
+          output <- sapply(list(aL_table_gamma, aL_table_alpha), function(y){
+            
+            ai = y$branch.abun
+            Li = y$branch.length
+            I1 <- which(ai == 1 & Li > 0)
+            I2 <- which(ai == 2 & Li > 0)
+            S.obs = y[y$branch.abun > 0,] %>% filter(tgroup == "Tip") %>% nrow
+            PD_obs <- sum(Li)
+            f1 <- length(I1)
+            f2 <- length(I2)
+            g1 <- sum(Li[I1])
+            g2 <- sum(Li[I2])
+            c(S.obs, PD_obs, f1, f2, g1, g2)
+            
+          }) %>% t()
+          
+          Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
+          mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+          multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                            'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
+                            'S.obs' = output[,1], 'SC(T)' = Chat, 'SC(2T)' = mul_C2T, 'PD.obs' = output[,2],
+                            'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
+                            'Reftime' = PDreftime)
+          
+        } else {
+          
+          two_idx <- combn(1:length(x), 2)
+          
+          multiple = lapply(1:ncol(two_idx), function(j) {
+            
+            x = x[two_idx[,j]]
+            ab_name = names(x)
+            
+            data_gamma = Reduce('+', x)
+            data_gamma[data_gamma > 1] = 1
+            
+            aL_table_gamma = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = as.matrix(data_gamma), datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
+            aL_table_gamma$treeNabu$branch.length = aL_table_gamma$BLbyT[,1]
+            aL_table_gamma = aL_table_gamma$treeNabu %>% select(branch.abun, branch.length, tgroup)
+            
+            N = length(x)
+            aL_table_alpha = c()
+            
+            for (j in 1:N) {
+              
+              aL_table = iNEXT.3D:::phyBranchAL_Inc(phylo = PDtree, data = x[[j]], datatype = "incidence_raw", refT = PDreftime, rootExtend = T)
+              aL_table$treeNabu$branch.length = aL_table$BLbyT[,1]
+              aL_table = aL_table$treeNabu %>% select(branch.abun, branch.length, tgroup)
+              
+              aL_table_alpha = rbind(aL_table_alpha, aL_table)
+              
+            }
+            
+            output <- sapply(list(aL_table_gamma, aL_table_alpha), function(y){
+              
+              ai = y$branch.abun
+              Li = y$branch.length
+              I1 <- which(ai == 1 & Li > 0)
+              I2 <- which(ai == 2 & Li > 0)
+              S.obs = y[y$branch.abun > 0,] %>% filter(tgroup == "Tip") %>% nrow
+              PD_obs <- sum(Li)
+              f1 <- length(I1)
+              f2 <- length(I2)
+              g1 <- sum(Li[I1])
+              g2 <- sum(Li[I2])
+              c(S.obs, PD_obs, f1, f2, g1, g2)
+              
+            }) %>% t()
+            
+            Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
+            mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+            
+            tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                   'T' = ncol(x[[1]]), 'U' = c(sum(data_gamma), sum(sapply(x, rowSums))), 
+                   'S.obs' = output[,1], 'SC(T)' = Chat, 'SC(2T)' = mul_C2T, 'PD.obs' = output[,2],
+                   'Q1*' = output[,3], 'Q2*' = output[,4], 'R1' = output[,5], 'R2' = output[,6],
+                   'Reftime' = PDreftime) %>% 
+              cbind(Pair = paste(ab_name[1], ab_name[2], sep = " vs. "),.)
+            
+          }) %>% do.call(rbind,.)
+          
+          single = single %>% cbind(Pair = "",.)
+        }
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -4264,47 +4673,104 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         x = data[[i]]
         if (is.null(colnames(x))) colnames(x) = paste('Assemblage_', 1:ncol(x), sep = "")
         
-        dij = FDdistM
-        dij = dij[rownames(dij) %in% rownames(x), colnames(dij) %in% rownames(x)]
-        order_sp <- match(rownames(x), rownames(dij))
-        dij <- dij[order_sp, order_sp]
-        
-        dij = dij[rowSums(x)>0, rowSums(x)>0]
-        x = x[rowSums(x)>0,]
-        
-        
-        if (FDtau == 0) {
-          dij[dij > 0] <- 1
-          aik = (1 - dij/1) %*% as.matrix(x)
-        } else {
-          dij[which(dij > FDtau, arr.ind = T)] = FDtau
-          aik = (1 - dij/FDtau) %*% as.matrix(x)
-        }
-        
-        positive_id = rowSums(aik) > 0
-        
-        
-        gamma_x = rowSums(x)[positive_id]
-        gamma_a = rowSums(aik)[positive_id]
-        gamma_v = gamma_x/gamma_a
-        
-        alpha_a = as.vector(aik)
-        alpha_v = rep(gamma_v, ncol(x))
-        
-        Chat = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", sum(y)))
-        mul_C2n = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
-        
-        multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
-                          'n' = sum(x), 
-                          'S.obs' = c(sum(rowSums(x) > 0), sum(as.vector(x) > 0)), 
-                          'SC(n)' = Chat, 'SC(2n)' = mul_C2n,
-                          'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
-                          'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
-                          'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
-                          'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
-                          'Tau' = FDtau)
-        
         single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
+        
+        if (by_pair == FALSE) {
+          
+          dij = FDdistM
+          dij = dij[rownames(dij) %in% rownames(x), colnames(dij) %in% rownames(x)]
+          order_sp <- match(rownames(x), rownames(dij))
+          dij <- dij[order_sp, order_sp]
+          
+          dij = dij[rowSums(x)>0, rowSums(x)>0]
+          x = x[rowSums(x)>0,]
+          
+          
+          if (FDtau == 0) {
+            dij[dij > 0] <- 1
+            aik = (1 - dij/1) %*% as.matrix(x)
+          } else {
+            dij[which(dij > FDtau, arr.ind = T)] = FDtau
+            aik = (1 - dij/FDtau) %*% as.matrix(x)
+          }
+          
+          positive_id = rowSums(aik) > 0
+          
+          
+          gamma_x = rowSums(x)[positive_id]
+          gamma_a = rowSums(aik)[positive_id]
+          gamma_v = gamma_x/gamma_a
+          
+          alpha_a = as.vector(aik)
+          alpha_v = rep(gamma_v, ncol(x))
+          
+          Chat = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", sum(y)))
+          mul_C2n = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
+          
+          multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                            'n' = sum(x), 
+                            'S.obs' = c(sum(rowSums(x) > 0), sum(as.vector(x) > 0)), 
+                            'SC(n)' = Chat, 'SC(2n)' = mul_C2n,
+                            'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
+                            'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
+                            'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
+                            'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
+                            'Tau' = FDtau)
+          
+        } else {
+          
+          two_idx <- combn(1:ncol(x), 2)
+          
+          multiple = lapply(1:ncol(two_idx), function(j) {
+            
+            x = x[,two_idx[,j]]
+            ab_name = colnames(x)
+            
+            dij = FDdistM
+            dij = dij[rownames(dij) %in% rownames(x), colnames(dij) %in% rownames(x)]
+            order_sp <- match(rownames(x), rownames(dij))
+            dij <- dij[order_sp, order_sp]
+            
+            dij = dij[rowSums(x)>0, rowSums(x)>0]
+            x = x[rowSums(x)>0,]
+            
+            
+            if (FDtau == 0) {
+              dij[dij > 0] <- 1
+              aik = (1 - dij/1) %*% as.matrix(x)
+            } else {
+              dij[which(dij > FDtau, arr.ind = T)] = FDtau
+              aik = (1 - dij/FDtau) %*% as.matrix(x)
+            }
+            
+            positive_id = rowSums(aik) > 0
+            
+            
+            gamma_x = rowSums(x)[positive_id]
+            gamma_a = rowSums(aik)[positive_id]
+            gamma_v = gamma_x/gamma_a
+            
+            alpha_a = as.vector(aik)
+            alpha_v = rep(gamma_v, ncol(x))
+            
+            Chat = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", sum(y)))
+            mul_C2n = sapply(list(rowSums(x), as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
+            
+            tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                   'n' = sum(x), 
+                   'S.obs' = c(sum(rowSums(x) > 0), sum(as.vector(x) > 0)), 
+                   'SC(n)' = Chat, 'SC(2n)' = mul_C2n,
+                   'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
+                   'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
+                   'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
+                   'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
+                   'Tau' = FDtau) %>% 
+              cbind(Pair = paste(ab_name[1], ab_name[2], sep = " vs. "),.)
+            
+          }) %>% do.call(rbind,.)
+          
+          single = single %>% cbind(Pair = "",.)
+        }
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -4318,75 +4784,157 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
         x = lapply(data[[i]], as.matrix)
         if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
         
+        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
+        
         nT = ncol(x[[1]])
         
-        data_gamma = Reduce('+', x)
-        data_gamma[data_gamma > 1] = 1
-        data_gamma_freq = rowSums(data_gamma)
-        
-        data_2D = sapply(x, rowSums)
-        
-        ##
-        dij = FDdistM
-        dij = dij[rownames(dij) %in% names(data_gamma_freq), colnames(dij) %in% names(data_gamma_freq)]
-        order_sp <- match(names(data_gamma_freq), rownames(dij))
-        dij <- dij[order_sp, order_sp]
-        
-        dij = dij[data_gamma_freq > 0, data_gamma_freq > 0]
-        data_gamma_freq = data_gamma_freq[data_gamma_freq > 0]
-        
-        
-        if (FDtau == 0) {
-          dij[dij > 0] <- 1
-          gamma_a = (1 - dij/1) %*% as.matrix(data_gamma_freq)
+        if (by_pair == FALSE) {
+          
+          data_gamma = Reduce('+', x)
+          data_gamma[data_gamma > 1] = 1
+          data_gamma_freq = rowSums(data_gamma)
+          
+          data_2D = sapply(x, rowSums)
+          
+          ##
+          dij = FDdistM
+          dij = dij[rownames(dij) %in% names(data_gamma_freq), colnames(dij) %in% names(data_gamma_freq)]
+          order_sp <- match(names(data_gamma_freq), rownames(dij))
+          dij <- dij[order_sp, order_sp]
+          
+          dij = dij[data_gamma_freq > 0, data_gamma_freq > 0]
+          data_gamma_freq = data_gamma_freq[data_gamma_freq > 0]
+          
+          
+          if (FDtau == 0) {
+            dij[dij > 0] <- 1
+            gamma_a = (1 - dij/1) %*% as.matrix(data_gamma_freq)
+          } else {
+            dij[which(dij > FDtau, arr.ind = T)] = FDtau
+            gamma_a = (1 - dij/FDtau) %*% as.matrix(data_gamma_freq)
+          }
+          
+          gamma_a[gamma_a > nT] = nT
+          gamma_v = data_gamma_freq/gamma_a
+          
+          
+          ##
+          dij = FDdistM
+          dij = dij[rownames(dij) %in% rownames(data_2D), colnames(dij) %in% rownames(data_2D)]
+          order_sp <- match(rownames(data_2D), rownames(dij))
+          dij <- dij[order_sp, order_sp]
+          
+          dij = dij[rowSums(data_2D) > 0, rowSums(data_2D) > 0]
+          data_2D = data_2D[rowSums(data_2D) > 0,]
+          
+          
+          if (FDtau == 0) {
+            dij[dij > 0] <- 1
+            alpha_a = (1 - dij/1) %*% as.matrix(data_2D)
+          } else {
+            dij[which(dij > FDtau, arr.ind = T)] = FDtau
+            alpha_a = (1 - dij/FDtau) %*% as.matrix(data_2D)
+          }
+          
+          alpha_a[alpha_a > nT] = nT
+          alpha_a = as.vector(alpha_a)
+          alpha_v = rep(gamma_v, length(x))
+          
+          
+          Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
+          mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+          
+          multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                            'T' = rep(ncol(data_gamma), 2), 
+                            'U' = c(sum(data_gamma_freq), sum(data_2D)),
+                            'S.obs' = c(sum(rowSums(data_gamma) > 0), sum(data_2D > 0)), 
+                            'SC(T)' = Chat, 'SC(2T)' = mul_C2T,
+                            'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
+                            'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
+                            'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
+                            'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
+                            'Tau' = FDtau)
+          
         } else {
-          dij[which(dij > FDtau, arr.ind = T)] = FDtau
-          gamma_a = (1 - dij/FDtau) %*% as.matrix(data_gamma_freq)
+          
+          two_idx <- combn(1:length(x), 2)
+          
+          multiple = lapply(1:ncol(two_idx), function(j) {
+            
+            x = x[two_idx[,j]]
+            ab_name = names(x)
+            
+            data_gamma = Reduce('+', x)
+            data_gamma[data_gamma > 1] = 1
+            data_gamma_freq = rowSums(data_gamma)
+            
+            data_2D = sapply(x, rowSums)
+            
+            ##
+            dij = FDdistM
+            dij = dij[rownames(dij) %in% names(data_gamma_freq), colnames(dij) %in% names(data_gamma_freq)]
+            order_sp <- match(names(data_gamma_freq), rownames(dij))
+            dij <- dij[order_sp, order_sp]
+            
+            dij = dij[data_gamma_freq > 0, data_gamma_freq > 0]
+            data_gamma_freq = data_gamma_freq[data_gamma_freq > 0]
+            
+            
+            if (FDtau == 0) {
+              dij[dij > 0] <- 1
+              gamma_a = (1 - dij/1) %*% as.matrix(data_gamma_freq)
+            } else {
+              dij[which(dij > FDtau, arr.ind = T)] = FDtau
+              gamma_a = (1 - dij/FDtau) %*% as.matrix(data_gamma_freq)
+            }
+            
+            gamma_a[gamma_a > nT] = nT
+            gamma_v = data_gamma_freq/gamma_a
+            
+            
+            ##
+            dij = FDdistM
+            dij = dij[rownames(dij) %in% rownames(data_2D), colnames(dij) %in% rownames(data_2D)]
+            order_sp <- match(rownames(data_2D), rownames(dij))
+            dij <- dij[order_sp, order_sp]
+            
+            dij = dij[rowSums(data_2D) > 0, rowSums(data_2D) > 0]
+            data_2D = data_2D[rowSums(data_2D) > 0,]
+            
+            
+            if (FDtau == 0) {
+              dij[dij > 0] <- 1
+              alpha_a = (1 - dij/1) %*% as.matrix(data_2D)
+            } else {
+              dij[which(dij > FDtau, arr.ind = T)] = FDtau
+              alpha_a = (1 - dij/FDtau) %*% as.matrix(data_2D)
+            }
+            
+            alpha_a[alpha_a > nT] = nT
+            alpha_a = as.vector(alpha_a)
+            alpha_v = rep(gamma_v, length(x))
+            
+            
+            Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
+            mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+            
+            tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
+                   'T' = rep(ncol(data_gamma), 2), 
+                   'U' = c(sum(data_gamma_freq), sum(data_2D)),
+                   'S.obs' = c(sum(rowSums(data_gamma) > 0), sum(data_2D > 0)), 
+                   'SC(T)' = Chat, 'SC(2T)' = mul_C2T,
+                   'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
+                   'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
+                   'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
+                   'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
+                   'Tau' = FDtau) %>% 
+              cbind(Pair = paste(ab_name[1], ab_name[2], sep = " vs. "),.)
+            
+          }) %>% do.call(rbind,.)
+          
+          single = single %>% cbind(Pair = "",.)
         }
         
-        gamma_a[gamma_a > nT] = nT
-        gamma_v = data_gamma_freq/gamma_a
-        
-        
-        ##
-        dij = FDdistM
-        dij = dij[rownames(dij) %in% rownames(data_2D), colnames(dij) %in% rownames(data_2D)]
-        order_sp <- match(rownames(data_2D), rownames(dij))
-        dij <- dij[order_sp, order_sp]
-        
-        dij = dij[rowSums(data_2D) > 0, rowSums(data_2D) > 0]
-        data_2D = data_2D[rowSums(data_2D) > 0,]
-        
-        
-        if (FDtau == 0) {
-          dij[dij > 0] <- 1
-          alpha_a = (1 - dij/1) %*% as.matrix(data_2D)
-        } else {
-          dij[which(dij > FDtau, arr.ind = T)] = FDtau
-          alpha_a = (1 - dij/FDtau) %*% as.matrix(data_2D)
-        }
-        
-        alpha_a[alpha_a > nT] = nT
-        alpha_a = as.vector(alpha_a)
-        alpha_v = rep(gamma_v, length(x))
-        
-        
-        Chat = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", ncol(y)))
-        mul_C2T = sapply(list(data_gamma, do.call(rbind, x)), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        
-        multiple = tibble('Assemblage' = c("Pooled assemblage", "Joint assemblage"), 
-                          'T' = rep(ncol(data_gamma), 2), 
-                          'U' = c(sum(data_gamma_freq), sum(data_2D)),
-                          'S.obs' = c(sum(rowSums(data_gamma) > 0), sum(data_2D > 0)), 
-                          'SC(T)' = Chat, 'SC(2T)' = mul_C2T,
-                          'a1*' = c(sum(round(gamma_a) == 1), sum(round(alpha_a) == 1)), 
-                          'a2*' = c(sum(round(gamma_a) == 2), sum(round(alpha_a) == 2)), 
-                          'h1' = c(sum(gamma_v[round(gamma_a) == 1]), sum(alpha_v[round(alpha_a) == 1])), 
-                          'h2' = c(sum(gamma_v[round(gamma_a) == 2]), sum(alpha_v[round(alpha_a) == 2])),
-                          'Tau' = FDtau)
-        
-        
-        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "tau_values", FDtau = FDtau, FDdistM = FDdistM)
         
         return(rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.))
         
@@ -4444,73 +4992,161 @@ DataInfobeta3D = function(data, diversity = 'TD', datatype = 'abundance',
       
       x = data[[i]]
       
-      if (datatype == 'abundance') {
+      if (by_pair == FALSE) {
         
-        pdata = data.frame(rowSums(x))
+        if (datatype == "abundance") {
+          
+          if (is.null(colnames(x))) colnames(x) = paste('Assemblage_', 1:ncol(x), sep = "")
+          
+          single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "AUC", FDdistM = FDdistM)
+          
+          pdata = data.frame(rowSums(x))
+          
+          order_sp <- match(rownames(pdata),rownames(FDdistM))
+          FDdistM <- FDdistM[order_sp,order_sp]
+          pdata <- pdata/sum(pdata)
+          
+          dmean <- sum ( (as.matrix(pdata) %*% t(as.matrix(pdata)) ) * FDdistM) # dmean
+          
+          dmin <- min(FDdistM[lower.tri(FDdistM)])
+          dmax <- max(FDdistM[FDdistM > 0])
+          
+          mul_C2n = sapply(list("Pooled assemblage" = rowSums(x),
+                                "Joint assemblage" = as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
+          
+          multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = rowSums(x),
+                                                   "Joint assemblage" = as.vector(x)), "abundance")[,1:5], 
+                            "dmin" = dmin,
+                            "dmean" = dmean,
+                            "dmax" = dmax)
+        }
         
-        order_sp <- match(rownames(pdata),rownames(FDdistM))
-        FDdistM <- FDdistM[order_sp,order_sp]
-        pdata <- pdata/sum(pdata)
+        if (datatype == "incidence_raw") {
+          
+          if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
+          
+          single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM)
+          
+          x = lapply(x, as.matrix)
+          
+          tmp = Reduce('+', x)
+          tmp[tmp > 1] = 1
+          pdata = data.frame(rowSums(tmp))
+          
+          order_sp <- match(rownames(pdata),rownames(FDdistM))
+          FDdistM <- FDdistM[order_sp,order_sp]
+          pdata <- pdata/sum(pdata)
+          
+          dmean <- sum ( (as.matrix(pdata) %*% t(as.matrix(pdata)) ) * FDdistM) # dmean
+          
+          dmin <- min(FDdistM[lower.tri(FDdistM)])
+          dmax <- max(FDdistM[FDdistM > 0])
+          
+          data_gamma = Reduce('+', x)
+          data_gamma[data_gamma > 1] = 1
+          
+          data_alpha = do.call(rbind, x)
+          
+          mul_C2T = sapply(list(data_gamma, data_alpha), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+          
+          multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+                                                   "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:6],
+                            "dmin" = dmin,
+                            "dmean" = dmean,
+                            "dmax" = dmax)
+        }
         
-      } else if (datatype == 'incidence_raw') {
+      } else {
         
-        x = lapply(x, as.matrix)
+        if (datatype == "abundance") {
+          
+          if (is.null(colnames(x))) colnames(x) = paste('Assemblage_', 1:ncol(x), sep = "")
+          
+          single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "AUC", FDdistM = FDdistM)
+          
+          two_idx <- combn(1:ncol(x), 2)
+          
+          multiple <- lapply(1:ncol(two_idx), function(j) {
+            
+            x = x[,two_idx[,j]]
+            ab_name = colnames(x)
+            
+            pdata = data.frame(rowSums(x))
+            
+            order_sp <- match(rownames(pdata),rownames(FDdistM))
+            FDdistM <- FDdistM[order_sp,order_sp]
+            pdata <- pdata/sum(pdata)
+            
+            dmean <- sum ( (as.matrix(pdata) %*% t(as.matrix(pdata)) ) * FDdistM) # dmean
+            
+            dmin <- min(FDdistM[lower.tri(FDdistM)])
+            dmax <- max(FDdistM[FDdistM > 0])
+            
+            mul_C2n = sapply(list("Pooled assemblage" = rowSums(x),
+                                  "Joint assemblage" = as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
+            
+            cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = rowSums(x),
+                                         "Joint assemblage" = as.vector(x)), "abundance")[,1:5], 
+                  "dmin" = dmin,
+                  "dmean" = dmean,
+                  "dmax" = dmax) %>% 
+              cbind(Pair = paste(ab_name[1], ab_name[2], sep = " vs. "),.)
+            
+          }) %>% do.call(rbind,.)
+          
+        }
         
-        tmp = Reduce('+', x)
-        tmp[tmp > 1] = 1
-        pdata = data.frame(rowSums(tmp))
+        if (datatype == "incidence_raw") {
+          
+          if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
+          
+          single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM)
+          
+          two_idx <- combn(1:length(x), 2)
+          
+          multiple <- lapply(1:ncol(two_idx), function(j) {
+            
+            x = lapply(x, as.matrix)
+            
+            x = x[two_idx[,j]]
+            ab_name = names(x)
+            
+            tmp = Reduce('+', x)
+            tmp[tmp > 1] = 1
+            pdata = data.frame(rowSums(tmp))
+            
+            order_sp <- match(rownames(pdata),rownames(FDdistM))
+            FDdistM <- FDdistM[order_sp,order_sp]
+            pdata <- pdata/sum(pdata)
+            
+            dmean <- sum ( (as.matrix(pdata) %*% t(as.matrix(pdata)) ) * FDdistM) # dmean
+            
+            dmin <- min(FDdistM[lower.tri(FDdistM)])
+            dmax <- max(FDdistM[FDdistM > 0])
+            
+            data_gamma = Reduce('+', x)
+            data_gamma[data_gamma > 1] = 1
+            
+            data_alpha = do.call(rbind, x)
+            
+            mul_C2T = sapply(list(data_gamma, data_alpha), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
+            
+            cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
+                                         "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:6],
+                  "dmin" = dmin,
+                  "dmean" = dmean,
+                  "dmax" = dmax) %>% 
+              cbind(Pair = paste(ab_name[1], ab_name[2], sep = " vs. "),.)
+            
+          }) %>% do.call(rbind,.)
+          
+        }
         
-        order_sp <- match(rownames(pdata),rownames(FDdistM))
-        FDdistM <- FDdistM[order_sp,order_sp]
-        pdata <- pdata/sum(pdata)
+        single = single %>% cbind(Pair = "",.)
         
       }
       
-      dmean <- sum ( (as.matrix(pdata) %*% t(as.matrix(pdata)) ) * FDdistM) # dmean
-      
-      dmin <- min(FDdistM[lower.tri(FDdistM)])
-      dmax <- max(FDdistM[FDdistM > 0])
-      
-      if (datatype == "abundance") {
-        
-        if (is.null(colnames(x))) colnames(x) = paste('Assemblage_', 1:ncol(x), sep = "")
-        
-        mul_C2n = sapply(list("Pooled assemblage" = rowSums(x),
-                              "Joint assemblage" = as.vector(x)), function(y) iNEXT.3D:::Coverage(y, "abundance", 2*sum(y)))
-        
-        multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = rowSums(x),
-                                                 "Joint assemblage" = as.vector(x)), "abundance")[,1:5], 
-                          "dmin" = dmin,
-                          "dmean" = dmean,
-                          "dmax" = dmax)
-        
-        single = DataInfo3D(x, diversity = "FD", datatype = "abundance", FDtype = "AUC", FDdistM = FDdistM)
-        
-        out = rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.)
-      }
-      
-      if (datatype == "incidence_raw") {
-        
-        if (is.null(names(x))) names(x) = paste('Assemblage_', 1:length(x), sep = "")
-        
-        x = lapply(x, as.matrix)
-        data_gamma = Reduce('+', x)
-        data_gamma[data_gamma > 1] = 1
-        
-        data_alpha = do.call(rbind, x)
-        
-        mul_C2T = sapply(list(data_gamma, data_alpha), function(y) iNEXT.3D:::Coverage(y, "incidence_raw", 2*ncol(y)))
-        
-        multiple <- cbind(iNEXT.3D:::TDinfo(list("Pooled assemblage" = c(ncol(data_gamma), as.vector(rowSums(data_gamma))),
-                                                 "Joint assemblage" = c(ncol(data_alpha), as.vector(rowSums(data_alpha)))), "incidence_freq")[,1:6],
-                          "dmin" = dmin,
-                          "dmean" = dmean,
-                          "dmax" = dmax)
-        
-        single = DataInfo3D(x, diversity = "FD", datatype = "incidence_raw", FDtype = "AUC", FDdistM = FDdistM)
-        
-        out = rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.)
-      }
+      out = rbind(single, multiple) %>% cbind(Dataset = names(data)[i],.)
       
       return(out)
       
@@ -4547,11 +5183,23 @@ print.iNEXTbeta3D <- function(x, ...){
       # if (length(index) > 0) out = y[[i]][index,] else out = y[[i]]
       
       out = y[[i]]
-      out[,c(3,4,7,8,9)] = round(out[,c(3,4,7,8,9)], 4)
-      out[,5] = round(out[,5], 4)
-      lapply(unique(out$Order.q), function(q) rbind(matrix(c("", paste("Order q = ", q, sep = ""), rep("", ncol(out)-2)), nrow = 1) %>% 
-                                                      set_colnames(colnames(out)), 
-                                                    out %>% filter(Order.q == q))) %>% do.call(rbind,.)
+      
+      ## Added by KaiHsiang 2024/11/11
+      if ("Pair" %in% colnames(out)) {
+        
+        out[,c(4,5,6,8,9,10)] = round(out[,c(4,5,6,8,9,10)], 4)
+        lapply(unique(out$Order.q), function(q) rbind(matrix(c("", "", paste("Order q = ", q, sep = ""), rep("", ncol(out)-3)), nrow = 1) %>% 
+                                                        set_colnames(colnames(out)), 
+                                                      out %>% filter(Order.q == q))) %>% do.call(rbind,.)
+        
+      } else {
+        
+        out[,c(3,4,5,7,8,9)] = round(out[,c(3,4,5,7,8,9)], 4)
+        lapply(unique(out$Order.q), function(q) rbind(matrix(c("", paste("Order q = ", q, sep = ""), rep("", ncol(out)-2)), nrow = 1) %>% 
+                                                        set_colnames(colnames(out)), 
+                                                      out %>% filter(Order.q == q))) %>% do.call(rbind,.)
+      }
+      
     })
     
     names(tmp) = names(y)

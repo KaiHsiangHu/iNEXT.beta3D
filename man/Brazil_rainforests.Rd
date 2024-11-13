@@ -5,18 +5,19 @@
   Brazil rainforests data (datatype = "abundance" for TD, PD, and FD)
 }
 \description{
-  This dataset includes tree species abundace counts in two rainforests (Marium and Rebio2) collected from
+  This dataset includes tree species abundace counts in three rainforests (Marium, Rebio2, and Rochedo) collected from
   rainforests in Brazil by Magnago et al. (2014, 2015, 2017). Within each forest, 
   there are two assemblages/habitats (Edge and Interior). The data are slightly different from those used in 
   Chao et al. (2023) because some species are excluded due to lack of phylogeny information. \cr
 }
 \usage{data(Brazil_rainforests)}
 \format{
-  \code{Brazil_rainforests} is a list with two species-by-assemblage data.frames/matrices. The two columns
+  \code{Brazil_rainforests} is a list with three species-by-assemblage data.frames/matrices. The two columns
   represents the Edge and Interior habitats. \cr
-  A list of 2 matrices: \cr
-  $ Marim is a matrix with 119 species(rows) and 2 columns ("Edge" and "Interior"). \cr
-  $ Rebio2 is a matrix with 118 species(rows) and 2 columns ("Edge" and "Interior"). \cr
+  A list of 3 matrices: \cr
+  $ Marim is a matrix with 243 species(rows) and 2 columns ("Edge" and "Interior"). \cr
+  $ Rebio2 is a matrix with 243 species(rows) and 2 columns ("Edge" and "Interior"). \cr
+  $ Rochedo is a matrix with 243 species(rows) and 2 columns ("Edge" and "Interior"). \cr
 }
 \references{
   

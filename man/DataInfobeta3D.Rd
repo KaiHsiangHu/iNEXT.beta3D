@@ -12,7 +12,8 @@ DataInfobeta3D(
   PDreftime = NULL,
   FDdistM = NULL,
   FDtype = "AUC",
-  FDtau = NULL
+  FDtau = NULL,
+  by_pair = FALSE
 )
 }
 \arguments{
@@ -35,11 +36,14 @@ DataInfobeta3D(
 1 specifying the tau value (threshold level) that will be used to compute FD. If \code{FDtype = NULL} (default), 
 then threshold level is set to be the mean distance between any two individuals randomly selected from the pooled 
 dataset (i.e., quadratic entropy).}
+
+\item{by_pair}{a logical variable specifying whether to perform diversity decomposition for all pairs of assemblages or not. If \code{by_pair = TRUE}, alpha/beta/gamma diversity will be computed for all pairs of assemblages in the input data; if \code{by_pair = FALSE}, alpha/beta/gamma diversity will be computed for multiple assemblages (i.e, more than two assemblages) in the input data. Default is \code{FALSE}.}
 }
 \value{
 a data.frame including basic data information.\cr\cr 
 For abundance data, basic information shared by TD, mean-PD and FD
- includes dataset name (\code{Dataset}), individual/pooled/joint assemblage (\code{Assemblage}),
+ includes dataset name (\code{Dataset}), combinations of assemblage pairs (\code{Pair}, if calculating not by pairs, then there is no such column), 
+ individual/pooled/joint assemblage (\code{Assemblage}),
 sample size (\code{n}), observed species richness (\code{S.obs}), sample coverage estimates of the reference sample (\code{SC(n)}), 
 sample coverage estimate for twice the reference sample size (\code{SC(2n)}). Other additional information is given below.\cr\cr
 (1) TD: the first five species abundance frequency counts in the reference sample (\code{f1}--\code{f5}).\cr\cr
@@ -52,8 +56,8 @@ and the mean distance between any two individuals randomly selected from the dat
  set at the specified threshold level \code{'Tau'}, as well as the total contribution of singletons (\code{h1}) and of doubletons (\code{h2})
   at the specified threshold level \code{'Tau'}.\cr\cr
  
- For incidence data, the basic information for TD includes dataset name (\code{Dataset}), individual/pooled/joint assemblage 
- (\code{Assemblage}), number of sampling units (\code{T}), total number of incidences (\code{U}), observed species richness (\code{S.obs}), 
+ For incidence data, the basic information for TD includes dataset name (\code{Dataset}), combinations of assemblage pairs (\code{Pair}, if calculating not by pairs, then there is no such column), 
+ individual/pooled/joint assemblage (\code{Assemblage}), number of sampling units (\code{T}), total number of incidences (\code{U}), observed species richness (\code{S.obs}), 
  sample coverage estimates of the reference sample (\code{SC(T)}), sample coverage estimate for twice the reference sample size
  (\code{SC(2T)}), as well as the first five species incidence frequency counts (\code{Q1}--\code{Q5}) in the reference sample. For mean-PD and FD, output is similar to that
  for abundance data.
@@ -64,41 +68,60 @@ and the mean distance between any two individuals randomly selected from the dat
  joint assemblage for TD, PD and FD.
 }
 \examples{
-## (Data Information) Taxonomic diversity for abundance data
+## (Data Information) Taxonomic diversity for abundance data (not by pairs)
 data(Brazil_rainforests)
-info_TD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'TD', datatype = 'abundance')
+info_TD_abun = DataInfobeta3D(data = Brazil_rainforests[1:2], diversity = 'TD', 
+                              datatype = 'abundance')
 info_TD_abun
 
 
-## (Data Information) Taxonomic diversity for incidence data
+## (Data Information) Taxonomic diversity for abundance data for all pairs of assemblages
+data = list("Edge"     = sapply(Brazil_rainforests, function(x) x[,1]),
+            "Interior" = sapply(Brazil_rainforests, function(x) x[,2]))
+info_TD_abun_pair = DataInfobeta3D(data = data, diversity = 'TD', datatype = 'abundance',
+                                   by_pair = TRUE)
+info_TD_abun_pair
+
+
+## (Data Information) Taxonomic diversity for incidence data (not by pairs)
 data(Second_growth_forests)
-info_TD_inci = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
+data = list("CR 2005 vs. 2017" = Second_growth_forests[[1]][c(1,3)],
+            "JE 2005 vs. 2017" = Second_growth_forests[[2]][c(1,3)])
+info_TD_inci = DataInfobeta3D(data = data, diversity = 'TD',
                               datatype = 'incidence_raw')
 info_TD_inci
 
+
+## (Data Information) Taxonomic diversity for incidence data for all pairs of assemblages
+data(Second_growth_forests)
+info_TD_inci_pair = DataInfobeta3D(data = Second_growth_forests, diversity = 'TD',
+                                   datatype = 'incidence_raw', by_pair = TRUE)
+info_TD_inci_pair
+
 \donttest{
-## (Data Information) Mean phylogenetic diversity for abundance data
+## (Data Information) Mean phylogenetic diversity for abundance data (not by pairs)
 data(Brazil_rainforests)
 data(Brazil_tree)
-info_PD_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'PD', 
+info_PD_abun = DataInfobeta3D(data = Brazil_rainforests[1:2], diversity = 'PD', 
                               datatype = 'abundance', PDtree = Brazil_tree, PDreftime = NULL)
 info_PD_abun
 }
 
 ## (Data Information) Functional diversity for abundance data under a specified threshold level
+## (not by pairs)
 data(Brazil_rainforests)
 data(Brazil_distM)
-info_FDtau_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
+info_FDtau_abun = DataInfobeta3D(data = Brazil_rainforests[1:2], diversity = 'FD', 
                                  datatype = 'abundance', FDdistM = Brazil_distM, 
                                  FDtype = 'tau_value', FDtau = NULL)
 info_FDtau_abun
 
 
 ## (Data Information) Functional diversity for abundance data when all threshold levels
-## from 0 to 1 are considered
+## from 0 to 1 are considered (not by pairs)
 data(Brazil_rainforests)
 data(Brazil_distM)
-info_FDAUC_abun = DataInfobeta3D(data = Brazil_rainforests, diversity = 'FD', 
+info_FDAUC_abun = DataInfobeta3D(data = Brazil_rainforests[1:2], diversity = 'FD', 
                                  datatype = 'abundance', FDdistM = Brazil_distM, FDtype = 'AUC')
 info_FDAUC_abun
 

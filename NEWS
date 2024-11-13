@@ -7,3 +7,7 @@ Publish public version to CRAN
 
 # iNEXT.beta3D 1.0.2
 - Modify error in PD's bootstrap.
+
+# iNEXT.beta3D 1.1.0
+- Add "by_pair" setting for beta decomposition in the function "iNEXTbeta3D" to compute pairwise alpha/beta/gamma diversity (i.e, more than two ecosystems).
+
