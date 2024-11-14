@@ -281,7 +281,7 @@ a numeric number to cut [0, 1] interval into equal-spaced sub-intervals to obtai
 </table>
 
 
-This function returns an `"iNEXTbeta3D"` object which can be further used to make plots using the function `ggiNEXTbeta3D()` to be described below. 
+This function returns an `"iNEXTbeta3D"` object which can be further used to make plots using the function `ggiNEXTbeta3D()` to be described below. (only accept the outcome from `iNEXTbeta3D` under `by_pair = FALSE`)
 
 
 ## Output of the main function iNEXTbeta3D() 
@@ -306,7 +306,7 @@ Size-based beta diversity and dissimilarity indices are not statistically valid 
 
 ## <span style="color:red;">GRAPHIC DISPLAYS: FUNCTION ggiNEXTbeta3D()</span>
 
-The function `ggiNEXTbeta3D()` with default arguments is described as follows: 
+The function `ggiNEXTbeta3D()` with default arguments is described as follows: (only accept the outcome from `iNEXTbeta3D` under `by_pair = FALSE`)
 
 ```{r eval=FALSE}
 ggiNEXTbeta3D(output, type = "B")  
@@ -545,7 +545,7 @@ ggiNEXTbeta3D(output_TDs_inci)
 
 ### EXAMPLE 4: Incidence data for all pairs of assemblages with user-specified sample sizes or coverage values
 
-As with abundance data, user can also specify sample sizes (i.e. number of sampling units) or coverage values to obtain the pertinent output. The code for examples is given below with two user-specified levels of sample coverage values (e.g., 90% and 95%), but the output is omitted.
+As with abundance data, user can also specify sample sizes (i.e. number of sampling units) or coverage values to obtain the pertinent output for all pairs of assemblages. The code for examples is given below with two user-specified levels of sample coverage values (e.g., 90% and 95%), but the output is omitted.
 
 ```{r eval=FALSE}
 ## Coverage-based R/E Analysis for all pairs of assemblages with taxonomic diversity for incidence data
@@ -558,7 +558,7 @@ output_TDc_inci_byuser
 ```
 
 
-The following commands return the TD estimates with two user-specified levels of sample sizes (e.g., 100 and 200).
+The following commands return the TD estimates for all pairs of assemblages with two user-specified levels of sample sizes (e.g., 100 and 200).
 
 ```{r eval=FALSE}
 ## Size-based R/E for all pairs of assemblages with taxonomic gamma and alpha diversity
