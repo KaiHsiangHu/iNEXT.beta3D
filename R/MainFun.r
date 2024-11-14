@@ -261,7 +261,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     if ( inherits(data, "list") ){
       
       if (is.null(names(data))) dataset_names = paste0("Dataset_", 1:length(data)) else dataset_names = names(data)
-      Ns = sapply(data, ncol)
+      if (by_pair == FALSE) Ns = sapply(data, ncol) else Ns = 2
       data_list = data
       
     }
@@ -311,7 +311,7 @@ iNEXTbeta3D = function(data, diversity = 'TD', q = c(0, 1, 2), datatype = 'abund
     })
     
     if (is.null(names(data))) dataset_names = paste0("Dataset_", 1:length(data)) else dataset_names = names(data)
-    Ns = sapply(data, length)
+    if (by_pair == FALSE) Ns = sapply(data, length) else Ns = 2
     data_list = data
   }
   
