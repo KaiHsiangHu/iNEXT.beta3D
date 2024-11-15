@@ -364,7 +364,7 @@ output_TDc_abun = iNEXTbeta3D(data = Brazil_rainforests[1:2], diversity = 'TD',
 output_TDc_abun
 ```
 
-The output contains seven data frames: `gamma`, `alpha`, `beta`, `1-C`, `1-U`, `1-V`, `1-S`. For each data frame, it includes the name of dataset (`Dataset`), the diversity order of q (`Order.q`), the target standardized coverage value (`SC`), the corresponding sample size (`Size`), the estimated diversity/dissimilarity estimate (`Alpha/Beta/Gamma/Dissimilarity`), `Method` (Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample), standard error of standardized estimate (`s.e.`), the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95 (`LCL`, `UCL`). These estimates with confidence intervals in the output are then used for plotting rarefaction and extrapolation curves.
+The output contains seven data frames: `gamma`, `alpha`, `beta`, `1-C`, `1-U`, `1-V`, `1-S`. For each data frame, it includes the name of dataset (`Dataset`), combinations of assemblage pairs (`Pair`, if calculating not by pairs, then there is no such column), the diversity order of q (`Order.q`), the target standardized coverage value (`SC`), the corresponding sample size (`Size`), the estimated diversity/dissimilarity estimate (`Alpha/Beta/Gamma/Dissimilarity`), `Method` (Rarefaction, Observed, or Extrapolation, depending on whether the target coverage is less than, equal to, or greater than the coverage of the reference sample), standard error of standardized estimate (`s.e.`), the bootstrap lower and upper confidence limits for the diversity/dissimilarity with a default significance level of 0.95 (`LCL`, `UCL`). These estimates with confidence intervals in the output are then used for plotting rarefaction and extrapolation curves.
 
 Our diversity/dissimilarity estimates and related statistics in the default output are displayed for the standardized coverage value from 0.5 to the coverage value of twice the reference sample size (for q = 0), or from 0.5 to 1.0 (for q = 1 and 2), in increments of 0.025. In addition, the results for the following four coverage value are also added: `SC(n, alpha)`, `SC(2n, alpha)`, `SC(n, gamma)` and `SC(2n, gamma)` if these values are in the above-specified range. Here `SC(n, alpha)` and `SC(2n, alpha)` represent, respectively, the coverage estimate for the alpha reference sample size n and the extrapolated sample with size 2n in the joint assemblage. These values can be found as `SC(n)` and `SC(2n)` for `"Joint assemblage (for alpha)"` in the column "Assemblage" from the output of the function `DataInfobeta3D`; see later text. Similar definitions pertain to `SC(n, gamma)` and `SC(2n, gamma)` for the gamma reference sample; these two values can also be found as `SC(n)` and `SC(2n)` for `"Pooled assemblage (for gamma)"` in the column "Assemblage" from the output of the function `DataInfobeta3D`. For beta diversity and dissimilarity, the observed sample coverage and extrapolation limit are defined the same as the alpha diversity. The corresponding coverage values for incidence data are denoted as, respectively, `SC(T, alpha)`, `SC(2T, alpha)`, `SC(T, gamma)` and `SC(2T, gamma)` in the output.
 
@@ -711,7 +711,7 @@ Output description:
 
 - `Dataset` = the input datasets. 
 
-- `Pair` = combinations of assemblage pairs (if calculating not by pairs, then there is no such column), 
+- `Pair` = combinations of assemblage pairs (if calculating not by pairs, then there is no such column). 
 
 - `Assemblage` = Individual assemblages, `'Pooled assemblage'` (for gamma) or `'Joint assemblage'` (for alpha). 
 
@@ -769,7 +769,7 @@ tmp
 
 Information description:
 
-- `Dataset`, `Assemblage`, `n`, `S.obs`, `SC(n)` and `SC(2n)`: definitions are the same as in the TD output.
+- `Dataset`, `Pair`, `Assemblage`, `n`, `S.obs`, `SC(n)` and `SC(2n)`: definitions are the same as in the TD output.
 
 - `PD.obs` = the observed total branch length in the phylogenetic tree spanned by all observed species.
 
@@ -801,7 +801,7 @@ tmp
 
 Information description:
 
-- `Dataset`, `Assemblage`, `n`, `S.obs`, `SC(n)` and `SC(2n)`: definitions are the same as in the TD output.
+- `Dataset`, `Pair`, `Assemblage`, `n`, `S.obs`, `SC(n)` and `SC(2n)`: definitions are the same as in the TD output.
 
 - `a1*`,`a2*` = the number of singletons (`a1*`) and of doubletons (`a2*`) among the functionally indistinct set at the specified threshold level `'Tau'`.
 
@@ -830,7 +830,7 @@ tmp
 
 Information description:
 
-- `Dataset`, `Assemblage`, `n`, `S.obs`, `SC(n)` and `SC(2n)`: definitions are the same as in TD and thus are omitted.
+- `Dataset`, `Pair`, `Assemblage`, `n`, `S.obs`, `SC(n)` and `SC(2n)`: definitions are the same as in TD and thus are omitted.
 
 - `dmin` = the minimum distance among all non-diagonal elements in the distance matrix.
 
@@ -866,7 +866,7 @@ Information description:
 
 - `Dataset` =  the input datasets. 
 
-- `Pair` = combinations of assemblage pairs (if calculating not by pairs, then there is no such column), 
+- `Pair` = combinations of assemblage pairs (if calculating not by pairs, then there is no such column). 
 
 - `Assemblage` = Individual assemblages, `'Pooled assemblage'` (for gamma) or `'Joint assemblage'` (for alpha). 
 
